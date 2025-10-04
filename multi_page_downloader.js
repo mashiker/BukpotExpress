@@ -86,23 +86,30 @@ async function downloadCurrentPage() {
         }
 
         // Check if there's a next page
-        console.log('Multi-page downloader: Checking for next page...');
+        console.log('Multi-page downloader: === CHECKING FOR NEXT PAGE ===');
         const hasNextPage = await checkAndNavigateToNext();
+
+        console.log(`Multi-page downloader: Next page result: ${hasNextPage}`);
+        console.log(`Multi-page downloader: Is download stopped: ${isDownloadStopped}`);
 
         if (hasNextPage && !isDownloadStopped) {
             // Continue to next page
             totalPagesDownloaded++;
-            console.log(`Multi-page downloader: Moving to page ${totalPagesDownloaded} in 2 seconds...`);
+            console.log(`Multi-page downloader: === MOVING TO PAGE ${totalPagesDownloaded} ===`);
+            console.log('Multi-page downloader: Waiting 3 seconds before processing next page...');
             setTimeout(() => {
                 if (!isDownloadStopped) {
+                    console.log('Multi-page downloader: === STARTING NEXT PAGE PROCESS ===');
                     downloadCurrentPage();
                 } else {
+                    console.log('Multi-page downloader: Download stopped before next page processing');
                     completeMultiPageDownload();
                 }
-            }, 2000); // Wait 2 seconds before next page
+            }, 3000); // Wait 3 seconds before next page (increased from 2)
         } else {
             // No more pages or download stopped, finish the process
-            console.log('Multi-page downloader: No more pages or download stopped, finishing...');
+            console.log('Multi-page downloader: === NO MORE PAGES OR STOPPED, FINISHING ===');
+            console.log(`Multi-page downloader: Has next page: ${hasNextPage}, Stopped: ${isDownloadStopped}`);
             completeMultiPageDownload();
         }
 
@@ -255,7 +262,8 @@ async function downloadFilesOnCurrentPage() {
 
 async function checkAndNavigateToNext() {
     return new Promise((resolve) => {
-        console.log('Multi-page downloader: Checking for next page...');
+        console.log('Multi-page downloader: === CHECKING FOR NEXT PAGE ===');
+        console.log('Multi-page downloader: Current page URL:', window.location.href);
 
         // Safety check: don't exceed max pages
         if (totalPagesDownloaded >= maxPagesToDownload) {
@@ -271,7 +279,20 @@ async function checkAndNavigateToNext() {
             return;
         }
 
-        // Look for next page button with various selectors
+        // Debug: Log all possible pagination elements
+        console.log('Multi-page downloader: Looking for pagination elements...');
+
+        // Check for paginator container
+        const paginatorContainers = document.querySelectorAll('.p-paginator');
+        console.log(`Multi-page downloader: Found ${paginatorContainers.length} paginator containers`);
+
+        if (paginatorContainers.length > 0) {
+            paginatorContainers.forEach((container, index) => {
+                console.log(`Multi-page downloader: Paginator ${index + 1}:`, container.innerHTML);
+            });
+        }
+
+        // Enhanced selector list for next page button
         const nextButtonSelectors = [
             '.p-paginator-next',
             '.p-paginator-next.p-paginator-element.p-link',
@@ -280,14 +301,22 @@ async function checkAndNavigateToNext() {
             '.pi-angle-right',
             '.next-page',
             'a[aria-label="Next"]',
-            '[class*="paginator-next"]'
+            '[class*="paginator-next"]',
+            'button.p-paginator-element.p-link.p-paginator-next',
+            'span.p-paginator-icon.pi.pi-angle-right',
+            '.p-paginator-element[aria-label="Next"]'
         ];
 
         let nextButton = null;
+        let foundSelector = null;
+
+        console.log('Multi-page downloader: Testing', nextButtonSelectors.length, 'selectors...');
 
         for (let selector of nextButtonSelectors) {
             nextButton = document.querySelector(selector);
             if (nextButton) {
+                console.log(`Multi-page downloader: ✓ Found element with selector: ${selector}`);
+
                 // More thorough check for disabled state
                 const isDisabled = nextButton.disabled ||
                                  nextButton.classList.contains('p-disabled') ||
@@ -296,42 +325,75 @@ async function checkAndNavigateToNext() {
                                  nextButton.style.display === 'none' ||
                                  nextButton.style.visibility === 'hidden';
 
+                console.log(`Multi-page downloader: - Button disabled: ${isDisabled}`);
+                console.log(`Multi-page downloader: - Button classes: ${nextButton.className}`);
+                console.log(`Multi-page downloader: - Button disabled attr: ${nextButton.getAttribute('disabled')}`);
+
                 if (!isDisabled) {
-                    console.log(`Multi-page downloader: Found next button with selector: ${selector}`);
+                    console.log(`Multi-page downloader: ✓ Button is ENABLED with selector: ${selector}`);
+                    foundSelector = selector;
                     break;
                 } else {
-                    console.log(`Multi-page downloader: Found next button but it's disabled: ${selector}`);
+                    console.log(`Multi-page downloader: ✗ Button is DISABLED with selector: ${selector}`);
                     nextButton = null;
                 }
+            } else {
+                console.log(`Multi-page downloader: ✗ No element found with selector: ${selector}`);
             }
         }
 
         if (!nextButton) {
-            console.log('Multi-page downloader: No next page button found, download complete');
+            console.log('Multi-page downloader: ❌ No valid next page button found, assuming last page');
+
+            // Additional check: look for any element that might be next button
+            const allButtons = document.querySelectorAll('button, a');
+            console.log(`Multi-page downloader: Found ${allButtons.length} total buttons/links on page`);
+
+            const possibleNextButtons = Array.from(allButtons).filter(el => {
+                const text = el.textContent.toLowerCase();
+                const hasNextText = text.includes('next') || text.includes('selanjutnya');
+                const hasIcon = el.querySelector('.pi-angle-right, .pi-chevron-right');
+                return hasNextText || hasIcon;
+            });
+
+            console.log(`Multi-page downloader: Found ${possibleNextButtons.length} possible next buttons:`, possibleNextButtons);
+
             resolve(false);
             return;
         }
 
-        console.log('Multi-page downloader: Clicking next page button...');
+        console.log('Multi-page downloader: === CLICKING NEXT PAGE BUTTON ===');
+        console.log(`Multi-page downloader: Using selector: ${foundSelector}`);
 
         try {
             // Store current page URL to verify navigation
             const currentUrl = window.location.href;
+            console.log('Multi-page downloader: Current URL before click:', currentUrl);
 
             // Click the next button
+            console.log('Multi-page downloader: Performing click...');
             nextButton.click();
 
             // Wait for navigation and verify URL changed
+            console.log('Multi-page downloader: Waiting for navigation (2 seconds)...');
             setTimeout(() => {
                 const newUrl = window.location.href;
-                if (newUrl !== currentUrl) {
-                    console.log('Multi-page downloader: Successfully navigated to next page');
+                console.log('Multi-page downloader: URL after click:', newUrl);
+                console.log('Multi-page downloader: URL changed:', newUrl !== currentUrl);
+
+                // Check if page content changed (URL might be same but content different)
+                const newDownloadButtons = document.querySelectorAll('#DownloadButton');
+                console.log('Multi-page downloader: Download buttons after navigation:', newDownloadButtons.length);
+
+                // More lenient check: if URL changed OR if we waited enough time, assume navigation worked
+                if (newUrl !== currentUrl || newDownloadButtons.length > 0) {
+                    console.log('Multi-page downloader: ✅ Navigation successful (URL changed or content loaded)');
                     resolve(true);
                 } else {
-                    console.log('Multi-page downloader: Navigation failed (URL unchanged), assuming end of pages');
+                    console.log('Multi-page downloader: ❌ Navigation failed (URL unchanged and no content)');
                     resolve(false);
                 }
-            }, 2000); // Wait 2 seconds for page navigation
+            }, 3000); // Wait 3 seconds for page navigation (increased from 2)
 
         } catch (error) {
             console.error('Multi-page downloader: Error clicking next button:', error);
