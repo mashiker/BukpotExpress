@@ -5,6 +5,16 @@
 let isDownloading = false;
 let downloadTabId = null;
 
+// Open sidebar when extension icon is clicked
+chrome.action.onClicked.addListener(async (tab) => {
+    try {
+        await chrome.sidePanel.open({ tabId: tab.id });
+        console.log('Sidebar opened for tab:', tab.id);
+    } catch (error) {
+        console.error('Error opening sidebar:', error);
+    }
+});
+
 function executeScriptOnTab(tabId, fileToExecute) {
     chrome.scripting.executeScript({
         target: { tabId: tabId },
@@ -49,7 +59,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             if (!isDownloading) {
                 isDownloading = true;
                 downloadTabId = tabId;
-                console.log("BG: Starting filter and download process. Month:", request.month, "Year:", request.year);
+                const downloadMode = request.downloadMode || 'single';
+                console.log("BG: Starting filter and download process. Month:", request.month, "Year:", request.year, "Mode:", downloadMode);
+
+                // Check if this is quick download (no filter)
+                if (!request.month || !request.year) {
+                    console.log("BG: Quick download mode (no filter), Mode:", downloadMode);
+                    if (downloadMode === 'all') {
+                        sendStatusUpdate("Memulai download multi-halaman tanpa filter...");
+                        startMultiPageDownload(tabId);
+                    } else {
+                        sendStatusUpdate("Memulai download cepat...");
+                        startAutomaticDownload(tabId);
+                    }
+                    return;
+                }
 
                 // Update status in sidebar
                 sendStatusUpdate("Menerapkan filter masa pajak...");
@@ -63,7 +87,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                         console.error("BG: Error injecting filter_changer.js:", chrome.runtime.lastError);
                         isDownloading = false;
                         downloadTabId = null;
-                        sendStatusUpdate("Error: " + chrome.runtime.lastError.message, true);
+
+                        let errorMessage = chrome.runtime.lastError.message;
+                        if (errorMessage.includes("permission")) {
+                            errorMessage = "❌ Permission Error!\n\n📋 Langkah perbaikan:\n1. Buka chrome://extensions/\n2. Cari 'Bukpot Downloader'\n3. Klik tombol 🔄 Reload\n4. Refresh halaman Coretax\n5. Coba kembali";
+                        } else {
+                            errorMessage = "Error: " + errorMessage;
+                        }
+
+                        sendStatusUpdate(errorMessage, true);
                         return;
                     }
 
@@ -85,13 +117,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
                         if (response && response.success) {
                             console.log("BG: Filter applied successfully. Starting download process...");
-                            sendStatusUpdate("Filter berhasil diterapkan. Memulai proses unduh otomatis...");
+                            const modeText = downloadMode === 'all' ? 'multi-halaman' : 'satu halaman';
+                            sendStatusUpdate(`Filter berhasil diterapkan. Memulai proses unduh ${modeText}...`);
 
                             // Wait 2 seconds for data to load, then start download
                             setTimeout(() => {
-                                console.log("BG: Starting automatic download process...");
-                                sendStatusUpdate("Mengunduh semua dokumen...");
-                                startAutomaticDownload(tabId);
+                                console.log("BG: Starting download process... Mode:", downloadMode);
+                                if (downloadMode === 'all') {
+                                    sendStatusUpdate("Memulai download multi-halaman...");
+                                    startMultiPageDownload(tabId);
+                                } else {
+                                    sendStatusUpdate("Mengunduh semua dokumen...");
+                                    startAutomaticDownload(tabId);
+                                }
                             }, 2000);
                         } else {
                             console.error("BG: Filter application failed:", response ? response.message : "Unknown error");
@@ -101,6 +139,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                         }
                     });
                 });
+            }
+            break;
+
+        case "STOP_DOWNLOAD":
+            console.log("BG: Stop download requested for tab:", tabId);
+            if (isDownloading && downloadTabId === tabId) {
+                console.log("BG: Stopping download process...");
+                isDownloading = false;
+                downloadTabId = null;
+
+                // Send stop message to content scripts
+                chrome.tabs.sendMessage(tabId, {
+                    action: 'stopDownload'
+                });
+
+                sendStatusUpdate("⏹️ Download dihentikan oleh user", true);
             }
             break;
     }
@@ -119,7 +173,7 @@ function sendStatusUpdate(status, complete = false) {
     });
 }
 
-// Function to start automatic download
+// Function to start automatic download (single page)
 function startAutomaticDownload(tabId) {
     // Inject injector.js for modal setup
     chrome.scripting.executeScript({
@@ -130,71 +184,145 @@ function startAutomaticDownload(tabId) {
             console.error("BG: Error injecting injector.js:", chrome.runtime.lastError);
             isDownloading = false;
             downloadTabId = null;
-            sendStatusUpdate("Error: " + chrome.runtime.lastError.message, true);
+
+            let errorMessage = chrome.runtime.lastError.message;
+            if (errorMessage.includes("permission")) {
+                errorMessage = "❌ Permission denied! Please reload the extension and try again.";
+            } else {
+                errorMessage = "Error: " + errorMessage;
+            }
+
+            sendStatusUpdate(errorMessage, true);
             return;
         }
 
-        // Execute automatic download script
+        // Now inject collector.js to collect downloadable items
         chrome.scripting.executeScript({
             target: { tabId: tabId },
-            func: runAutomaticDownload
-        }, (result) => {
+            files: ['collector.js']
+        }, () => {
             if (chrome.runtime.lastError) {
-                console.error("BG: Error executing download:", chrome.runtime.lastError);
+                console.error("BG: Error injecting collector.js:", chrome.runtime.lastError);
                 isDownloading = false;
                 downloadTabId = null;
-                sendStatusUpdate("Error: " + chrome.runtime.lastError.message, true);
+
+                let errorMessage = chrome.runtime.lastError.message;
+                if (errorMessage.includes("permission")) {
+                    errorMessage = "❌ Permission denied! Please reload the extension and try again.";
+                } else {
+                    errorMessage = "Error: " + errorMessage;
+                }
+
+                sendStatusUpdate(errorMessage, true);
                 return;
             }
 
-            console.log("BG: Automatic download started");
-            sendStatusUpdate("Proses unduh otomatis sedang berjalan...");
-
-            // Complete after some time (since automatic download doesn't send messages back)
-            setTimeout(() => {
-                isDownloading = false;
-                downloadTabId = null;
-                sendStatusUpdate("Proses unduh selesai!", true);
-            }, 10000); // Estimate 10 seconds for download to complete
+            console.log("BG: Collector injected, waiting for DOWNLOAD_STARTED message");
+            sendStatusUpdate("Mengumpulkan daftar dokumen...");
         });
     });
 }
 
-// Function to execute in content script for automatic download
-function runAutomaticDownload() {
-    console.log('Content script: === STARTING AUTOMATIC DOWNLOAD ===');
+// Function to start multi-page download
+function startMultiPageDownload(tabId) {
+    console.log("BG: Starting multi-page download process");
 
-    const buttons = document.querySelectorAll('#DownloadButton');
-    let delay = 2000; // 2 seconds delay between downloads
+    // Inject injector.js for modal setup
+    chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        files: ['injector.js']
+    }, () => {
+        if (chrome.runtime.lastError) {
+            console.error("BG: Error injecting injector.js for multi-page:", chrome.runtime.lastError);
+            isDownloading = false;
+            downloadTabId = null;
 
-    console.log(`Content script: Found ${buttons.length} download buttons`);
-    console.log(`Content script: Starting download with ${delay}ms delay between clicks`);
-
-    if (buttons.length === 0) {
-        console.log('Content script: No download buttons found');
-        return { success: false, message: 'No download buttons found' };
-    }
-
-    let completedDownloads = 0;
-
-    buttons.forEach((button, index) => {
-        setTimeout(() => {
-            console.log(`Content script: Clicking button ${index + 1}/${buttons.length}`);
-            button.click();
-            console.log(`Content script: Download ${index + 1} initiated`);
-
-            completedDownloads++;
-
-            if (completedDownloads === buttons.length) {
-                console.log('Content script: All downloads initiated');
-                // Send completion message to background
-                chrome.runtime.sendMessage({
-                    type: 'AUTOMATIC_DOWNLOAD_COMPLETE',
-                    totalDownloads: buttons.length
-                });
+            let errorMessage = chrome.runtime.lastError.message;
+            if (errorMessage.includes("permission")) {
+                errorMessage = "❌ Permission denied! Please reload the extension and try again.";
+            } else {
+                errorMessage = "Error: " + errorMessage;
             }
-        }, delay * index);
-    });
 
-    return { success: true, message: `Started downloading ${buttons.length} files` };
+            sendStatusUpdate(errorMessage, true);
+            return;
+        }
+
+        console.log("BG: Injector loaded for multi-page download");
+
+        // Inject multi-page downloader
+        chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            files: ['multi_page_downloader.js']
+        }, () => {
+            if (chrome.runtime.lastError) {
+                console.error("BG: Error injecting multi_page_downloader.js:", chrome.runtime.lastError);
+                isDownloading = false;
+                downloadTabId = null;
+
+                let errorMessage = chrome.runtime.lastError.message;
+                if (errorMessage.includes("permission")) {
+                    errorMessage = "❌ Permission denied! Please reload the extension and try again.";
+                } else {
+                    errorMessage = "Error: " + errorMessage;
+                }
+
+                sendStatusUpdate(errorMessage, true);
+                return;
+            }
+
+            console.log("BG: Multi-page downloader injected, starting process");
+
+            // Send message to start multi-page download
+            chrome.tabs.sendMessage(tabId, {
+                action: 'startMultiPageDownload'
+            }, (response) => {
+                if (chrome.runtime.lastError) {
+                    console.error("BG: Error starting multi-page download:", chrome.runtime.lastError);
+                    isDownloading = false;
+                    downloadTabId = null;
+                    sendStatusUpdate("Error starting multi-page download: " + chrome.runtime.lastError.message, true);
+                    return;
+                }
+
+                if (response && response.success) {
+                    console.log("BG: Multi-page download completed successfully");
+                    console.log("BG: Total pages:", response.totalPages, "Total files:", response.totalFiles);
+                    isDownloading = false;
+                    downloadTabId = null;
+                    sendStatusUpdate(`Download multi-halaman selesai! Total: ${response.totalFiles} file dari ${response.totalPages} halaman`, true);
+                } else {
+                    console.error("BG: Failed to complete multi-page download");
+                    isDownloading = false;
+                    downloadTabId = null;
+                    sendStatusUpdate("Gagal menyelesaikan multi-page download", true);
+                }
+            });
+        });
+    });
 }
+
+// Listen for automatic download completion
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    let tabId = message.tabId || (sender.tab ? sender.tab.id : null);
+    if (!tabId) return;
+
+    switch (message.type) {
+        // ... existing cases ...
+
+        case "AUTOMATIC_DOWNLOAD_COMPLETE":
+            console.log("BG: Automatic download completed");
+            isDownloading = false;
+            downloadTabId = null;
+            sendStatusUpdate(`Download selesai! Total: ${message.totalDownloads} file`, true);
+            break;
+
+        case "MULTI_PAGE_DOWNLOAD_COMPLETE":
+            console.log("BG: Multi-page download completed");
+            isDownloading = false;
+            downloadTabId = null;
+            sendStatusUpdate(`Download multi-halaman selesai! Total: ${message.totalFiles} file dari ${message.totalPages} halaman`, true);
+            break;
+    }
+    return true;
+});

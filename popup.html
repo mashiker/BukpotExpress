@@ -1,33 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>CoreTax Assistant</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bukpot Downloader V2</title>
     <link rel="stylesheet" href="popup.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="main-container">
+    <div class="card">
+        <div class="header">
+            <img src="images/icon48.png" alt="Logo">
+            <h2 class="header-title">Bukpot Downloader V2</h2>
+        </div>
 
-        <h1 class="title">CoreTax Assistant</h1>
-        
-        <button id="downloadBtn">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                <path d="M12 15.25a.75.75 0 01-.75-.75V4.75a.75.75 0 011.5 0V14.5a.75.75 0 01-.75-.75z" />
-                <path d="M18.25 14a.75.75 0 00-.53 1.28l-5 5a.75.75 0 00-1.06 0l-5-5a.75.75 0 00-1.06 1.06l5 5a2.25 2.25 0 003.18 0l5-5a.75.75 0 00-.53-1.34z" />
-            </svg>
-            <span>Download Selected</span>
-        </button>
-        
-        <div id="statusArea">Mark the checkboxes for the documents you want to download.</div>
+        <!-- Main UI Section -->
+        <div id="main-section" class="container">
+            <h1 class="title">CoreTax Assistant</h1>
 
+            <!-- Tax Period Filter Section -->
+            <div class="filter-section">
+                <h3>Filter Masa Pajak</h3>
+                <div class="filter-controls">
+                    <select id="bulanSelect">
+                        <option value="">Pilih Bulan</option>
+                        <option value="01">Januari</option>
+                        <option value="02">Februari</option>
+                        <option value="03">Maret</option>
+                        <option value="04">April</option>
+                        <option value="05">Mei</option>
+                        <option value="06">Juni</option>
+                        <option value="07">Juli</option>
+                        <option value="08">Agustus</option>
+                        <option value="09">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+
+                    <select id="tahunSelect">
+                        <option value="">Pilih Tahun</option>
+                    </select>
+
+                    <button id="filterBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                            <path d="M3 4.5h18v2.25H3V4.5zm0 4.5h18v2.25H3V9zm0 6h18v2.25H3V15zm0 4.5h18V22H3v-2.25z" />
+                        </svg>
+                        <span>Filter & Download</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Download Mode Section -->
+            <div class="download-mode-section">
+                <h3>Mode Download</h3>
+                <div class="mode-controls">
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="downloadMode" value="single" checked>
+                            <span class="radio-custom"></span>
+                            <span class="radio-text">Download Satu Halaman</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="downloadMode" value="all">
+                            <span class="radio-custom"></span>
+                            <span class="radio-text">Download Semua Halaman</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Download Section -->
+            <div class="quick-section">
+                <h3>Download Cepat</h3>
+                <div class="download-buttons">
+                    <button id="downloadBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                            <path d="M12 15.25a.75.75 0 01-.75-.75V4.75a.75.75 0 011.5 0V14.5a.75.75 0 01-.75-.75z" />
+                            <path d="M18.25 14a.75.75 0 00-.53 1.28l-5 5a.75.75 0 00-1.06 0l-5-5a.75.75 0 00-1.06 1.06l5 5a2.25 2.25 0 003.18 0l5-5a.75.75 0 00-.53-1.34z" />
+                        </svg>
+                        <span>Download Selected</span>
+                    </button>
+                    <button id="stopBtn" style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                            <path d="M6 6h12v12H6V6z" />
+                        </svg>
+                        <span>STOP Download</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Status Log Section -->
+            <div class="status-section">
+                <h3>Status Log</h3>
+                <div id="statusLog" class="status-log">Status: Menunggu perintah...</div>
+                <div class="log-controls">
+                    <button id="clearLogBtn">Clear Log</button>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <div class="footer">
-        <span class="version">v1.0</span>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <div class="loading-text">Processing...</div>
     </div>
 
+    <!-- App Scripts -->
     <script src="popup.js"></script>
 </body>
 </html>

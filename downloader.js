@@ -11,13 +11,28 @@ async function processSingleDownload() {
 
   if (queue.length === 0) {
     console.log("Downloader: Queue is empty. Finishing.");
-    
+
     const title = 'Download Complete!';
     const message = `Successfully Downloaded: ${successCount} file(s)`;
     const details = `Skipped (no download button): ${skippedCount} file(s)`;
-    
+
+    // Show completion modal briefly, then auto-close
     displayModal(title, message, details, true);
-    
+
+    // Auto-close modal after 3 seconds
+    setTimeout(() => {
+      if (typeof closeModal === 'function') {
+        closeModal();
+      } else {
+        // Fallback: force remove modal if closeModal not available
+        const modal = document.querySelector('.ct-modal-overlay');
+        if (modal) {
+          modal.remove();
+        }
+      }
+    }, 3000);
+
+    // Clean up sessionStorage
     Object.keys(sessionStorage).forEach(key => {
         if (key.startsWith('coretax')) {
             sessionStorage.removeItem(key);

@@ -5,7 +5,6 @@
          "16": "images/icon16.png",
          "48": "images/icon48.png"
       },
-      "default_popup": "sidebar.html",
       "default_title": "Bukpot Downloader With Filter Masa Pajak"
    },
    "background": {
@@ -19,10 +18,17 @@
    },
    "manifest_version": 3,
    "name": "Bukpot Downloader With Filter Masa Pajak",
-   "permissions": [ "activeTab", "scripting", "sidePanel" ],
+   "permissions": [ "activeTab", "scripting", "sidePanel", "storage" ],
+   "host_permissions": [
+      "https://coretax.pajak.go.id/*",
+      "https://*.coretax.pajak.go.id/*"
+   ],
+   "side_panel": {
+      "default_path": "popup.html"
+   },
    "version": "2.0",
    "web_accessible_resources": [ {
       "matches": [ "\u003Call_urls>" ],
-      "resources": [ "injector.js", "downloader.js", "collector.js", "filter_changer.js", "images/icon128.png", "images/icon48.png" ]
+      "resources": [ "injector.js", "downloader.js", "collector.js", "filter_changer.js", "multi_page_downloader.js", "images/icon128.png", "images/icon48.png" ]
    } ]
 }
