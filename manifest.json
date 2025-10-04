@@ -5,19 +5,19 @@
          "16": "images/icon16.png",
          "48": "images/icon48.png"
       },
-      "default_title": "Bukpot Downloader With Filter Masa Pajak"
+      "default_title": "Bukpot Express"
    },
    "background": {
       "service_worker": "background.js"
    },
-   "description": "Automated tax document downloader with period filtering for CoreTax DJP portal.",
+   "description": "Bukpot Express - Automated tax document downloader with period filtering for CoreTax DJP portal.",
    "icons": {
       "128": "images/icon128.png",
       "16": "images/icon16.png",
       "48": "images/icon48.png"
    },
    "manifest_version": 3,
-   "name": "Bukpot Downloader With Filter Masa Pajak",
+   "name": "Bukpot Express",
    "permissions": [ "activeTab", "scripting", "sidePanel", "storage" ],
    "host_permissions": [
       "https://coretax.pajak.go.id/*",

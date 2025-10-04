@@ -370,6 +370,18 @@ select:focus {
   font-weight: 500;
 }
 
+.funding-info a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.funding-info a:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
 .community-info {
   text-align: center;
 }
