@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const yearSelect = document.getElementById('yearSelect');
     const applyDownloadBtn = document.getElementById('applyDownloadBtn');
     const statusArea = document.getElementById('statusArea');
+    const tutorialBtn = document.getElementById('tutorialBtn');
 
     // Populate year dropdown (current year and 4 previous years)
     const currentYear = new Date().getFullYear();
@@ -112,6 +113,136 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Tutorial button click handler
+    tutorialBtn.addEventListener('click', function() {
+        showTutorialModal();
+    });
+
     // Initialize button state
     updateButtonState();
 });
+
+function showTutorialModal() {
+    // Create modal overlay
+    const modalOverlay = document.createElement('div');
+    modalOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    `;
+
+    // Create modal content
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+        background-color: white;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 500px;
+        max-height: 80vh;
+        overflow-y: auto;
+        font-family: 'Poppins', sans-serif;
+        position: relative;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    `;
+
+    modalContent.innerHTML = `
+        <h2 style="color: #005A9C; margin-top: 0; text-align: center; font-size: 24px; margin-bottom: 20px;">
+            📖 Cara Penggunaan Bukpot Downloader
+        </h2>
+
+        <div style="text-align: left; line-height: 1.6; color: #2c3e50;">
+            <h3 style="color: #005A9C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">🎯 Langkah 1: Persiapan</h3>
+            <p style="margin: 0 0 15px 0; font-size: 14px;">
+                Pastikan Anda sudah login ke <strong>Coretax DJP</strong> dan berada di halaman <strong>"Bukti Potong" → "Daftar Bukti Potong"</strong>
+            </p>
+
+            <h3 style="color: #005A9C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">📅 Langkah 2: Pilih Masa Pajak</h3>
+            <p style="margin: 0 0 15px 0; font-size: 14px;">
+                Pilih <strong>bulan</strong> dan <strong>tahun</strong> masa pajak yang ingin diunduh bukti potongnya.
+            </p>
+
+            <h3 style="color: #005A9C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">⬇️ Langkah 3: Mulai Download</h3>
+            <p style="margin: 0 0 15px 0; font-size: 14px;">
+                Klik tombol <strong>"Unduh Semua Bukti Potong"</strong>. Ekstensi akan:
+            </p>
+            <ul style="margin: 0 0 15px 20px; font-size: 14px; padding-left: 20px;">
+                <li>Mengubah filter masa pajak secara otomatis</li>
+                <li>Menunggu halaman dimuat</li>
+                <li>Mengunduh semua bukti potong yang tersedia</li>
+                <li>Jika ada banyak halaman, akan lanjut ke halaman berikutnya</li>
+            </ul>
+
+            <h3 style="color: #005A9C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">⏱️ Langkah 4: Tunggu Proses Selesai</h3>
+            <p style="margin: 0 0 15px 0; font-size: 14px;">
+                Download akan berjalan otomatis dengan jeda 1-3 detik antar file untuk menghindari error. Tunggu hingga muncul notifikasi selesai.
+            </p>
+
+            <div style="background-color: #f0f8ff; padding: 15px; border-radius: 8px; border-left: 4px solid #005A9C; margin: 20px 0;">
+                <h4 style="color: #005A9C; margin: 0 0 10px 0; font-size: 16px;">💡 Tips Penting:</h4>
+                <ul style="margin: 0; font-size: 13px; padding-left: 20px;">
+                    <li>Pastikan koneksi internet stabil</li>
+                    <li>Jangan menutup browser selama proses berlangsung</li>
+                    <li>File akan diunduh ke folder default download browser Anda</li>
+                    <li>Setiap file diberi jeda untuk menghindari server overload</li>
+                </ul>
+            </div>
+
+            <div style="background-color: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 20px 0;">
+                <h4 style="color: #856404; margin: 0 0 10px 0; font-size: 16px;">⚠️ Catatan:</h4>
+                <ul style="margin: 0; font-size: 13px; padding-left: 20px;">
+                    <li>Ekstensi hanya berfungsi di halaman resmi Coretax DJP</li>
+                    <li> pastikan Anda memiliki izin untuk mengunduh dokumen</li>
+                    <li>Jika terjadi error, refresh halaman dan coba kembali</li>
+                </ul>
+            </div>
+        </div>
+
+        <button id="closeTutorialBtn" style="
+            background-color: #005A9C;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        ">
+            Tutup Tutorial
+        </button>
+    `;
+
+    // Add modal to page
+    modalOverlay.appendChild(modalContent);
+    document.body.appendChild(modalOverlay);
+
+    // Close modal handlers
+    function closeModal() {
+        document.body.removeChild(modalOverlay);
+    }
+
+    document.getElementById('closeTutorialBtn').addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+            closeModal();
+        }
+    });
+
+    // Escape key to close
+    const escKeyHandler = function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+            document.removeEventListener('keydown', escKeyHandler);
+        }
+    };
+    document.addEventListener('keydown', escKeyHandler);
+}
