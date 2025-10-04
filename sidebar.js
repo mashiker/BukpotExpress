@@ -7,6 +7,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const useSidePanelBtn = document.getElementById('useSidePanelBtn');
     const tutorialBtn = document.getElementById('tutorialBtn');
 
+    // Tutorial toggle functionality
+    const tutorialToggle = document.getElementById('tutorialToggle');
+    const tutorialContent = document.getElementById('tutorialContent');
+    const toggleIcon = document.getElementById('toggleIcon');
+    let isTutorialExpanded = true; // Start expanded
+
+    if (tutorialToggle && tutorialContent && toggleIcon) {
+        tutorialToggle.addEventListener('click', function() {
+            isTutorialExpanded = !isTutorialExpanded;
+
+            if (isTutorialExpanded) {
+                tutorialContent.classList.remove('collapsed');
+                toggleIcon.classList.remove('collapsed');
+                toggleIcon.textContent = '▼';
+            } else {
+                tutorialContent.classList.add('collapsed');
+                toggleIcon.classList.add('collapsed');
+                toggleIcon.textContent = '▶';
+            }
+        });
+    }
+
     // View toggle functionality
     usePopupBtn.addEventListener('click', function() {
         setActiveView('popup');

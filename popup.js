@@ -173,9 +173,34 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeElements();
     populateYearSelect();
     setupEventListeners();
+    setupTutorialToggle();
 
     // Load existing logs dari storage
     chrome.storage.local.get({ efakturLogs: [] }, (result) => {
         renderLogs(result.efakturLogs);
     });
 });
+
+// Tutorial toggle functionality
+function setupTutorialToggle() {
+    const tutorialToggle = document.getElementById('tutorialToggle');
+    const tutorialContent = document.getElementById('tutorialContent');
+    const toggleIcon = document.getElementById('toggleIcon');
+    let isTutorialExpanded = true; // Start expanded
+
+    if (tutorialToggle && tutorialContent && toggleIcon) {
+        tutorialToggle.addEventListener('click', function() {
+            isTutorialExpanded = !isTutorialExpanded;
+
+            if (isTutorialExpanded) {
+                tutorialContent.classList.remove('collapsed');
+                toggleIcon.classList.remove('collapsed');
+                toggleIcon.textContent = '▼';
+            } else {
+                tutorialContent.classList.add('collapsed');
+                toggleIcon.classList.add('collapsed');
+                toggleIcon.textContent = '▶';
+            }
+        });
+    }
+}

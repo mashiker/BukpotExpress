@@ -5,6 +5,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const statusArea = document.getElementById('statusArea');
     const tutorialBtn = document.getElementById('tutorialBtn');
 
+    // Tutorial toggle functionality
+    const tutorialToggle = document.getElementById('tutorialToggle');
+    const tutorialContent = document.getElementById('tutorialContent');
+    const toggleIcon = document.getElementById('toggleIcon');
+    let isTutorialExpanded = true; // Start expanded
+
+    if (tutorialToggle && tutorialContent && toggleIcon) {
+        tutorialToggle.addEventListener('click', function() {
+            isTutorialExpanded = !isTutorialExpanded;
+
+            if (isTutorialExpanded) {
+                tutorialContent.classList.remove('collapsed');
+                toggleIcon.classList.remove('collapsed');
+                toggleIcon.textContent = '▼';
+            } else {
+                tutorialContent.classList.add('collapsed');
+                toggleIcon.classList.add('collapsed');
+                toggleIcon.textContent = '▶';
+            }
+        });
+    }
+
     // Populate year dropdown (current year and 4 previous years)
     const currentYear = new Date().getFullYear();
     for (let i = currentYear; i >= currentYear - 4; i--) {
