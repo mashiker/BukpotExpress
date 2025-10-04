@@ -154,7 +154,7 @@ function showTutorialModal() {
 
     modalContent.innerHTML = `
         <h2 style="color: #005A9C; margin-top: 0; text-align: center; font-size: 24px; margin-bottom: 20px;">
-            📖 Cara Penggunaan Bukpot Downloader
+            📖 Cara Penggunaan Bukpot Express
         </h2>
 
         <div style="text-align: left; line-height: 1.6; color: #2c3e50;">

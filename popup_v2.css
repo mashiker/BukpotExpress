@@ -198,6 +198,42 @@ body {
   border-color: var(--primary-color);
 }
 
+/* Footer Information */
+.footer-info {
+  border-top: 1px solid var(--border-color);
+  padding: 16px 24px;
+  background-color: var(--light-gray);
+}
+
+.funding-info {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.funding-info p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--dark-text);
+  font-weight: 500;
+}
+
+.community-info {
+  text-align: center;
+}
+
+.community-info p {
+  margin: 0 0 6px 0;
+  font-size: 12px;
+  color: var(--light-text);
+}
+
+.footer-note {
+  font-size: 11px !important;
+  font-style: italic;
+  color: var(--light-text) !important;
+  margin-top: 6px !important;
+}
+
 /* Responsive adjustments for popup */
 @media (min-width: 400px) {
   body {
