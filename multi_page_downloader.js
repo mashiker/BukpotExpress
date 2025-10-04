@@ -306,6 +306,19 @@ async function checkAndNavigateToNext() {
         if (paginatorContainers.length > 0) {
             paginatorContainers.forEach((container, index) => {
                 console.log(`Multi-page downloader: Paginator ${index + 1}:`, container.innerHTML);
+
+                // Log specific pagination elements
+                const currentPage = container.querySelector('.p-paginator-current');
+                const firstPage = container.querySelector('.p-paginator-first');
+                const prevPage = container.querySelector('.p-paginator-prev');
+                const nextPage = container.querySelector('.p-paginator-next');
+                const lastPage = container.querySelector('.p-paginator-last');
+
+                console.log(`Multi-page downloader: - Current page element:`, currentPage?.textContent);
+                console.log(`Multi-page downloader: - First page disabled:`, firstPage?.classList.contains('p-disabled'));
+                console.log(`Multi-page downloader: - Prev page disabled:`, prevPage?.classList.contains('p-disabled'));
+                console.log(`Multi-page downloader: - Next page disabled:`, nextPage?.classList.contains('p-disabled'));
+                console.log(`Multi-page downloader: - Last page disabled:`, lastPage?.classList.contains('p-disabled'));
             });
         }
 
@@ -432,6 +445,19 @@ async function checkAndNavigateToNext() {
                 const newTableRows = document.querySelectorAll('tbody tr');
                 console.log('Multi-page downloader: Table rows after navigation:', newTableRows.length);
 
+                // Enhanced navigation verification - check for pagination indicators
+                const currentPageElement = document.querySelector('.p-paginator-current');
+                const nextPageElement = document.querySelector('.p-paginator-next');
+                const isNextDisabled = nextPageElement ? (
+                    nextPageElement.disabled ||
+                    nextPageElement.classList.contains('p-disabled') ||
+                    nextPageElement.classList.contains('disabled') ||
+                    nextPageElement.getAttribute('aria-disabled') === 'true'
+                ) : false;
+
+                console.log('Multi-page downloader: Current page indicator:', currentPageElement?.textContent);
+                console.log('Multi-page downloader: Next button disabled after click:', isNextDisabled);
+
                 // More strict check: verify navigation actually worked
                 if (newUrl !== currentUrl) {
                     console.log('Multi-page downloader: ✅ Navigation successful (URL changed)');
@@ -442,6 +468,23 @@ async function checkAndNavigateToNext() {
                 } else if (newTableRows.length !== tableRows.length) {
                     console.log('Multi-page downloader: ✅ Navigation successful (table content changed)');
                     resolve(true);
+                } else if (currentPageElement) {
+                    // Check if page number has changed
+                    const pageText = currentPageElement.textContent;
+                    const pageMatch = pageText.match(/(\d+)/);
+                    if (pageMatch) {
+                        const currentPageNum = parseInt(pageMatch[1]);
+                        if (currentPageNum > totalPagesDownloaded) {
+                            console.log('Multi-page downloader: ✅ Navigation successful (page number increased)');
+                            resolve(true);
+                        } else {
+                            console.log('Multi-page downloader: ❌ Navigation failed (page number did not increase)');
+                            resolve(false);
+                        }
+                    } else {
+                        console.log('Multi-page downloader: ❌ Navigation failed (no changes detected)');
+                        resolve(false);
+                    }
                 } else {
                     console.log('Multi-page downloader: ❌ Navigation failed (no changes detected)');
                     console.log('Multi-page downloader: This indicates next button was disabled but not detected properly');
