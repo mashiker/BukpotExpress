@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CoreTax Assistant</title>
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="main-container">
+
+        <img src="images/icon48.png" alt="Sinergi Konsultan Logo" class="logo-main">
+
+        <h1 class="title">Bukpot Downloader Plus</h1>
+
+        <div class="filter-section">
+            <label class="filter-label">Pilih Masa Pajak</label>
+
+            <div class="dropdown-group">
+                <select id="monthSelect" class="dropdown">
+                    <option value="">Pilih Bulan</option>
+                    <option value="01">Januari</option>
+                    <option value="02">Februari</option>
+                    <option value="03">Maret</option>
+                    <option value="04">April</option>
+                    <option value="05">Mei</option>
+                    <option value="06">Juni</option>
+                    <option value="07">Juli</option>
+                    <option value="08">Agustus</option>
+                    <option value="09">September</option>
+                    <option value="10">Oktober</option>
+                    <option value="11">November</option>
+                    <option value="12">Desember</option>
+                </select>
+
+                <select id="yearSelect" class="dropdown">
+                    <option value="">Pilih Tahun</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="applyDownloadBtn" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
+                <path d="M12 15.25a.75.75 0 01-.75-.75V4.75a.75.75 0 011.5 0V14.5a.75.75 0 01-.75-.75z" />
+                <path d="M18.25 14a.75.75 0 00-.53 1.28l-5 5a.75.75 0 00-1.06 0l-5-5a.75.75 0 00-1.06 1.06l5 5a2.25 2.25 0 003.18 0l5-5a.75.75 0 00-.53-1.34z" />
+            </svg>
+            <span>Terapkan & Unduh Semua</span>
+        </button>
+
+        <div id="statusArea">Siap untuk memulai.</div>
+
+    </div>
+
+    <div class="footer">
+        <span class="version">v2.0</span>
+        <a href="mailto:sinergikonsultan.dev@gmail.com" target="_blank" class="contact-link">Contact Us</a>
+    </div>
+
+    <script src="sidebar.js"></script>
+</body>
+</html>

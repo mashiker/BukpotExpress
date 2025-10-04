@@ -1,0 +1,28 @@
+{
+   "action": {
+      "default_icon": {
+         "128": "images/icon128.png",
+         "16": "images/icon16.png",
+         "48": "images/icon48.png"
+      },
+      "default_popup": "sidebar.html",
+      "default_title": "Bukpot Downloader With Filter Masa Pajak"
+   },
+   "background": {
+      "service_worker": "background.js"
+   },
+   "description": "Automated tax document downloader with period filtering for CoreTax DJP portal.",
+   "icons": {
+      "128": "images/icon128.png",
+      "16": "images/icon16.png",
+      "48": "images/icon48.png"
+   },
+   "manifest_version": 3,
+   "name": "Bukpot Downloader With Filter Masa Pajak",
+   "permissions": [ "activeTab", "scripting", "sidePanel" ],
+   "version": "2.0",
+   "web_accessible_resources": [ {
+      "matches": [ "\u003Call_urls>" ],
+      "resources": [ "injector.js", "downloader.js", "collector.js", "filter_changer.js", "images/icon128.png", "images/icon48.png" ]
+   } ]
+}
