@@ -34,40 +34,6 @@ body {
   text-align: center;
 }
 
-#downloadBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  width: 100%;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 4px 15px rgba(0, 90, 156, 0.2);
-}
-
-#downloadBtn:hover:not(:disabled) {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 90, 156, 0.3);
-}
-
-#downloadBtn:disabled {
-  background-color: #9db2c2;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-#downloadBtn .icon {
-  width: 20px;
-  height: 20px;
-}
 
 #statusArea {
   width: 100%;
@@ -120,11 +86,11 @@ body {
 }
 
 /* Filter Section */
-.filter-section, .download-mode-section, .quick-section, .status-section {
+.filter-section, .download-mode-section, .download-action-section, .status-section {
   margin-bottom: 24px;
 }
 
-.filter-section h3, .download-mode-section h3, .quick-section h3, .status-section h3 {
+.filter-section h3, .download-mode-section h3, .status-section h3 {
   margin: 0 0 12px 0;
   font-size: 16px;
   font-weight: 600;
@@ -156,6 +122,13 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(0, 90, 156, 0.1);
 }
 
+/* Download Action Section */
+.download-action-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 #filterBtn {
   display: flex;
   align-items: center;
@@ -164,11 +137,11 @@ select:focus {
   background-color: var(--primary-color);
   color: white;
   border: none;
-  padding: 12px 20px;
+  padding: 14px 20px;
   width: 100%;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   transition: all 0.2s ease-in-out;
   box-shadow: 0 4px 15px rgba(0, 90, 156, 0.2);
@@ -176,13 +149,13 @@ select:focus {
 
 #filterBtn:hover:not(:disabled) {
   background-color: var(--primary-hover);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 90, 156, 0.3);
 }
 
 #filterBtn .icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 /* Download buttons container */

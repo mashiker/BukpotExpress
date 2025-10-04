@@ -4,7 +4,7 @@
 
 // DOM Elements - akan diinisialisasi setelah DOM dimuat
 let loadingOverlay, mainSection, bulanSelect, tahunSelect;
-let downloadBtn, filterBtn, statusLog, clearLogBtn, stopBtn;
+let filterBtn, statusLog, clearLogBtn, stopBtn;
 let downloadModeRadios;
 
 // Inisialisasi DOM elements
@@ -13,7 +13,6 @@ function initializeElements() {
     mainSection = document.getElementById('main-section');
     bulanSelect = document.getElementById('bulanSelect');
     tahunSelect = document.getElementById('tahunSelect');
-    downloadBtn = document.getElementById('downloadBtn');
     filterBtn = document.getElementById('filterBtn');
     stopBtn = document.getElementById('stopBtn');
     statusLog = document.getElementById('statusLog');
@@ -80,12 +79,12 @@ function getSelectedDownloadMode() {
 
 // Fungsi untuk mengatur tampilan tombol download/stop
 function setDownloadButtonState(isDownloading) {
-    if (downloadBtn && stopBtn) {
+    if (filterBtn && stopBtn) {
         if (isDownloading) {
-            downloadBtn.style.display = 'none';
+            filterBtn.style.display = 'none';
             stopBtn.style.display = 'flex';
         } else {
-            downloadBtn.style.display = 'flex';
+            filterBtn.style.display = 'flex';
             stopBtn.style.display = 'none';
         }
     }
@@ -93,41 +92,6 @@ function setDownloadButtonState(isDownloading) {
 
 // Event listeners
 function setupEventListeners() {
-    // Download button - quick download
-    downloadBtn.addEventListener('click', () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs.length > 0) {
-                const downloadMode = getSelectedDownloadMode();
-                const modeText = downloadMode === 'single' ? 'satu halaman' : 'semua halaman';
-                updateAndSaveStatus(`Memulai proses download ${modeText}...`);
-                showLoading();
-                setDownloadButtonState(true);
-
-                // Start the same process as filter download but without applying filter
-                chrome.runtime.sendMessage({
-                    type: "APPLY_FILTER_AND_DOWNLOAD",
-                    tabId: tabs[0].id,
-                    month: "", // No filter
-                    year: "",  // No filter
-                    downloadMode: downloadMode
-                });
-            }
-        });
-    });
-
-    // Stop button - stop download
-    stopBtn.addEventListener('click', () => {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs.length > 0) {
-                updateAndSaveStatus("⏹️ Menghentikan proses download...");
-                chrome.runtime.sendMessage({
-                    type: "STOP_DOWNLOAD",
-                    tabId: tabs[0].id
-                });
-            }
-        });
-    });
-
     // Filter button - filter by tax period then download
     filterBtn.addEventListener('click', () => {
         const selectedMonth = bulanSelect.value;
@@ -153,6 +117,19 @@ function setupEventListeners() {
                     month: selectedMonth,
                     year: selectedYear,
                     downloadMode: downloadMode
+                });
+            }
+        });
+    });
+
+    // Stop button - stop download
+    stopBtn.addEventListener('click', () => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs.length > 0) {
+                updateAndSaveStatus("⏹️ Menghentikan proses download...");
+                chrome.runtime.sendMessage({
+                    type: "STOP_DOWNLOAD",
+                    tabId: tabs[0].id
                 });
             }
         });
