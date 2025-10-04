@@ -25,7 +25,7 @@
 
 ### 4. ✅ Extension Name Update
 - **Changed**: "Sinergi Konsultan - CoreTax Assistant"
-- **To**: "Bukpot Downloader With Filter Masa Pajak"
+- **To**: "Bukpot Express"
 - **Files Modified**: `manifest.json`
 
 ### 5. ✅ Description Update

@@ -33,7 +33,7 @@
    - Click "Add new item"
    - Upload the ZIP file
    - Fill in the required information:
-     - **Extension name**: Sinergi Konsultan - CoreTax Assistant
+     - **Extension name**: Bukpot Express
      - **Description**: A professional tool to assist with CoreTax.
      - **Category**: Productivity
      - **Privacy**: Acknowledge the data usage
@@ -64,7 +64,7 @@ The manifest.json is now configured for a fresh extension:
       "48": "images/icon48.png"
    },
    "manifest_version": 3,
-   "name": "Sinergi Konsultan - CoreTax Assistant",
+   "name": "Bukpot Express",
    "permissions": [ "activeTab", "scripting", "sidePanel" ],
    "version": "2.0",
    "web_accessible_resources": [ {

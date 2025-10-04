@@ -21,7 +21,7 @@
 - [ ] Click the extension icon in the toolbar
 - [ ] Verify the sidebar opens (not popup)
 - [ ] Check that the sidebar displays:
-  - [ ] Sinergi Konsultan logo
+  - [ ] Bukpot Express logo
   - [ ] Title "Bukpot Downloader Plus"
   - [ ] Month dropdown with all 12 months
   - [ ] Year dropdown (current year - 4 previous years)

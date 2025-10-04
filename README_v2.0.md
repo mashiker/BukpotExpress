@@ -54,7 +54,7 @@ Select Month/Year → Click Button → Filter Applied → Page Refreshes → Aut
 
 ### Sidebar Components
 
-- **Logo**: Sinergi Konsultan branding
+- **Logo**: Bukpot Express branding
 - **Title**: "Bukpot Downloader Plus" with version info
 - **Filter Section**: Month and year dropdown selectors
 - **Action Button**: "Terapkan & Unduh Semua" (enabled when both selections are made)
@@ -169,4 +169,4 @@ For technical support or questions:
 
 ---
 
-© 2025 Sinergi Konsultan. All Rights Reserved.
+© 2025 Bukpot Express. All Rights Reserved.

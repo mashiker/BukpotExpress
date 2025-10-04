@@ -38,7 +38,7 @@ function displayModal(title, message, details = '', showButton = true) {
         modalInstance.innerHTML = `
             <div class="ct-modal-content">
                 <div class="modal-header">
-                    <span>📄 CoreTax Assistant</span>
+                    <span>📄 Bukpot Express</span>
                 </div>
                 <h2 id="ct-modal-title"></h2>
                 <p id="ct-modal-message"></p>

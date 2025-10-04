@@ -74,7 +74,7 @@ Proses ini, terutama perubahan masa pajak yang berulang-ulang, memakan waktu dan
 Sidebar akan memiliki desain yang bersih dan fungsional, konsisten dengan `popup.css` yang ada.
 
   * **Header:**
-      * Logo Sinergi Konsultan (`skilogo48.png`).
+      * Logo Bukpot Express (`icon48.png`).
       * Judul: "Bukpot Downloader Plus".
   * **Konten Utama:**
       * **Label:** "Pilih Masa Pajak".
