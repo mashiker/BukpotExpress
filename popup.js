@@ -47,11 +47,23 @@ const updateAndSaveStatus = (message) => {
 
 // Fungsi untuk menampilkan/menyembunyikan loading
 function showLoading() {
-    if (loadingOverlay) loadingOverlay.style.display = 'flex';
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'flex';
+        // Add a small delay before making it fully visible to allow button interaction
+        setTimeout(() => {
+            loadingOverlay.style.opacity = '1';
+        }, 100);
+    }
 }
 
 function hideLoading() {
-    if (loadingOverlay) loadingOverlay.style.display = 'none';
+    if (loadingOverlay) {
+        loadingOverlay.style.opacity = '0';
+        // Hide after transition
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+        }, 300);
+    }
 }
 
 // Populate tahun select dengan tahun-tahun terkini

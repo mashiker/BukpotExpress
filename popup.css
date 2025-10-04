@@ -181,6 +181,8 @@ select:focus {
   font-weight: 600;
   transition: all 0.2s ease-in-out;
   box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+  position: relative;
+  z-index: 10000; /* Higher than loading overlay */
 }
 
 #stopBtn:hover:not(:disabled) {
