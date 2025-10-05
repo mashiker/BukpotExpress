@@ -1,6 +1,6 @@
 // Bukpot Downloader With Filter Masa Pajak - Chrome Extension
-// Version 2.0
-// Multi-page downloader with pagination support
+// Version 2.0 - Simplified Page-Based Navigation
+// Multi-page downloader with reliable page confirmation
 
 let totalPagesDownloaded = 0;
 let totalFilesDownloaded = 0;
@@ -42,16 +42,8 @@ async function downloadCurrentPage() {
         return;
     }
 
-    console.log(`Multi-page downloader: === PROCESSING PAGE ${totalPagesDownloaded} ===`);
-    console.log(`Multi-page downloader: Current URL: ${window.location.href}`);
-
-    // Send page processing update to maintain UI state
-    chrome.runtime.sendMessage({
-        type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-        status: `Memproses halaman ${totalPagesDownloaded}...`
-    }).catch(error => {
-        console.log('Multi-page downloader: Could not send page update:', error.message);
-    });
+    console.log(`\n📄 === PROCESSING PAGE ${totalPagesDownloaded} ===`);
+    console.log(`📍 Current URL: ${window.location.href}`);
 
     try {
         // Show progress modal
@@ -60,10 +52,18 @@ async function downloadCurrentPage() {
             `Total files so far: ${totalFilesDownloaded}`,
             false);
 
+        // Send page processing update to maintain UI state
+        chrome.runtime.sendMessage({
+            type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+            status: `Memproses halaman ${totalPagesDownloaded}...`
+        }).catch(error => {
+            console.log('Multi-page downloader: Could not send page update:', error.message);
+        });
+
         // Wait for page to load completely
-        console.log('Multi-page downloader: Waiting for page to load...');
+        console.log('⏳ Waiting for page to load...');
         await waitForPageLoad();
-        console.log('Multi-page downloader: Page loaded successfully');
+        console.log('✅ Page loaded successfully');
 
         // Check if download was stopped after page load
         if (isDownloadStopped) {
@@ -74,16 +74,16 @@ async function downloadCurrentPage() {
 
         // Check for download buttons
         const downloadButtons = document.querySelectorAll('#DownloadButton');
-        console.log(`Multi-page downloader: Found ${downloadButtons.length} download buttons on page ${totalPagesDownloaded}`);
+        console.log(`🔢 Found ${downloadButtons.length} download buttons on page ${totalPagesDownloaded}`);
 
         if (downloadButtons.length === 0) {
-            console.log('Multi-page downloader: No download buttons found, checking for next page anyway');
+            console.log('⚠️ No download buttons found on this page');
         } else {
             // Collect and download files on current page
             const downloadedCount = await downloadFilesOnCurrentPage();
             totalFilesDownloaded += downloadedCount;
 
-            console.log(`Multi-page downloader: Downloaded ${downloadedCount} files from page ${totalPagesDownloaded}`);
+            console.log(`✅ Downloaded ${downloadedCount} files from page ${totalPagesDownloaded}`);
         }
 
         // Check if download was stopped after downloading
@@ -93,18 +93,17 @@ async function downloadCurrentPage() {
             return;
         }
 
-        // Check if there's a next page
-        console.log('Multi-page downloader: === CHECKING FOR NEXT PAGE ===');
-        const hasNextPage = await checkAndNavigateToNext();
+        // Check if there's a next page using the new simplified approach
+        console.log('\n🔍 === CHECKING FOR NEXT PAGE ===');
+        const hasNextPage = await checkAndNavigateToNextSimple();
 
-        console.log(`Multi-page downloader: Next page result: ${hasNextPage}`);
-        console.log(`Multi-page downloader: Is download stopped: ${isDownloadStopped}`);
+        console.log(`📊 Next page result: ${hasNextPage}`);
 
         if (hasNextPage && !isDownloadStopped) {
             // Continue to next page
             totalPagesDownloaded++;
-            console.log(`Multi-page downloader: === MOVING TO PAGE ${totalPagesDownloaded} ===`);
-            console.log('Multi-page downloader: Waiting 5 seconds before processing next page...');
+            console.log(`\n🚀 === MOVING TO PAGE ${totalPagesDownloaded} ===`);
+            console.log('⏳ Waiting 3 seconds before processing next page...');
 
             // Send navigation update to maintain UI state
             chrome.runtime.sendMessage({
@@ -116,17 +115,17 @@ async function downloadCurrentPage() {
 
             setTimeout(() => {
                 if (!isDownloadStopped) {
-                    console.log('Multi-page downloader: === STARTING NEXT PAGE PROCESS ===');
+                    console.log(`\n🔄 === STARTING PAGE ${totalPagesDownloaded} PROCESS ===`);
                     downloadCurrentPage();
                 } else {
                     console.log('Multi-page downloader: Download stopped before next page processing');
                     completeMultiPageDownload();
                 }
-            }, 5000); // Wait 5 seconds before next page (increased for better timing)
+            }, 3000); // Wait 3 seconds before next page
         } else {
             // No more pages or download stopped, finish the process
-            console.log('Multi-page downloader: === NO MORE PAGES OR STOPPED, FINISHING ===');
-            console.log(`Multi-page downloader: Has next page: ${hasNextPage}, Stopped: ${isDownloadStopped}`);
+            console.log('\n🏁 === NO MORE PAGES OR STOPPED, FINISHING ===');
+            console.log(`📊 Has next page: ${hasNextPage}, Stopped: ${isDownloadStopped}`);
             completeMultiPageDownload();
         }
 
@@ -142,6 +141,156 @@ async function downloadCurrentPage() {
             completeMultiPageDownload();
         }, 3000);
     }
+}
+
+// SIMPLIFIED PAGE-BASED NAVIGATION SYSTEM
+async function checkAndNavigateToNextSimple() {
+    console.log('\n🔍 === SIMPLIFIED PAGE-BASED NAVIGATION ===');
+
+    // STEP 1: Get current page number before clicking
+    console.log('📋 STEP 1: Detecting current page number...');
+    const currentPageNumber = getCurrentPageNumber();
+    console.log(`📍 Current page number detected: ${currentPageNumber}`);
+
+    if (currentPageNumber === null) {
+        console.log('❌ Could not detect current page number - stopping navigation');
+        return false;
+    }
+
+    // STEP 2: Find and click next page button
+    console.log('\n🎯 STEP 2: Finding next page button...');
+    const nextButton = findNextPageButton();
+
+    if (!nextButton) {
+        console.log('❌ No next page button found - this appears to be the last page');
+        return false;
+    }
+
+    console.log(`✅ Found next page button: ${nextButton.tagName} - "${nextButton.textContent}"`);
+
+    // STEP 3: Click next button
+    console.log('\n🚀 STEP 3: Clicking next page button...');
+    const currentUrl = window.location.href;
+    console.log(`📄 URL before click: ${currentUrl}`);
+
+    nextButton.click();
+    console.log('✅ Next button clicked successfully');
+
+    // STEP 4: Wait for navigation and page change
+    console.log('\n⏳ STEP 4: Waiting for page navigation...');
+
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            console.log('🔍 Checking if page has changed...');
+
+            const newPageNumber = getCurrentPageNumber();
+            console.log(`📍 New page number detected: ${newPageNumber}`);
+
+            // STEP 5: Confirm page has changed
+            if (newPageNumber !== null && newPageNumber > currentPageNumber) {
+                console.log(`✅ SUCCESS: Page changed from ${currentPageNumber} to ${newPageNumber}`);
+                console.log('🔄 Ready to download from new page');
+                resolve(true);
+            } else {
+                console.log(`❌ Page change failed or no change detected`);
+                console.log(`   Expected: page > ${currentPageNumber}, Got: ${newPageNumber}`);
+                console.log('🛑 This appears to be the last page');
+                resolve(false);
+            }
+        }, 3000); // Wait 3 seconds for navigation
+    });
+}
+
+// Helper function to get current page number
+function getCurrentPageNumber() {
+    console.log('🔍 Detecting page number from .p-paginator-pages...');
+
+    // Look for the highlighted page button in paginator (your specific example)
+    const highlightedPage = document.querySelector('.p-paginator-page.p-highlight');
+    if (highlightedPage) {
+        const pageNumber = parseInt(highlightedPage.textContent.trim());
+        console.log(`📋 Found highlighted page button: ${pageNumber}`);
+        console.log(`   Button HTML: ${highlightedPage.outerHTML.substring(0, 100)}...`);
+        return pageNumber;
+    }
+
+    // Alternative: look for current page indicator
+    const currentPageElement = document.querySelector('.p-paginator-current');
+    if (currentPageElement) {
+        const text = currentPageElement.textContent;
+        const match = text.match(/(\d+)/);
+        if (match) {
+            const pageNumber = parseInt(match[1]);
+            console.log(`📋 Found current page from indicator: ${pageNumber}`);
+            return pageNumber;
+        }
+    }
+
+    // Alternative: search for page numbers in paginator
+    const pageButtons = document.querySelectorAll('.p-paginator-page');
+    console.log(`🔍 Found ${pageButtons.length} page buttons`);
+
+    for (let button of pageButtons) {
+        if (button.classList.contains('p-highlight')) {
+            const pageNumber = parseInt(button.textContent.trim());
+            console.log(`📋 Found highlighted page button (alternative): ${pageNumber}`);
+            return pageNumber;
+        }
+    }
+
+    console.log('❌ Could not determine current page number');
+    console.log('🔍 Debug: Available paginator elements:');
+    const paginatorContainers = document.querySelectorAll('.p-paginator');
+    paginatorContainers.forEach((container, index) => {
+        console.log(`   Paginator ${index + 1}: ${container.innerHTML.substring(0, 200)}...`);
+    });
+
+    return null;
+}
+
+// Helper function to find next page button
+function findNextPageButton() {
+    console.log('🔍 Searching for next page button...');
+
+    // Try the standard next button selector first
+    let nextButton = document.querySelector('.p-paginator-next:not(.p-disabled)');
+    if (nextButton) {
+        console.log('✅ Found standard next button: .p-paginator-next');
+        return nextButton;
+    }
+
+    // Try without disabled filter first to see what's available
+    nextButton = document.querySelector('.p-paginator-next');
+    if (nextButton) {
+        console.log('🔍 Found .p-paginator-next (checking if disabled)');
+        if (nextButton.classList.contains('p-disabled')) {
+            console.log('❌ Next button is disabled - this is the last page');
+            return null;
+        } else {
+            console.log('✅ Found enabled next button: .p-paginator-next');
+            return nextButton;
+        }
+    }
+
+    // Try alternative selectors
+    const selectors = [
+        'button.p-paginator-next',
+        '[aria-label="Next"]',
+        '[aria-label="Next Page"]',
+        '.pi-angle-right',
+        '.pi-chevron-right'
+    ];
+
+    for (let selector of selectors) {
+        nextButton = document.querySelector(selector);
+        if (nextButton && !nextButton.classList.contains('p-disabled')) {
+            console.log(`✅ Found next button with selector: ${selector}`);
+            return nextButton;
+        }
+    }
+
+    console.log('❌ No next page button found');
+    return null;
 }
 
 // Function to stop the download process
@@ -286,347 +435,6 @@ async function downloadFilesOnCurrentPage() {
                 }
             }, 2000 * index); // 2 second delay between each download (increased for reliability)
         });
-    });
-}
-
-async function checkAndNavigateToNext() {
-    return new Promise((resolve) => {
-        console.log('\n🔍 === DETAILED NEXT PAGE ANALYSIS ===');
-        console.log('📍 Current page URL:', window.location.href);
-        console.log('📊 Current page number:', totalPagesDownloaded);
-        console.log('⏱️ Timestamp:', new Date().toISOString());
-
-        // Safety check: don't exceed max pages
-        if (totalPagesDownloaded >= maxPagesToDownload) {
-            console.log(`🛑 SAFETY STOP: Reached max page limit (${maxPagesToDownload})`);
-            resolve(false);
-            return;
-        }
-
-        // Safety check: don't exceed realistic page count
-        if (totalPagesDownloaded >= 5) {
-            console.log('🛑 SAFETY STOP: Reached safety limit (5 pages) - This might indicate disabled state detection issue');
-            console.log('Multi-page downloader: This might indicate disabled state detection issue');
-            resolve(false);
-            return;
-        }
-
-        // Check if download was stopped
-        if (isDownloadStopped) {
-            console.log('🛑 STOP: Download was manually stopped');
-            resolve(false);
-            return;
-        }
-
-        // Check if there are any download buttons (content-based stop)
-        console.log('\n📋 STEP 1: Checking for download buttons...');
-        const currentDownloadButtons = document.querySelectorAll('#DownloadButton');
-        console.log(`🔢 Found ${currentDownloadButtons.length} download buttons with ID '#DownloadButton'`);
-
-        if (currentDownloadButtons.length === 0) {
-            console.log('🛑 STOP: No download buttons found - assuming end of pages');
-
-            // Additional debugging: Look for any download-related elements
-            const allButtons = document.querySelectorAll('button, a[download], .btn-download, [class*="download"]');
-            console.log(`🔍 Alternative check: Found ${allButtons.length} potential download elements`);
-
-            // Log button classes for debugging
-            const buttonClasses = Array.from(allButtons).map(btn => btn.className).join(', ');
-            console.log(`📝 Button classes found: ${buttonClasses}`);
-
-            resolve(false);
-            return;
-        } else {
-            console.log('✅ Download buttons found - page has content');
-        }
-
-        // Debug: Log all possible pagination elements
-        console.log('\n🔍 STEP 3: Analyzing pagination elements...');
-
-        // Check for paginator container
-        const paginatorContainers = document.querySelectorAll('.p-paginator');
-        console.log(`🔢 Found ${paginatorContainers.length} paginator containers with class '.p-paginator'`);
-
-        if (paginatorContainers.length > 0) {
-            paginatorContainers.forEach((container, index) => {
-                console.log(`\n📄 Paginator ${index + 1} Analysis:`);
-                console.log(`   HTML: ${container.innerHTML.substring(0, 200)}${container.innerHTML.length > 200 ? '...' : ''}`);
-
-                // Log specific pagination elements
-                const currentPage = container.querySelector('.p-paginator-current');
-                const firstPage = container.querySelector('.p-paginator-first');
-                const prevPage = container.querySelector('.p-paginator-prev');
-                const nextPage = container.querySelector('.p-paginator-next');
-                const lastPage = container.querySelector('.p-paginator-last');
-
-                console.log(`   📍 Current page element: ${currentPage?.textContent || 'NOT FOUND'}`);
-                console.log(`   ⏮️ First page element: ${firstPage ? 'FOUND' : 'NOT FOUND'} (disabled: ${firstPage?.classList.contains('p-disabled') || 'N/A'})`);
-                console.log(`   ⬅️ Previous page element: ${prevPage ? 'FOUND' : 'NOT FOUND'} (disabled: ${prevPage?.classList.contains('p-disabled') || 'N/A'})`);
-                console.log(`   ➡️ Next page element: ${nextPage ? 'FOUND' : 'NOT FOUND'} (disabled: ${nextPage?.classList.contains('p-disabled') || 'N/A'})`);
-                console.log(`   ⏭️ Last page element: ${lastPage ? 'FOUND' : 'NOT FOUND'} (disabled: ${lastPage?.classList.contains('p-disabled') || 'N/A'})`);
-            });
-        } else {
-            console.log('❌ No paginator containers found with class ".p-paginator"');
-
-            // Look for alternative pagination elements
-            const altPaginators = document.querySelectorAll('[class*="paginat"], [class*="page"], nav[aria-label*="page"]');
-            console.log(`🔍 Alternative pagination search: Found ${altPaginators.length} potential pagination elements`);
-
-            altPaginators.forEach((element, index) => {
-                console.log(`   Alt ${index + 1}: ${element.tagName}.${element.className} - ${element.textContent.substring(0, 50)}...`);
-            });
-        }
-
-        // Check page content for empty state (less strict check)
-        console.log('\n📊 STEP 2: Analyzing page content...');
-        const tableRows = document.querySelectorAll('tbody tr');
-        console.log(`🔢 Found ${tableRows.length} table rows in tbody`);
-
-        // More lenient check - only stop if really no content (not just header)
-        const dataRows = Array.from(tableRows).filter(row => {
-            const cells = row.querySelectorAll('td');
-            return cells.length > 0 && cells[0].textContent.trim() !== '';
-        });
-
-        console.log(`📋 Found ${dataRows.length} data rows (with actual content)`);
-
-        // Log sample row content for debugging
-        if (tableRows.length > 0) {
-            console.log('📄 Sample row content:');
-            tableRows.slice(0, 3).forEach((row, index) => {
-                const cells = row.querySelectorAll('td');
-                const rowText = Array.from(cells).map(cell => cell.textContent.trim()).join(' | ');
-                console.log(`   Row ${index + 1}: ${rowText}`);
-            });
-        }
-
-        if (dataRows.length === 0) {
-            console.log('🛑 STOP: No actual data rows found - assuming last page');
-            resolve(false);
-            return;
-        } else {
-            console.log('✅ Page contains data - checking for next page');
-        }
-
-        // Enhanced selector list for next page button (more comprehensive)
-        const nextButtonSelectors = [
-            '.p-paginator-next',
-            '.p-paginator-next.p-paginator-element.p-link',
-            'button[aria-label="Next Page"]',
-            'button[aria-label="Next"]',
-            'button.p-paginator-next:not(.p-disabled)',
-            '.pi-angle-right',
-            '.pi-chevron-right',
-            '.next-page',
-            'a[aria-label="Next"]',
-            'a[aria-label="Next Page"]',
-            '[class*="paginator-next"]',
-            '[class*="next"]',
-            'button.p-paginator-element.p-link.p-paginator-next',
-            'span.p-paginator-icon.pi.pi-angle-right',
-            '.p-paginator-element[aria-label="Next"]',
-            // More generic selectors
-            '.pagination-next',
-            '.page-next',
-            '[data-pc-section="nexticon"]',
-            '[data-pc-section="nextpagebutton"]'
-        ];
-
-        let nextButton = null;
-        let foundSelector = null;
-
-        console.log('\n🎯 STEP 4: Testing next page button selectors...');
-        console.log(`🔢 Testing ${nextButtonSelectors.length} different selectors...`);
-
-        for (let i = 0; i < nextButtonSelectors.length; i++) {
-            const selector = nextButtonSelectors[i];
-            nextButton = document.querySelector(selector);
-            console.log(`\n🔍 Testing selector ${i + 1}/${nextButtonSelectors.length}: "${selector}"`);
-
-            if (nextButton) {
-                console.log(`✅ Found element with selector: ${selector}`);
-                console.log(`   Element: ${nextButton.tagName} - ${nextButton.textContent?.substring(0, 30)}...`);
-
-                // Detailed disabled state analysis
-                console.log('   🔧 Analyzing button state...');
-                const isDisabled = nextButton.disabled ||
-                                 nextButton.classList.contains('p-disabled') ||
-                                 nextButton.classList.contains('disabled') ||
-                                 nextButton.classList.contains('p-state-disabled') ||
-                                 nextButton.getAttribute('aria-disabled') === 'true' ||
-                                 nextButton.style.display === 'none' ||
-                                 nextButton.style.visibility === 'hidden';
-
-                console.log(`   🚫 Disabled check result: ${isDisabled}`);
-                console.log(`   🏷️ Button classes: "${nextButton.className}"`);
-                console.log(`   🚪 Button disabled attribute: ${nextButton.getAttribute('disabled')}`);
-                console.log(`   ♿ Button aria-disabled: ${nextButton.getAttribute('aria-disabled')}`);
-                console.log(`   📑 Button tabindex: ${nextButton.getAttribute('tabindex')}`);
-                console.log(`   👆 Button onclick: ${nextButton.onclick ? 'HAS_HANDLER' : 'NO_HANDLER'}`);
-
-                // Check parent elements for disabled state
-                const parent = nextButton.closest('li, div, span');
-                if (parent) {
-                    const parentDisabled = parent.classList.contains('p-disabled') ||
-                                         parent.classList.contains('p-state-disabled');
-                    console.log(`   👨‍👩‍👧‍👦 Parent element: ${parent.tagName}.${parent.className}`);
-                    console.log(`   👨‍👩‍👧‍👦 Parent disabled: ${parentDisabled}`);
-                }
-
-                if (!isDisabled) {
-                    console.log(`✅ SUCCESS: Found ENABLED next button with selector: ${selector}`);
-                    foundSelector = selector;
-                    break;
-                } else {
-                    console.log(`❌ SKIPPED: Button is DISABLED with selector: ${selector}`);
-                    nextButton = null;
-                }
-            } else {
-                console.log(`❌ No element found with selector: ${selector}`);
-            }
-        }
-
-        if (!nextButton) {
-            console.log('\n🔄 STEP 5: Fallback - searching for any next button...');
-
-            // Additional check: look for any element that might be next button
-            const allButtons = document.querySelectorAll('button, a, [onclick], [role="button"]');
-            console.log(`🔢 Found ${allButtons.length} total clickable elements on page`);
-
-            console.log('\n🔍 Analyzing all clickable elements for "next" indicators...');
-            const possibleNextButtons = Array.from(allButtons).filter((el, index) => {
-                const text = el.textContent.toLowerCase();
-                const title = (el.title || el.getAttribute('aria-label') || '').toLowerCase();
-                const hasNextText = text.includes('next') || text.includes('selanjutnya') || text.includes('>') || text.includes('lanjut');
-                const hasTitleText = title.includes('next') || title.includes('selanjutnya') || title.includes('>');
-                const hasIcon = el.querySelector('.pi-angle-right, .pi-chevron-right, .icon-right, [class*="right"], [class*="next"]');
-                const hasClickHandler = el.onclick || el.getAttribute('onclick');
-
-                if (hasNextText || hasTitleText || hasIcon || hasClickHandler) {
-                    console.log(`   🎯 Candidate ${index + 1}: ${el.tagName} - Text: "${text.substring(0, 30)}..." - Title: "${title}" - HasIcon: ${!!hasIcon} - HasClick: ${!!hasClickHandler}`);
-                    return true;
-                }
-                return false;
-            });
-
-            console.log(`\n📊 Found ${possibleNextButtons.length} potential next buttons`);
-
-            // Try to find and click any element that looks like it could be next page
-            for (let element of possibleNextButtons) {
-                const elementText = element.textContent.toLowerCase();
-                const isLikelyNext = elementText.includes('next') || elementText.includes('selanjutnya') || elementText.includes('>');
-
-                if (isLikelyNext && !element.classList.contains('disabled')) {
-                    console.log('Multi-page downloader: 🔄 Trying fallback next button:', elementText);
-                    nextButton = element;
-                    foundSelector = 'fallback-element';
-                    break;
-                }
-            }
-
-            if (!nextButton) {
-                console.log('\n❌ FINAL RESULT: No next page button found through any method');
-                console.log('🛑 CONCLUSION: This appears to be the last page - stopping download');
-                console.log('\n📋 DEBUGGING SUMMARY:');
-                console.log(`   📄 Page URL: ${window.location.href}`);
-                console.log(`   📊 Current page: ${totalPagesDownloaded}`);
-                console.log(`   🔢 Download buttons: ${currentDownloadButtons.length}`);
-                console.log(`   📋 Data rows: ${dataRows.length}`);
-                console.log(`   📜 Paginator containers: ${paginatorContainers.length}`);
-                console.log(`   🎯 Total clickable elements: ${allButtons.length}`);
-                console.log(`   🎯 Potential next buttons: ${possibleNextButtons.length}`);
-
-                resolve(false);
-                return;
-            }
-        }
-
-        console.log('\n🚀 STEP 6: CLICKING NEXT PAGE BUTTON ===');
-        console.log(`✅ SUCCESS: Found next button with selector: ${foundSelector}`);
-        console.log(`🎯 Target: ${nextButton.tagName} - "${nextButton.textContent?.substring(0, 30)}..."`);
-
-        try {
-            // Store current page URL to verify navigation
-            const currentUrl = window.location.href;
-            console.log('Multi-page downloader: Current URL before click:', currentUrl);
-
-            // Click the next button
-            console.log('Multi-page downloader: Performing click...');
-            nextButton.click();
-
-            // Wait for navigation and verify URL changed
-            console.log('Multi-page downloader: Waiting for navigation...');
-            setTimeout(() => {
-                const newUrl = window.location.href;
-                console.log('Multi-page downloader: URL after click:', newUrl);
-                console.log('Multi-page downloader: URL changed:', newUrl !== currentUrl);
-
-                // Check if page content changed (URL might be same but content different)
-                const newDownloadButtons = document.querySelectorAll('#DownloadButton');
-                console.log('Multi-page downloader: Download buttons after navigation:', newDownloadButtons.length);
-
-                // Check if we actually navigated to a new page by comparing content
-                const newTableRows = document.querySelectorAll('tbody tr');
-                console.log('Multi-page downloader: Table rows after navigation:', newTableRows.length);
-
-                // Enhanced navigation verification - check for pagination indicators
-                const currentPageElement = document.querySelector('.p-paginator-current');
-                const nextPageElement = document.querySelector('.p-paginator-next');
-                const isNextDisabled = nextPageElement ? (
-                    nextPageElement.disabled ||
-                    nextPageElement.classList.contains('p-disabled') ||
-                    nextPageElement.classList.contains('disabled') ||
-                    nextPageElement.getAttribute('aria-disabled') === 'true'
-                ) : false;
-
-                console.log('Multi-page downloader: Current page indicator:', currentPageElement?.textContent);
-                console.log('Multi-page downloader: Next button disabled after click:', isNextDisabled);
-
-                // More lenient check: verify navigation actually worked
-                let navigationSuccessful = false;
-
-                if (newUrl !== currentUrl) {
-                    console.log('Multi-page downloader: ✅ Navigation successful (URL changed)');
-                    navigationSuccessful = true;
-                } else if (newDownloadButtons.length !== currentDownloadButtons.length) {
-                    console.log('Multi-page downloader: ✅ Navigation successful (content changed)');
-                    navigationSuccessful = true;
-                } else if (newTableRows.length !== tableRows.length) {
-                    console.log('Multi-page downloader: ✅ Navigation successful (table content changed)');
-                    navigationSuccessful = true;
-                } else if (currentPageElement) {
-                    // Check if page number has changed
-                    const pageText = currentPageElement.textContent;
-                    const pageMatch = pageText.match(/(\d+)/);
-                    if (pageMatch) {
-                        const currentPageNum = parseInt(pageMatch[1]);
-                        if (currentPageNum > totalPagesDownloaded) {
-                            console.log('Multi-page downloader: ✅ Navigation successful (page number increased)');
-                            navigationSuccessful = true;
-                        }
-                    }
-                }
-
-                // Final fallback: if the click was successful and we're not on the last page, assume it worked
-                if (!navigationSuccessful && !isNextDisabled) {
-                    console.log('Multi-page downloader: ✅ Navigation successful (next button not disabled after click)');
-                    navigationSuccessful = true;
-                }
-
-                if (navigationSuccessful) {
-                    console.log('Multi-page downloader: ✅ Navigation confirmed successful');
-                    resolve(true);
-                } else {
-                    console.log('Multi-page downloader: ❌ Navigation may have failed (no clear changes detected)');
-                    console.log('Multi-page downloader: But proceeding anyway since button was clickable');
-                    resolve(true); // Be optimistic and try to continue
-                }
-            }, 5000); // Wait 5 seconds for page navigation (increased for better timing)
-
-        } catch (error) {
-            console.error('Multi-page downloader: Error clicking next button:', error);
-            resolve(false);
-        }
     });
 }
 
