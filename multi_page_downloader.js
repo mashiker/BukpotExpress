@@ -105,7 +105,7 @@ async function downloadCurrentPage() {
                     console.log('Multi-page downloader: Download stopped before next page processing');
                     completeMultiPageDownload();
                 }
-            }, 3000); // Wait 3 seconds before next page (increased from 2)
+            }, 5000); // Wait 5 seconds before next page (increased for better timing)
         } else {
             // No more pages or download stopped, finish the process
             console.log('Multi-page downloader: === NO MORE PAGES OR STOPPED, FINISHING ===');
@@ -154,28 +154,40 @@ function stopDownload() {
 async function waitForPageLoad() {
     return new Promise((resolve) => {
         let attempts = 0;
-        const maxAttempts = 20;
+        const maxAttempts = 40; // Increased from 20
 
         const checkPageReady = () => {
             attempts++;
 
-            // Check if table is loaded
+            // Check if table is loaded and has data
             const table = document.querySelector('table');
             const downloadButtons = document.querySelectorAll('#DownloadButton');
+            const tableRows = document.querySelectorAll('tbody tr');
 
-            if ((table && table.rows.length > 1) || downloadButtons.length > 0) {
+            // More comprehensive page readiness check
+            const tableReady = table && table.rows.length > 1;
+            const buttonsReady = downloadButtons.length > 0;
+            const hasDataRows = tableRows.length > 1; // More than just header
+
+            // Check for loading indicators that might still be present
+            const loadingIndicators = document.querySelectorAll('.loading, .spinner, [class*="loading"]');
+            const hasLoadingElements = loadingIndicators.length > 0;
+
+            if ((tableReady || buttonsReady) && hasDataRows && !hasLoadingElements) {
                 console.log(`Multi-page downloader: Page ready after ${attempts} attempts`);
+                console.log(`Multi-page downloader: Table rows: ${tableRows.length}, Download buttons: ${downloadButtons.length}`);
                 resolve();
                 return;
             }
 
             if (attempts >= maxAttempts) {
                 console.log(`Multi-page downloader: Page not fully ready after ${maxAttempts} attempts, proceeding anyway`);
+                console.log(`Multi-page downloader: Final state - Table rows: ${tableRows.length}, Download buttons: ${downloadButtons.length}`);
                 resolve();
                 return;
             }
 
-            setTimeout(checkPageReady, 500);
+            setTimeout(checkPageReady, 500); // Check every 500ms
         };
 
         checkPageReady();
@@ -255,7 +267,7 @@ async function downloadFilesOnCurrentPage() {
                     console.log(`Multi-page downloader: Page download complete. Downloaded ${downloadedCount} files.`);
                     resolve(downloadedCount);
                 }
-            }, 1000 * index); // 1 second delay between each download
+            }, 2000 * index); // 2 second delay between each download (increased for reliability)
         });
     });
 }
@@ -490,7 +502,7 @@ async function checkAndNavigateToNext() {
                     console.log('Multi-page downloader: This indicates next button was disabled but not detected properly');
                     resolve(false);
                 }
-            }, 3000); // Wait 3 seconds for page navigation
+            }, 5000); // Wait 5 seconds for page navigation (increased for better timing)
 
         } catch (error) {
             console.error('Multi-page downloader: Error clicking next button:', error);

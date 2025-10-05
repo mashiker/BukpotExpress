@@ -2,9 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const monthSelect = document.getElementById('monthSelect');
     const yearSelect = document.getElementById('yearSelect');
     const applyDownloadBtn = document.getElementById('applyDownloadBtn');
+    const stopDownloadBtn = document.getElementById('stopDownloadBtn');
     const statusArea = document.getElementById('statusArea');
-    const usePopupBtn = document.getElementById('usePopupBtn');
-    const useSidePanelBtn = document.getElementById('useSidePanelBtn');
     const tutorialBtn = document.getElementById('tutorialBtn');
 
     // Tutorial toggle functionality
@@ -29,57 +28,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // View toggle functionality
-    usePopupBtn.addEventListener('click', function() {
-        setActiveView('popup');
-    });
-
-    useSidePanelBtn.addEventListener('click', function() {
-        setActiveView('sidepanel');
-    });
-
-    function setActiveView(view) {
-        if (view === 'popup') {
-            usePopupBtn.classList.add('active');
-            useSidePanelBtn.classList.remove('active');
-            statusArea.textContent = 'Menggunakan mode popup.';
-            statusArea.style.color = '#3498db';
-        } else {
-            useSidePanelBtn.classList.add('active');
-            usePopupBtn.classList.remove('active');
-            statusArea.textContent = 'Mencoba membuka side panel...';
-            statusArea.style.color = '#3498db';
-
-            // Try to open side panel
-            openSidePanel();
-        }
-    }
-
-    async function openSidePanel() {
+    // Stop button click handler
+    stopDownloadBtn.addEventListener('click', async function() {
         try {
-            // Check if side panel API is available
-            if (chrome.sidePanel) {
-                const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-                if (tab) {
-                    await chrome.sidePanel.open({ tabId: tab.id });
-                    statusArea.textContent = 'Side panel berhasil dibuka!';
-                    statusArea.style.color = '#27ae60';
-                    window.close(); // Close popup
-                }
-            } else {
-                statusArea.textContent = 'Side panel tidak didukung di browser ini.';
-                statusArea.style.color = '#e74c3c';
-                // Fallback to popup view
-                setTimeout(() => setActiveView('popup'), 2000);
+            // Get current active tab
+            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+            if (!tab) {
+                throw new Error('Tidak dapat menemukan tab aktif.');
             }
+
+            // Send stop message to background script
+            chrome.runtime.sendMessage({
+                type: 'STOP_DOWNLOAD',
+                tabId: tab.id
+            }, function(response) {
+                if (chrome.runtime.lastError) {
+                    console.error('Error sending stop message:', chrome.runtime.lastError);
+                } else {
+                    console.log('Stop message sent successfully');
+                }
+            });
+
         } catch (error) {
-            console.error('Error opening side panel:', error);
-            statusArea.textContent = 'Gagal membuka side panel: ' + error.message;
-            statusArea.style.color = '#e74c3c';
-            // Fallback to popup view
-            setTimeout(() => setActiveView('popup'), 2000);
+            console.error('Error in stopDownloadBtn click handler:', error);
         }
-    }
+    });
 
     // Populate year dropdown (current year and 4 previous years)
     const currentYear = new Date().getFullYear();
@@ -125,6 +99,10 @@ document.addEventListener('DOMContentLoaded', function() {
         monthSelect.disabled = true;
         yearSelect.disabled = true;
 
+        // Show stop button
+        applyDownloadBtn.style.display = 'none';
+        stopDownloadBtn.style.display = 'flex';
+
         statusArea.textContent = 'Menerapkan filter masa pajak...';
         statusArea.style.color = '#3498db';
 
@@ -152,6 +130,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     applyDownloadBtn.disabled = false;
                     monthSelect.disabled = false;
                     yearSelect.disabled = false;
+
+                    // Hide stop button and show download button
+                    applyDownloadBtn.style.display = 'flex';
+                    stopDownloadBtn.style.display = 'none';
                 }
             });
 
@@ -173,6 +155,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         applyDownloadBtn.disabled = false;
                         monthSelect.disabled = false;
                         yearSelect.disabled = false;
+
+                        // Hide stop button and show download button
+                        applyDownloadBtn.style.display = 'flex';
+                        stopDownloadBtn.style.display = 'none';
                     }
                 }
             });
@@ -186,6 +172,10 @@ document.addEventListener('DOMContentLoaded', function() {
             applyDownloadBtn.disabled = false;
             monthSelect.disabled = false;
             yearSelect.disabled = false;
+
+            // Hide stop button and show download button
+            applyDownloadBtn.style.display = 'flex';
+            stopDownloadBtn.style.display = 'none';
         }
     });
 
