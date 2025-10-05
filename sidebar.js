@@ -160,6 +160,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         applyDownloadBtn.style.display = 'flex';
                         stopDownloadBtn.style.display = 'none';
                     }
+
+                    // Ensure stop button remains visible during navigation/processing
+                    // Only show download button if process is complete
+                    if (!message.complete && (applyDownloadBtn.style.display === 'flex' || !applyDownloadBtn.disabled)) {
+                        // Process is ongoing but download button is visible - hide it and show stop button
+                        applyDownloadBtn.style.display = 'none';
+                        stopDownloadBtn.style.display = 'flex';
+                        applyDownloadBtn.disabled = true;
+                        monthSelect.disabled = true;
+                        yearSelect.disabled = true;
+                    }
                 }
             });
 

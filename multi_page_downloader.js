@@ -45,6 +45,14 @@ async function downloadCurrentPage() {
     console.log(`Multi-page downloader: === PROCESSING PAGE ${totalPagesDownloaded} ===`);
     console.log(`Multi-page downloader: Current URL: ${window.location.href}`);
 
+    // Send page processing update to maintain UI state
+    chrome.runtime.sendMessage({
+        type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+        status: `Memproses halaman ${totalPagesDownloaded}...`
+    }).catch(error => {
+        console.log('Multi-page downloader: Could not send page update:', error.message);
+    });
+
     try {
         // Show progress modal
         displayModal('Multi-Page Download',
@@ -96,7 +104,16 @@ async function downloadCurrentPage() {
             // Continue to next page
             totalPagesDownloaded++;
             console.log(`Multi-page downloader: === MOVING TO PAGE ${totalPagesDownloaded} ===`);
-            console.log('Multi-page downloader: Waiting 3 seconds before processing next page...');
+            console.log('Multi-page downloader: Waiting 5 seconds before processing next page...');
+
+            // Send navigation update to maintain UI state
+            chrome.runtime.sendMessage({
+                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                status: `Bergerak ke halaman ${totalPagesDownloaded}...`
+            }).catch(error => {
+                console.log('Multi-page downloader: Could not send navigation update:', error.message);
+            });
+
             setTimeout(() => {
                 if (!isDownloadStopped) {
                     console.log('Multi-page downloader: === STARTING NEXT PAGE PROCESS ===');

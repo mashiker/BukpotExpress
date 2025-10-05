@@ -323,6 +323,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             downloadTabId = null;
             sendStatusUpdate(`Download multi-halaman selesai! Total: ${message.totalFiles} file dari ${message.totalPages} halaman`, true);
             break;
+
+        case "MULTI_PAGE_NAVIGATION_UPDATE":
+            console.log("BG: Multi-page navigation update:", message.status);
+            sendStatusUpdate(message.status, false);
+            break;
     }
     return true;
 });
