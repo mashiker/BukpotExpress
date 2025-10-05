@@ -55,7 +55,7 @@ async function downloadCurrentPage() {
         // Send page processing update to maintain UI state
         chrome.runtime.sendMessage({
             type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-            status: `Memproses halaman ${totalPagesDownloaded}...`
+            status: `📥 Mengunduh halaman ${totalPagesDownloaded} dari beberapa halaman...`
         }).catch(error => {
             console.log('Multi-page downloader: Could not send page update:', error.message);
         });
@@ -84,6 +84,16 @@ async function downloadCurrentPage() {
             totalFilesDownloaded += downloadedCount;
 
             console.log(`✅ Downloaded ${downloadedCount} files from page ${totalPagesDownloaded}`);
+
+            // Send completion status for this page (but not overall completion)
+            if (downloadedCount > 0) {
+                chrome.runtime.sendMessage({
+                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                    status: `✅ Halaman ${totalPagesDownloaded} selesai (${downloadedCount} file). Memeriksa halaman berikutnya...`
+                }).catch(error => {
+                    console.log('Multi-page downloader: Could not send page completion update:', error.message);
+                });
+            }
         }
 
         // Check if download was stopped after downloading
@@ -108,7 +118,7 @@ async function downloadCurrentPage() {
             // Send navigation update to maintain UI state
             chrome.runtime.sendMessage({
                 type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                status: `Bergerak ke halaman ${totalPagesDownloaded}...`
+                status: `🔄 Beralih ke halaman ${totalPagesDownloaded}...`
             }).catch(error => {
                 console.log('Multi-page downloader: Could not send navigation update:', error.message);
             });

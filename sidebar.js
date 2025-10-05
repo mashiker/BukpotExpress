@@ -150,6 +150,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         statusArea.style.color = '#3498db';
                     }
 
+                    // Check if this is a navigation/processing update (not completion)
+                    const isNavigationUpdate = message.status && (
+                        message.status.includes('Memproses halaman') ||
+                        message.status.includes('Bergerak ke halaman') ||
+                        message.status.includes('halaman') ||
+                        !message.status.includes('selesai') && !message.status.includes('berhasil')
+                    );
+
                     // Re-enable controls when process is complete
                     if (message.complete) {
                         applyDownloadBtn.disabled = false;
@@ -160,10 +168,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         applyDownloadBtn.style.display = 'flex';
                         stopDownloadBtn.style.display = 'none';
                     }
+                    // Maintain download state during navigation/processing
+                    else if (isNavigationUpdate) {
+                        // Ensure controls remain disabled and stop button visible during navigation
+                        applyDownloadBtn.disabled = true;
+                        monthSelect.disabled = true;
+                        yearSelect.disabled = true;
+                        applyDownloadBtn.style.display = 'none';
+                        stopDownloadBtn.style.display = 'flex';
 
-                    // Ensure stop button remains visible during navigation/processing
-                    // Only show download button if process is complete
-                    if (!message.complete && (applyDownloadBtn.style.display === 'flex' || !applyDownloadBtn.disabled)) {
+                        console.log('UI: Maintaining stop button during navigation:', message.status);
+                    }
+                    // Fallback: Ensure stop button remains visible during any ongoing process
+                    else if (!message.complete && (applyDownloadBtn.style.display === 'flex' || !applyDownloadBtn.disabled)) {
                         // Process is ongoing but download button is visible - hide it and show stop button
                         applyDownloadBtn.style.display = 'none';
                         stopDownloadBtn.style.display = 'flex';
