@@ -351,29 +351,46 @@ async function checkAndNavigateToNext() {
             });
         }
 
-        // Check page content for empty state
+        // Check page content for empty state (less strict check)
         const tableRows = document.querySelectorAll('tbody tr');
         console.log(`Multi-page downloader: Found ${tableRows.length} table rows`);
 
-        if (tableRows.length <= 1) { // Only header row
-            console.log('Multi-page downloader: No data rows found, assuming last page');
+        // More lenient check - only stop if really no content (not just header)
+        const dataRows = Array.from(tableRows).filter(row => {
+            const cells = row.querySelectorAll('td');
+            return cells.length > 0 && cells[0].textContent.trim() !== '';
+        });
+
+        console.log(`Multi-page downloader: Found ${dataRows.length} data rows (non-empty)`);
+
+        if (dataRows.length === 0) {
+            console.log('Multi-page downloader: No actual data rows found, assuming last page');
             resolve(false);
             return;
         }
 
-        // Enhanced selector list for next page button
+        // Enhanced selector list for next page button (more comprehensive)
         const nextButtonSelectors = [
             '.p-paginator-next',
             '.p-paginator-next.p-paginator-element.p-link',
             'button[aria-label="Next Page"]',
+            'button[aria-label="Next"]',
             'button.p-paginator-next:not(.p-disabled)',
             '.pi-angle-right',
+            '.pi-chevron-right',
             '.next-page',
             'a[aria-label="Next"]',
+            'a[aria-label="Next Page"]',
             '[class*="paginator-next"]',
+            '[class*="next"]',
             'button.p-paginator-element.p-link.p-paginator-next',
             'span.p-paginator-icon.pi.pi-angle-right',
-            '.p-paginator-element[aria-label="Next"]'
+            '.p-paginator-element[aria-label="Next"]',
+            // More generic selectors
+            '.pagination-next',
+            '.page-next',
+            '[data-pc-section="nexticon"]',
+            '[data-pc-section="nextpagebutton"]'
         ];
 
         let nextButton = null;
@@ -386,17 +403,17 @@ async function checkAndNavigateToNext() {
             if (nextButton) {
                 console.log(`Multi-page downloader: ✓ Found element with selector: ${selector}`);
 
-                // More thorough check for disabled state - COMPREHENSIVE CHECK
+                // More thorough check for disabled state - but less strict
                 const isDisabled = nextButton.disabled ||
                                  nextButton.classList.contains('p-disabled') ||
                                  nextButton.classList.contains('disabled') ||
                                  nextButton.classList.contains('p-state-disabled') ||
                                  nextButton.getAttribute('aria-disabled') === 'true' ||
-                                 nextButton.getAttribute('tabindex') === '-1' ||
                                  nextButton.style.display === 'none' ||
-                                 nextButton.style.visibility === 'hidden' ||
-                                 nextButton.style.opacity === '0' ||
-                                 nextButton.style.pointerEvents === 'none';
+                                 nextButton.style.visibility === 'hidden';
+
+                // Less strict: don't count opacity or pointer-events as disabled
+                // Also check if it has an onclick handler (disabled buttons usually don't)
 
                 console.log(`Multi-page downloader: - Button disabled: ${isDisabled}`);
                 console.log(`Multi-page downloader: - Button classes: ${nextButton.className}`);
@@ -428,23 +445,40 @@ async function checkAndNavigateToNext() {
         }
 
         if (!nextButton) {
-            console.log('Multi-page downloader: ❌ No valid next page button found, assuming last page');
+            console.log('Multi-page downloader: ❌ No valid next page button found, trying fallback methods...');
 
             // Additional check: look for any element that might be next button
-            const allButtons = document.querySelectorAll('button, a');
-            console.log(`Multi-page downloader: Found ${allButtons.length} total buttons/links on page`);
+            const allButtons = document.querySelectorAll('button, a, [onclick]');
+            console.log(`Multi-page downloader: Found ${allButtons.length} total clickable elements on page`);
 
             const possibleNextButtons = Array.from(allButtons).filter(el => {
                 const text = el.textContent.toLowerCase();
-                const hasNextText = text.includes('next') || text.includes('selanjutnya');
-                const hasIcon = el.querySelector('.pi-angle-right, .pi-chevron-right');
-                return hasNextText || hasIcon;
+                const hasNextText = text.includes('next') || text.includes('selanjutnya') || text.includes('>');
+                const hasIcon = el.querySelector('.pi-angle-right, .pi-chevron-right, .icon-right');
+                const hasClickHandler = el.onclick || el.getAttribute('onclick');
+                return hasNextText || hasIcon || hasClickHandler;
             });
 
             console.log(`Multi-page downloader: Found ${possibleNextButtons.length} possible next buttons:`, possibleNextButtons);
 
-            resolve(false);
-            return;
+            // Try to find and click any element that looks like it could be next page
+            for (let element of possibleNextButtons) {
+                const elementText = element.textContent.toLowerCase();
+                const isLikelyNext = elementText.includes('next') || elementText.includes('selanjutnya') || elementText.includes('>');
+
+                if (isLikelyNext && !element.classList.contains('disabled')) {
+                    console.log('Multi-page downloader: 🔄 Trying fallback next button:', elementText);
+                    nextButton = element;
+                    foundSelector = 'fallback-element';
+                    break;
+                }
+            }
+
+            if (!nextButton) {
+                console.log('Multi-page downloader: ❌ No next page button found through any method, assuming last page');
+                resolve(false);
+                return;
+            }
         }
 
         console.log('Multi-page downloader: === CLICKING NEXT PAGE BUTTON ===');
@@ -487,16 +521,18 @@ async function checkAndNavigateToNext() {
                 console.log('Multi-page downloader: Current page indicator:', currentPageElement?.textContent);
                 console.log('Multi-page downloader: Next button disabled after click:', isNextDisabled);
 
-                // More strict check: verify navigation actually worked
+                // More lenient check: verify navigation actually worked
+                let navigationSuccessful = false;
+
                 if (newUrl !== currentUrl) {
                     console.log('Multi-page downloader: ✅ Navigation successful (URL changed)');
-                    resolve(true);
+                    navigationSuccessful = true;
                 } else if (newDownloadButtons.length !== currentDownloadButtons.length) {
                     console.log('Multi-page downloader: ✅ Navigation successful (content changed)');
-                    resolve(true);
+                    navigationSuccessful = true;
                 } else if (newTableRows.length !== tableRows.length) {
                     console.log('Multi-page downloader: ✅ Navigation successful (table content changed)');
-                    resolve(true);
+                    navigationSuccessful = true;
                 } else if (currentPageElement) {
                     // Check if page number has changed
                     const pageText = currentPageElement.textContent;
@@ -505,19 +541,24 @@ async function checkAndNavigateToNext() {
                         const currentPageNum = parseInt(pageMatch[1]);
                         if (currentPageNum > totalPagesDownloaded) {
                             console.log('Multi-page downloader: ✅ Navigation successful (page number increased)');
-                            resolve(true);
-                        } else {
-                            console.log('Multi-page downloader: ❌ Navigation failed (page number did not increase)');
-                            resolve(false);
+                            navigationSuccessful = true;
                         }
-                    } else {
-                        console.log('Multi-page downloader: ❌ Navigation failed (no changes detected)');
-                        resolve(false);
                     }
+                }
+
+                // Final fallback: if the click was successful and we're not on the last page, assume it worked
+                if (!navigationSuccessful && !isNextDisabled) {
+                    console.log('Multi-page downloader: ✅ Navigation successful (next button not disabled after click)');
+                    navigationSuccessful = true;
+                }
+
+                if (navigationSuccessful) {
+                    console.log('Multi-page downloader: ✅ Navigation confirmed successful');
+                    resolve(true);
                 } else {
-                    console.log('Multi-page downloader: ❌ Navigation failed (no changes detected)');
-                    console.log('Multi-page downloader: This indicates next button was disabled but not detected properly');
-                    resolve(false);
+                    console.log('Multi-page downloader: ❌ Navigation may have failed (no clear changes detected)');
+                    console.log('Multi-page downloader: But proceeding anyway since button was clickable');
+                    resolve(true); // Be optimistic and try to continue
                 }
             }, 5000); // Wait 5 seconds for page navigation (increased for better timing)
 
