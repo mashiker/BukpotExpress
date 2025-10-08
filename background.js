@@ -157,6 +157,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 sendStatusUpdate("⏹️ Download dihentikan oleh user", true);
             }
             break;
+
+        case "RELOAD_EXTENSION":
+            console.log("BG: Extension reload requested");
+            sendResponse({ success: true, message: "Extension reload initiated" });
+
+            // Use Chrome's runtime API to reload the extension
+            chrome.runtime.reload();
+            break;
     }
     return true;
 });
@@ -273,7 +281,7 @@ function startMultiPageDownload(tabId) {
 
             console.log("BG: Multi-page downloader injected, starting process");
 
-            // Send message to start multi-page download
+            // Send message to start multi-page download (expecting immediate response)
             chrome.tabs.sendMessage(tabId, {
                 action: 'startMultiPageDownload'
             }, (response) => {
@@ -286,16 +294,14 @@ function startMultiPageDownload(tabId) {
                 }
 
                 if (response && response.success) {
-                    console.log("BG: Multi-page download completed successfully");
-                    console.log("BG: Total pages:", response.totalPages, "Total files:", response.totalFiles);
-                    isDownloading = false;
-                    downloadTabId = null;
-                    sendStatusUpdate(`Download multi-halaman selesai! Total: ${response.totalFiles} file dari ${response.totalPages} halaman`, true);
+                    console.log("BG: Multi-page download started successfully");
+                    // Don't reset state here - wait for completion message
+                    sendStatusUpdate("Multi-page download in progress...");
                 } else {
-                    console.error("BG: Failed to complete multi-page download");
+                    console.error("BG: Failed to start multi-page download");
                     isDownloading = false;
                     downloadTabId = null;
-                    sendStatusUpdate("Gagal menyelesaikan multi-page download", true);
+                    sendStatusUpdate("Gagal memulai multi-page download", true);
                 }
             });
         });

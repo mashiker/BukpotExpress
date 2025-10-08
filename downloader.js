@@ -3,6 +3,12 @@
 // Automated tax document downloader with period filtering
 
 async function processSingleDownload() {
+  // Check if download was stopped
+  if (isDownloadStopped) {
+    console.log("Downloader: Download stopped, aborting process");
+    return;
+  }
+
   let queue = JSON.parse(sessionStorage.getItem('coretaxDownloadQueue') || '[]');
   const totalCount = parseInt(sessionStorage.getItem('coretaxTotalCount') || 0);
   let successCount = parseInt(sessionStorage.getItem('coretaxSuccessCount') || 0);
@@ -74,6 +80,45 @@ async function processSingleDownload() {
   
   chrome.runtime.sendMessage({ type: "CONTINUE_DOWNLOAD", delay: wasSuccessful ? 1500 : 1000 });
 }
+
+// Add stop download functionality
+let isDownloadStopped = false;
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'stopDownload') {
+        console.log("Downloader: stopDownload received");
+        isDownloadStopped = true;
+
+        // Clear sessionStorage
+        Object.keys(sessionStorage).forEach(key => {
+            if (key.startsWith('coretax')) {
+                sessionStorage.removeItem(key);
+            }
+        });
+
+        // Close any open modals
+        if (typeof closeModal === 'function') {
+            closeModal();
+        }
+
+        // Show stopped message
+        const successCount = parseInt(sessionStorage.getItem('coretaxSuccessCount') || 0);
+        displayModal('Download Stopped', 'Download dihentikan', `Total files downloaded: ${successCount}`, true);
+
+        // Auto-close modal after 3 seconds
+        setTimeout(() => {
+            if (typeof closeModal === 'function') {
+                closeModal();
+            }
+        }, 3000);
+
+        // Send completion message to background
+        chrome.runtime.sendMessage({ type: "DOWNLOAD_COMPLETE" });
+
+        sendResponse({ success: true, message: "Download stopped successfully" });
+        return true;
+    }
+});
 
 if (typeof displayModal === 'function') {
     processSingleDownload();

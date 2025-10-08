@@ -319,6 +319,15 @@ function stopDownload() {
         `Total files downloaded: ${totalFilesDownloaded} dari ${totalPagesDownloaded} halaman`,
         true);
 
+    // Send completion message to background script to reset UI
+    chrome.runtime.sendMessage({
+        type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
+        totalFiles: totalFilesDownloaded,
+        totalPages: totalPagesDownloaded
+    }).catch(error => {
+        console.log('Multi-page downloader: Could not send completion message:', error.message);
+    });
+
     // Auto-close modal after 3 seconds
     setTimeout(() => {
         if (typeof closeModal === 'function') {
@@ -485,36 +494,49 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // Reset stop flag when starting new download
         isDownloadStopped = false;
 
+        // Send immediate response to prevent message port error
+        sendResponse({
+            success: true,
+            message: "Multi-page download started successfully"
+        });
+
+        // Start the download process asynchronously
         try {
             startMultiPageDownload()
                 .then(result => {
                     console.log("Multi-page downloader: Process completed with result:", result);
-                    sendResponse({
-                        success: true,
-                        message: "Multi-page download completed successfully",
-                        totalPages: result.totalPages,
-                        totalFiles: result.totalFiles
+                    // Send completion message to background script
+                    chrome.runtime.sendMessage({
+                        type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
+                        totalFiles: result.totalFiles,
+                        totalPages: result.totalPages
+                    }).catch(error => {
+                        console.log('Multi-page downloader: Could not send completion message:', error.message);
                     });
                 })
                 .catch(error => {
                     console.error("Multi-page downloader: Error in multi-page download:", error);
-                    sendResponse({
-                        success: false,
-                        message: error.message,
-                        error: error.message
+                    // Send error status update
+                    chrome.runtime.sendMessage({
+                        type: 'UPDATE_STATUS',
+                        status: `Error: ${error.message}`,
+                        complete: true
+                    }).catch(error => {
+                        console.log('Multi-page downloader: Could not send error status:', error.message);
                     });
                 });
-
-            // Return true to indicate async response
-            return true;
         } catch (error) {
             console.error("Multi-page downloader: Error starting multi-page download:", error);
-            sendResponse({
-                success: false,
-                message: error.message,
-                error: error.message
+            chrome.runtime.sendMessage({
+                type: 'UPDATE_STATUS',
+                status: `Error starting download: ${error.message}`,
+                complete: true
+            }).catch(error => {
+                console.log('Multi-page downloader: Could not send error status:', error.message);
             });
         }
+
+        return true;
     } else if (message.action === 'stopDownload') {
         console.log("Multi-page downloader: stopDownload received");
         stopDownload();
