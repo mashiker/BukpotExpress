@@ -77,8 +77,11 @@ async function processSingleDownload() {
   sessionStorage.setItem('coretaxDownloadQueue', JSON.stringify(queue));
   sessionStorage.setItem('coretaxSuccessCount', successCount);
   sessionStorage.setItem('coretaxSkippedCount', skippedCount);
-  
-  chrome.runtime.sendMessage({ type: "CONTINUE_DOWNLOAD", delay: wasSuccessful ? 1500 : 1000 });
+
+  // Continue processing next file after delay (internal processing, no message needed)
+  setTimeout(() => {
+    processSingleDownload();
+  }, wasSuccessful ? 1500 : 1000);
 }
 
 // Add stop download functionality
