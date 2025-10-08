@@ -1,6 +1,6 @@
 # 📋 Bukpot Express
 
-[![Version](https://img.shields.io/badge/version-2.0-blue.svg)](https://github.com/username/BukpotExpress)
+[![Version](https://img.shields.io/badge/version-1.0-blue.svg)](https://github.com/username/BukpotExpress)
 [![Chrome Extension](https://img.shields.io/badge/chrome-extension-green.svg)](https://chrome.google.com/webstore)
 [![License](https://img.shields.io/badge/license-Apache%202.0%20%2B%20Commons%20Clause-orange.svg)](LICENSE)
 
@@ -8,24 +8,27 @@
 
 ## ✨ Fitur Utama
 
-### 🚀 Yang Baru di v2.0
-- **📱 Dual Interface**: Pilihan antara Popup dan Sidebar interface untuk pengalaman pengguna yang fleksibel
-- **🔄 Filter Otomatis**: Secara otomatis mengubah filter periode pajak (bulan/tahun)
-- **⚡ One-Click Download**: Terapkan filter dan unduh semua dokumen dengan satu klik
-- **📊 Status Update**: Informasi progres real-time selama proses berlangsung
-- **🛡️ Enhanced Error Handling**: Pesan error yang lebih baik dan mekanisme pemulihan otomatis
-- **💡 Tips Section**: Panduan penggunaan dan solusi masalah yang terintegrasi
-- **🎯 Clean Interface**: Antarmuka yang minimalis dengan sections yang dapat di-expand/collapse
-- **🚀 Cross-Promotion**: Informasi tentang tools pajak lainnya dari AlatPajakID
+### 🚀 Fitur Unggulan yang Membuat Hidup Lebih Mudah!
 
-### 🔧 Kemampuan Teknis
-- ✅ **Manifest V3 Compatible**: Mendukung standar ekstensi Chrome terbaru
-- ✅ **Side Panel API**: Integrasi dengan API Sidebar Chrome
-- ✅ **Smart Injection**: Penyuntikan skrip yang lebih baik ke halaman web
-- ✅ **State Management**: Manajemen status yang ditingkatkan
-- ✅ **Comprehensive Logging**: Logging detail untuk debugging
-- ✅ **Permission Recovery**: Pemulihan izin otomatis untuk kemudahan pengguna
-- ✅ **Queue Processing**: Pengolahan antrian download yang lebih andal
+- **⚡ Download 100+ Dokumen SEKALI KLIK** - Berhenti klik satu per satu! Cukup pilih bulan/tahun, klik tombol, dan semua bukti potong akan terunduh otomatis. ** hemat waktu berjam-jam!**
+
+- **🎯 Interface Sidebar yang Smart** - Tetap bekerja di CoreTax sambil ekstensi terbuka di samping! Tidak perlu lagi pindah-pindah tab yang bikin pusing.
+
+- **🔄 Filter Otomatis Anti Ribet** - Lupakan scroll-scroll mencari periode pajak! Cukup pilih bulan & tahun dari dropdown, ekstensi yang akan mengatur semuanya.
+
+- **🛡️ Anti Error & Auto Recovery** - Sistem cerdas yang secara otomatis memperbaiki error dan melanjutkan download dari mana berhenti. **No more frustasi!**
+
+- **📊 Progres Real-time yang Memuaskan** - Pantau setiap file yang diunduh dengan status update yang jelas. Tahu persis kapan pekerjaan selesai!
+
+- **💡 Tips & Trik Terintegrasi** - Panduan lengkap langsung di ekstensi! Dari cara reload hingga solusi masalah, semua ada tanpa perlu browsing.
+
+### 🔧 Kemampuan Teknis Canggih di Balik Kemudahan
+- ✅ **Manifest V3 Compatible** - Teknologi terbaru Chrome yang lebih aman dan cepat
+- ✅ **Side Panel API** - Interface modern yang tidak mengganggu workflow
+- ✅ **Smart Injection** - Sistem cerdas yang bekerja sempurna di halaman CoreTax
+- ✅ **Auto Recovery System** - Bangkit sendiri dari error tanpa perlu restart
+- ✅ **Queue Processing** - Download rapih teratur seperti antrian bank
+- ✅ **Permission Management** - Tidak perlu setting manual, semua otomatis
 
 ## 📋 Persyaratan Sistem
 
@@ -124,9 +127,7 @@ BukpotExpress/
 │   ├── icon48.png
 │   └── icon128.png
 ├── 📖 README.md              # Dokumentasi ini
-├── ✅ TESTING_CHECKLIST.md   # Daftar periksa pengujian
-├── 📄 LICENSE                # Apache 2.0 + Commons Clause
-└── 📄 README_v2.0.md         # Dokumentasi versi lama
+└── 📄 LICENSE                # Apache 2.0 + Commons Clause
 ```
 
 ## 🔐 Izin & Keamanan
@@ -137,6 +138,7 @@ BukpotExpress/
 - **`scripting`**: Menyuntikkan skrip ke halaman web
 - **`sidePanel`**: Membuka dan mengelola antarmuka sidebar
 - **`storage`**: Menyimpan preferensi dan state ekstensi
+- **`tabs`**: Membuka tab baru untuk link promosi
 
 ### Host Permissions
 
@@ -235,30 +237,22 @@ Kami menyambut kontribusi dari komunitas! Untuk berkontribusi:
 
 ## 📝 Changelog
 
-### v2.0.1 (2025-10-08)
+### v1.0 (2025-10-08)
+- ✨ **NEW**: Sidebar interface yang persisten dengan Side Panel API
+- ✨ **NEW**: Filter periode pajak otomatis dengan dropdown bulan/tahun
+- ✨ **NEW**: One-click download functionality untuk kemudahan pengguna
+- ✨ **NEW**: Enhanced error handling dengan automatic recovery
 - ✨ **NEW**: Clean interface dengan sections yang default minimized
 - ✨ **NEW**: Tips Section dengan panduan troubleshooting terintegrasi
-- ✨ **NEW**: Promosi banner untuk E-faktur Automation
-- ✨ **NEW**: Buy Me Coffee donation link
-- 🐛 **FIX**: Single page download sekarang mengunduh semua file, bukan hanya file pertama
-- 🔧 **IMPROVEMENT**: Update license ke Apache 2.0 + Commons Clause
-- 🔧 **IMPROVEMENT**: Enhanced permission recovery system
-- 🔧 **IMPROVEMENT**: Better error handling dan user feedback
-- 🗑️ **REMOVED**: Hard Refresh button (diganti dengan panduan manual)
-
-### v2.0.0 (2025-10-08)
-- ✨ **NEW**: Sidebar interface yang persisten
-- ✨ **NEW**: Filter periode pajak otomatis
-- ✨ **NEW**: One-click download functionality
-- ✨ **NEW**: Enhanced error handling dengan automatic recovery
+- ✨ **NEW**: Promosi cards untuk E-faktur Automation dan Buy Me Coffee donation
+- ✨ **NEW**: Modern UI/UX design dengan gradient dan smooth animations
 - 🔧 **IMPROVEMENT**: Manifest V3 compatibility
-- 🔧 **IMPROVEMENT**: Better user experience
+- 🔧 **IMPROVEMENT**: Enhanced permission recovery system
 - 🔧 **IMPROVEMENT**: Comprehensive logging system
-
-### v1.x.x - Legacy Versions
-- 📦 Popup interface dasar
-- 📦 Seleksi dokumen manual
-- 📦 Fungsionalitas batch download
+- 🔧 **IMPROVEMENT**: Better error handling dan user feedback
+- 🔧 **IMPROVEMENT**: Update license ke Apache 2.0 + Commons Clause
+- 🐛 **FIX**: Single page download sekarang mengunduh semua file, bukan hanya file pertama
+- 🗑️ **REMOVED**: Hard Refresh button (diganti dengan panduan manual On/Off)
 
 ## 📞 Dukungan & Kontak
 

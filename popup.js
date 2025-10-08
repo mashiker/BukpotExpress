@@ -174,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     populateYearSelect();
     setupEventListeners();
     setupTutorialToggle();
+    setupPromotionalCards();
 
     // Load existing logs dari storage
     chrome.storage.local.get({ efakturLogs: [] }, (result) => {
@@ -233,6 +234,25 @@ function setupTutorialToggle() {
                 tipsToggleIcon.classList.add('collapsed');
                 tipsToggleIcon.textContent = '▶';
             }
+        });
+    }
+}
+
+// Promotional cards setup functionality
+function setupPromotionalCards() {
+    const efakturCard = document.getElementById('efaktur-card');
+    const coffeeCard = document.getElementById('coffee-card');
+
+    // Add click event listeners for promotional cards
+    if (efakturCard) {
+        efakturCard.addEventListener('click', function() {
+            chrome.tabs.create({ url: 'https://chromewebstore.google.com/detail/e-faktur-automation/hjimkdiphhenkofkbbicaejhflmoicpg' });
+        });
+    }
+
+    if (coffeeCard) {
+        coffeeCard.addEventListener('click', function() {
+            chrome.tabs.create({ url: 'https://trakteer.id/alatpajakid/tip' });
         });
     }
 }

@@ -6,6 +6,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const statusArea = document.getElementById('statusArea');
     const tutorialBtn = document.getElementById('tutorialBtn');
 
+    // Promotional cards click handlers
+    const efakturCard = document.getElementById('efaktur-card');
+    const coffeeCard = document.getElementById('coffee-card');
+
+    // Add click event listeners for promotional cards
+    if (efakturCard) {
+        efakturCard.addEventListener('click', function() {
+            chrome.tabs.create({ url: 'https://chromewebstore.google.com/detail/e-faktur-automation/hjimkdiphhenkofkbbicaejhflmoicpg' });
+        });
+    }
+
+    if (coffeeCard) {
+        coffeeCard.addEventListener('click', function() {
+            chrome.tabs.create({ url: 'https://trakteer.id/alatpajakid/tip' });
+        });
+    }
+
     // Tutorial toggle functionality
     const tutorialToggle = document.getElementById('tutorialToggle');
     const tutorialContent = document.getElementById('tutorialContent');
