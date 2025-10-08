@@ -500,43 +500,35 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             message: "Multi-page download started successfully"
         });
 
-        // Start the download process asynchronously
-        try {
-            startMultiPageDownload()
-                .then(result => {
-                    console.log("Multi-page downloader: Process completed with result:", result);
-                    // Send completion message to background script
-                    chrome.runtime.sendMessage({
-                        type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
-                        totalFiles: result.totalFiles,
-                        totalPages: result.totalPages
-                    }).catch(error => {
-                        console.log('Multi-page downloader: Could not send completion message:', error.message);
-                    });
-                })
-                .catch(error => {
-                    console.error("Multi-page downloader: Error in multi-page download:", error);
-                    // Send error status update
-                    chrome.runtime.sendMessage({
-                        type: 'UPDATE_STATUS',
-                        status: `Error: ${error.message}`,
-                        complete: true
-                    }).catch(error => {
-                        console.log('Multi-page downloader: Could not send error status:', error.message);
-                    });
-                });
-        } catch (error) {
-            console.error("Multi-page downloader: Error starting multi-page download:", error);
-            chrome.runtime.sendMessage({
-                type: 'UPDATE_STATUS',
-                status: `Error starting download: ${error.message}`,
-                complete: true
-            }).catch(error => {
-                console.log('Multi-page downloader: Could not send error status:', error.message);
-            });
-        }
+        // Start the download process asynchronously with proper error handling
+        (async () => {
+            try {
+                console.log("Multi-page downloader: Starting async download process");
+                const result = await startMultiPageDownload();
+                console.log("Multi-page downloader: Process completed with result:", result);
 
-        return true;
+                // Send completion message to background script
+                chrome.runtime.sendMessage({
+                    type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
+                    totalFiles: result.totalFiles,
+                    totalPages: result.totalPages
+                }).catch(error => {
+                    console.log('Multi-page downloader: Could not send completion message:', error.message);
+                });
+            } catch (error) {
+                console.error("Multi-page downloader: Error in multi-page download:", error);
+                // Send error status update
+                chrome.runtime.sendMessage({
+                    type: 'UPDATE_STATUS',
+                    status: `Error: ${error.message}`,
+                    complete: true
+                }).catch(error => {
+                    console.log('Multi-page downloader: Could not send error status:', error.message);
+                });
+            }
+        })();
+
+        return true; // Keep message channel open
     } else if (message.action === 'stopDownload') {
         console.log("Multi-page downloader: stopDownload received");
         stopDownload();
