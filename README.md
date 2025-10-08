@@ -235,7 +235,7 @@ Kami menyambut kontribusi dari komunitas! Untuk berkontribusi:
 
 ## 📝 Changelog
 
-### v2.0.1 (2025-01-08)
+### v2.0.1 (2025-10-08)
 - ✨ **NEW**: Clean interface dengan sections yang default minimized
 - ✨ **NEW**: Tips Section dengan panduan troubleshooting terintegrasi
 - ✨ **NEW**: Promosi banner untuk E-faktur Automation
@@ -246,7 +246,7 @@ Kami menyambut kontribusi dari komunitas! Untuk berkontribusi:
 - 🔧 **IMPROVEMENT**: Better error handling dan user feedback
 - 🗑️ **REMOVED**: Hard Refresh button (diganti dengan panduan manual)
 
-### v2.0.0 (2025-01-08)
+### v2.0.0 (2025-10-08)
 - ✨ **NEW**: Sidebar interface yang persisten
 - ✨ **NEW**: Filter periode pajak otomatis
 - ✨ **NEW**: One-click download functionality
