@@ -10,9 +10,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const tutorialToggle = document.getElementById('tutorialToggle');
     const tutorialContent = document.getElementById('tutorialContent');
     const toggleIcon = document.getElementById('toggleIcon');
-    let isTutorialExpanded = true; // Start expanded
+    let isTutorialExpanded = false; // Start collapsed
+
+    // Tips toggle functionality
+    const tipsToggle = document.getElementById('tipsToggle');
+    const tipsContent = document.getElementById('tipsContent');
+    const tipsToggleIcon = document.getElementById('tipsToggleIcon');
+    let isTipsExpanded = false; // Start collapsed
 
     if (tutorialToggle && tutorialContent && toggleIcon) {
+        // Set initial state to collapsed
+        tutorialContent.classList.add('collapsed');
+        toggleIcon.classList.add('collapsed');
+        toggleIcon.textContent = '▶';
+
         tutorialToggle.addEventListener('click', function() {
             isTutorialExpanded = !isTutorialExpanded;
 
@@ -24,6 +35,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 tutorialContent.classList.add('collapsed');
                 toggleIcon.classList.add('collapsed');
                 toggleIcon.textContent = '▶';
+            }
+        });
+    }
+
+    // Tips toggle functionality
+    if (tipsToggle && tipsContent && tipsToggleIcon) {
+        // Set initial state to collapsed
+        tipsContent.classList.add('collapsed');
+        tipsToggleIcon.classList.add('collapsed');
+        tipsToggleIcon.textContent = '▶';
+
+        tipsToggle.addEventListener('click', function() {
+            isTipsExpanded = !isTipsExpanded;
+
+            if (isTipsExpanded) {
+                tipsContent.classList.remove('collapsed');
+                tipsToggleIcon.classList.remove('collapsed');
+                tipsToggleIcon.textContent = '▼';
+            } else {
+                tipsContent.classList.add('collapsed');
+                tipsToggleIcon.classList.add('collapsed');
+                tipsToggleIcon.textContent = '▶';
             }
         });
     }
@@ -254,7 +287,7 @@ function showTutorialModal() {
         <div style="text-align: left; line-height: 1.6; color: #2c3e50;">
             <h3 style="color: #005A9C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">🎯 Langkah 1: Persiapan</h3>
             <p style="margin: 0 0 15px 0; font-size: 14px;">
-                Pastikan Anda sudah login ke <strong>Coretax DJP</strong> dan berada di halaman <strong>"Bukti Potong" → "Daftar Bukti Potong"</strong>
+                Pastikan Anda sudah login ke <strong>Coretax DJP</strong> dan buka halaman <strong>"Bukti Potong" (BPPU atau BP series)</strong>, pada bagian <strong>NITKU/Identity Number: Please Select ID Place of Business Activity Sub Unit Organization</strong>
             </p>
 
             <h3 style="color: #005A9C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">📅 Langkah 2: Pilih Masa Pajak</h3>

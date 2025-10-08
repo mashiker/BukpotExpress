@@ -4,7 +4,7 @@
 
 // DOM Elements - akan diinisialisasi setelah DOM dimuat
 let loadingOverlay, mainSection, bulanSelect, tahunSelect;
-let filterBtn, statusLog, clearLogBtn, stopBtn, hardRefreshBtn;
+let filterBtn, statusLog, clearLogBtn, stopBtn;
 let downloadModeRadios;
 
 // Inisialisasi DOM elements
@@ -15,7 +15,6 @@ function initializeElements() {
     tahunSelect = document.getElementById('tahunSelect');
     filterBtn = document.getElementById('filterBtn');
     stopBtn = document.getElementById('stopBtn');
-    hardRefreshBtn = document.getElementById('hardRefreshBtn');
     statusLog = document.getElementById('statusLog');
     clearLogBtn = document.getElementById('clearLogBtn');
     downloadModeRadios = document.querySelectorAll('input[name="downloadMode"]');
@@ -146,45 +145,7 @@ function setupEventListeners() {
         });
     });
 
-    // Hard refresh button - reload extension
-    hardRefreshBtn.addEventListener('click', () => {
-        updateAndSaveStatus("🔄 Melakukan hard refresh extension...");
-
-        // Show loading state
-        hardRefreshBtn.disabled = true;
-        hardRefreshBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon spinning">
-                <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-            </svg>
-            <span>Refreshing...</span>
-        `;
-
-        // Send message to background script to reload extension
-        chrome.runtime.sendMessage({
-            type: "RELOAD_EXTENSION"
-        }, (response) => {
-            if (chrome.runtime.lastError) {
-                console.error("Error reloading extension:", chrome.runtime.lastError);
-                updateAndSaveStatus("❌ Gagal reload extension: " + chrome.runtime.lastError.message);
-
-                // Reset button state
-                hardRefreshBtn.disabled = false;
-                hardRefreshBtn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-                    </svg>
-                    <span>Hard Refresh</span>
-                `;
-            } else {
-                updateAndSaveStatus("✅ Extension berhasil di-reload");
-
-                // Extension will reload, popup will close automatically
-                setTimeout(() => {
-                    window.close();
-                }, 1000);
-            }
-        });
-    });
+    // Hard refresh button has been removed and replaced with Tips section
 
     // Clear log button
     clearLogBtn.addEventListener('click', () => {
@@ -225,9 +186,14 @@ function setupTutorialToggle() {
     const tutorialToggle = document.getElementById('tutorialToggle');
     const tutorialContent = document.getElementById('tutorialContent');
     const toggleIcon = document.getElementById('toggleIcon');
-    let isTutorialExpanded = true; // Start expanded
+    let isTutorialExpanded = false; // Start collapsed
 
     if (tutorialToggle && tutorialContent && toggleIcon) {
+        // Set initial state to collapsed
+        tutorialContent.classList.add('collapsed');
+        toggleIcon.classList.add('collapsed');
+        toggleIcon.textContent = '▶';
+
         tutorialToggle.addEventListener('click', function() {
             isTutorialExpanded = !isTutorialExpanded;
 
@@ -239,6 +205,33 @@ function setupTutorialToggle() {
                 tutorialContent.classList.add('collapsed');
                 toggleIcon.classList.add('collapsed');
                 toggleIcon.textContent = '▶';
+            }
+        });
+    }
+
+    // Tips toggle functionality
+    const tipsToggle = document.getElementById('tipsToggle');
+    const tipsContent = document.getElementById('tipsContent');
+    const tipsToggleIcon = document.getElementById('tipsToggleIcon');
+    let isTipsExpanded = false; // Start collapsed
+
+    if (tipsToggle && tipsContent && tipsToggleIcon) {
+        // Set initial state to collapsed
+        tipsContent.classList.add('collapsed');
+        tipsToggleIcon.classList.add('collapsed');
+        tipsToggleIcon.textContent = '▶';
+
+        tipsToggle.addEventListener('click', function() {
+            isTipsExpanded = !isTipsExpanded;
+
+            if (isTipsExpanded) {
+                tipsContent.classList.remove('collapsed');
+                tipsToggleIcon.classList.remove('collapsed');
+                tipsToggleIcon.textContent = '▼';
+            } else {
+                tipsContent.classList.add('collapsed');
+                tipsToggleIcon.classList.add('collapsed');
+                tipsToggleIcon.textContent = '▶';
             }
         });
     }

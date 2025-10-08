@@ -28,7 +28,7 @@
                   <div class="tutorial-steps">
                       <div class="step">
                           <h4>🎯 Langkah 1: Persiapan</h4>
-                          <p>Login ke Coretax DJP dan buka halaman "Bukti Potong"</p>
+                          <p>Login ke Coretax DJP dan buka halaman "Bukti Potong" (BPPU atau BP series), pada bagian NITKU/Identity Number: Please Select ID Place of Business Activity Sub Unit Organization</p>
                       </div>
                       <div class="step">
                           <h4>📅 Langkah 2: Pilih Masa Pajak</h4>
@@ -108,16 +108,54 @@
                 </button>
             </div>
 
-            <!-- Extension Controls Section -->
-            <div class="extension-controls-section">
-                <h3>Extension Controls</h3>
-                <div class="extension-controls">
-                    <button id="hardRefreshBtn">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-                        </svg>
-                        <span>Hard Refresh</span>
-                    </button>
+            <!-- Useful Tips Section -->
+            <div class="tips-section">
+                <div class="tips-header" id="tipsToggle">
+                    <span class="tips-title">💡 Tips Penting</span>
+                    <span class="toggle-icon" id="tipsToggleIcon">▼</span>
+                </div>
+                <div class="tips-content" id="tipsContent">
+                    <div class="tip-item">
+                        <h4>🔄 Cara Reload Ekstensi Manual</h4>
+                        <div class="tip-steps">
+                            <p><strong>Jika ekstensi tidak merespon atau error:</strong></p>
+                            <ol>
+                                <li>Buka <strong>chrome://extensions</strong> di tab baru</li>
+                                <li>Cari "Bukpot Express" dalam daftar</li>
+                                <li>Klik tombol <strong>🔄 Reload</strong> (segitiga melingkar)</li>
+                                <li>Kembali ke halaman Coretax dan coba kembali</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <h4>⏹️ Cara Menghentikan Download</h4>
+                        <div class="tip-steps">
+                            <p><strong>Jika download sedang berjalan dan ingin dihentikan:</strong></p>
+                            <ol>
+                                <li><strong>Cara 1:</strong> Klik tombol <strong>STOP Download</strong> di popup ini</li>
+                                <li><strong>Cara 2 (Jika tombol STOP tidak berfungsi):</strong></li>
+                                <li>&nbsp;&nbsp;&nbsp;• <strong>Tutup browser Chrome</strong> sepenuhnya</li>
+                                <li>&nbsp;&nbsp;&nbsp;• Download akan otomatis terhenti</li>
+                                <li>&nbsp;&nbsp;&nbsp;• Buka kembali browser dan lanjutkan jika diperlukan</li>
+                            </ol>
+                            <div class="warning-note">
+                                <p>⚠️ <strong>Catatan:</strong> Menutup browser adalah cara terakhir untuk menghentikan proses yang tidak merespon tombol STOP.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <h4>🔧 Solusi Masalah Umum</h4>
+                        <div class="tip-steps">
+                            <ul>
+                                <li><strong>Extension tidak merespon:</strong> Reload ekstensi secara manual</li>
+                                <li><strong>Download macet:</strong> Stop lalu mulai kembali</li>
+                                <li><strong>Halaman error:</strong> Refresh halaman Coretax dan coba lagi</li>
+                                <li><strong>Permission denied:</strong> Reload ekstensi dan refresh halaman</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
 
