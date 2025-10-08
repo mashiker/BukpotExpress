@@ -207,7 +207,7 @@ Kami menyambut kontribusi dari komunitas! Untuk berkontribusi:
 
 Untuk dukungan teknis atau pertanyaan:
 
-- 📧 **Email**: sinergikonsultan.dev@gmail.com
+- 📧 **Email**: support@alatpajak.my.id
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/username/BukpotExpress/issues)
 - 💬 **Discussions**: [GitHub Discussions](https://github.com/username/BukpotExpress/discussions)
 
@@ -218,7 +218,7 @@ Proyek ini dilisensikan di bawah **MIT License** - lihat file [LICENSE](LICENSE)
 ## 🙏 Kredit
 
 - **Direktorat Jenderal Pajak** - Portal CoreTax DJP
-- **Google Chrome Extensions Team** - Dokumentasi API
+- **AlatPajakID Dev Team** - Inisiator
 - **Kontributor Komunitas** - Dukungan dan feedback
 
 ---
@@ -227,7 +227,7 @@ Proyek ini dilisensikan di bawah **MIT License** - lihat file [LICENSE](LICENSE)
 
 **[🔝 Kembali ke Atas](#-bukpot-express)**
 
-Made with ❤️ by [Sinergi Konsultan Dev](mailto:sinergikonsultan.dev@gmail.com)
+Made with ❤️ by [AlatPajakId Dev](mailto:support@alatpajak.my.id)
 
 © 2025 Bukpot Express. All Rights Reserved.
 
