@@ -2,25 +2,30 @@
 
 [![Version](https://img.shields.io/badge/version-2.0-blue.svg)](https://github.com/username/BukpotExpress)
 [![Chrome Extension](https://img.shields.io/badge/chrome-extension-green.svg)](https://chrome.google.com/webstore)
-[![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0%20%2B%20Commons%20Clause-orange.svg)](LICENSE)
 
 **Bukpot Express** adalah ekstensi Chrome yang dirancang khusus untuk mengotomatisasi proses pengunduhan dokumen perpajakan (bukti potong) dari portal CoreTax DJP (Direktorat Jenderal Pajak) Indonesia.
 
 ## ✨ Fitur Utama
 
 ### 🚀 Yang Baru di v2.0
-- **📱 Sidebar Interface**: Antarmuka sidebar persisten untuk pengalaman pengguna yang lebih baik
+- **📱 Dual Interface**: Pilihan antara Popup dan Sidebar interface untuk pengalaman pengguna yang fleksibel
 - **🔄 Filter Otomatis**: Secara otomatis mengubah filter periode pajak (bulan/tahun)
 - **⚡ One-Click Download**: Terapkan filter dan unduh semua dokumen dengan satu klik
 - **📊 Status Update**: Informasi progres real-time selama proses berlangsung
-- **🛡️ Enhanced Error Handling**: Pesan error yang lebih baik dan mekanisme pemulihan
+- **🛡️ Enhanced Error Handling**: Pesan error yang lebih baik dan mekanisme pemulihan otomatis
+- **💡 Tips Section**: Panduan penggunaan dan solusi masalah yang terintegrasi
+- **🎯 Clean Interface**: Antarmuka yang minimalis dengan sections yang dapat di-expand/collapse
+- **🚀 Cross-Promotion**: Informasi tentang tools pajak lainnya dari AlatPajakID
 
 ### 🔧 Kemampuan Teknis
 - ✅ **Manifest V3 Compatible**: Mendukung standar ekstensi Chrome terbaru
 - ✅ **Side Panel API**: Integrasi dengan API Sidebar Chrome
 - ✅ **Smart Injection**: Penyuntikan skrip yang lebih baik ke halaman web
-- ✅ **State Management**: Manajemen状态 yang ditingkatkan
+- ✅ **State Management**: Manajemen status yang ditingkatkan
 - ✅ **Comprehensive Logging**: Logging detail untuk debugging
+- ✅ **Permission Recovery**: Pemulihan izin otomatis untuk kemudahan pengguna
+- ✅ **Queue Processing**: Pengolahan antrian download yang lebih andal
 
 ## 📋 Persyaratan Sistem
 
@@ -47,12 +52,12 @@
 
 ### Alur Kerja Dasar
 
-1. **🌐 Buka CoreTax**: Masuk ke portal CoreTax DJP dan buka halaman daftar dokumen
-2. **📱 Buka Ekstensi**: Klik ikon ekstensi di toolbar Chrome (sidebar akan terbuka)
+1. **🌐 Buka CoreTax**: Masuk ke portal CoreTax DJP dan buka halaman "Bukti Potong" (BPPU atau BP series)
+2. **📱 Buka Ekstensi**: Klik ikon ekstensi di toolbar Chrome (popup/sidebar akan terbuka)
 3. **📅 Pilih Periode Pajak**:
    - Pilih bulan yang diinginkan dari dropdown "Pilih Bulan"
    - Pilih tahun yang diinginkan dari dropdown "Pilih Tahun"
-4. **▶️ Mulai Proses**: Klik tombol "Terapkan & Unduh Semua"
+4. **▶️ Mulai Proses**: Klik tombol "Filter & Download" atau "Unduh Semua Bukti Potong"
 5. **📊 Monitor Progres**: Amati area status untuk update real-time
 6. **✅ Unduh Selesai**: Semua dokumen akan otomatis terunduh ke folder Downloads
 
@@ -64,14 +69,29 @@ Pilih Bulan/Tahun → Klik Tombol → Filter Diterapkan → Halaman Refresh → 
 
 ## 🖥️ Antarmuka Pengguna
 
-### Komponen Sidebar
+### Komponen Utama
 
-- **🎨 Logo**: Branding Bukpot Express
-- **📝 Judul**: "Bukpot Express" dengan informasi versi
+- **🎨 Logo**: Branding Bukpot Express dengan versi
+- **📖 Cara Penggunaan**: Tutorial interaktif yang dapat di-expand/collapse (default minimized)
+- **💡 Tips Penting**: Panduan troubleshooting dan informasi reload manual (default minimized)
 - **🔍 Filter Section**: Dropdown selector bulan dan tahun
-- **⚡ Action Button**: Tombol "Terapkan & Unduh Semua"
+- **⚡ Action Buttons**: Tombol download dengan tombol STOP untuk menghentikan proses
 - **📊 Status Area**: Pesan progres dan status real-time
-- **ℹ️ Footer**: Nomor versi dan informasi kontak
+- **🚀 Promosi Banner**: Informasi tentang E-faktur Automation dan donasi
+- **ℹ️ Footer**: Informasi pendukung dan kredit
+
+### Panduan Sections
+
+#### 📖 Cara Penggunaan (Default Minimized)
+- **Langkah 1**: Persiapan - Login ke CoreTax DJP dan buka halaman Bukti Potong
+- **Langkah 2**: Pilih Masa Pajak - Pilih bulan dan tahun
+- **Langkah 3**: Mulai Download - Klik tombol download
+- **Langkah 4**: Tunggu Proses - Download otomatis dengan jeda
+
+#### 💡 Tips Penting (Default Minimized)
+- **🔄 Cara Reload Ekstensi Manual**: Langkah-langkah jika ekstensi tidak merespon
+- **⏹️ Cara Menghentikan Download**: Metode STOP button dan alternatif tutup browser
+- **🔧 Solusi Masalah Umum**: Troubleshooting untuk berbagai isu
 
 ### Pesan Status
 
@@ -86,15 +106,18 @@ Pilih Bulan/Tahun → Klik Tombol → Filter Diterapkan → Halaman Refresh → 
 
 ```
 BukpotExpress/
-├── 📄 manifest.json           # Konfigurasi ekstensi
-├── 🎨 popup.html             # Antarmuka sidebar
-├── 🎨 popup.css              # Styling sidebar
-├── ⚙️ popup.js               # Logika sidebar
-├── 🔧 background.js          # Background service worker
+├── 📄 manifest.json           # Konfigurasi ekstensi (Manifest V3)
+├── 🎨 popup.html             # Antarmuka popup
+├── 🎨 popup.css              # Styling popup
+├── ⚙️ popup.js               # Logika popup
+├── 🎨 sidebar.html           # Antarmuka sidebar
+├── 🎨 sidebar.css            # Styling sidebar
+├── ⚙️ sidebar.js             # Logika sidebar
+├── 🔧 background.js          # Background service worker dengan permission recovery
 ├── 🔄 filter_changer.js      # Otomasi filter periode pajak
 ├── 📥 collector.js           # Logika pengumpulan dokumen
 ├── 💉 injector.js            # Injeksi modal progres
-├── ⬇️ downloader.js          # Koordinasi pengunduhan
+├── ⬇️ downloader.js          # Koordinasi pengunduhan single page
 ├── 📄 multi_page_downloader.js # Pengunduhan multi-halaman
 ├── 🖼️ images/                # Ikon ekstensi
 │   ├── icon16.png
@@ -102,6 +125,7 @@ BukpotExpress/
 │   └── icon128.png
 ├── 📖 README.md              # Dokumentasi ini
 ├── ✅ TESTING_CHECKLIST.md   # Daftar periksa pengujian
+├── 📄 LICENSE                # Apache 2.0 + Commons Clause
 └── 📄 README_v2.0.md         # Dokumentasi versi lama
 ```
 
@@ -128,27 +152,27 @@ BukpotExpress/
 
 ## 🔧 Pemecahan Masalah
 
-### Masalah Umum
+### Masalah Umum & Solusi
 
-#### 1. **Sidebar tidak terbuka**
-- ✅ Pastikan menggunakan Chrome 114+ (persyaratan Side Panel API)
-- ✅ Pastikan ekstensi dimuat dengan benar
-- ✅ Refresh halaman CoreTax dan coba lagi
+#### 1. **Ekstensi tidak merespon**
+- ✅ **Cara 1**: Buka `chrome://extensions/` → Cari "Bukpot Express" → Klik 🔄 Reload
+- ✅ **Cara 2**: Refresh halaman CoreTax dan coba kembali
+- ✅ **Cara 3**: Restart browser Chrome
 
 #### 2. **Filter tidak diterapkan**
 - ✅ Pastikan berada di halaman CoreTax yang benar dengan daftar dokumen
 - ✅ Pastikan dropdown periode pajak terlihat di halaman
 - ✅ Coba refresh halaman dan restart proses
 
-#### 3. **Unduhan tidak dimulai**
-- ✅ Pastikan ada dokumen yang tersedia untuk periode yang dipilih
-- ✅ Pastikan tombol unduh terlihat di halaman
-- ✅ Pastikan tidak ada popup blocker yang mengganggu
+#### 3. **Download macet atau error**
+- ✅ Klik tombol **STOP** untuk menghentikan proses
+- ✅ Jika tombol tidak berfungsi, tutup browser Chrome
+- ✅ Mulai kembali dengan filter yang sama
 
-#### 4. **Ekstensi tidak berfungsi**
-- ✅ Buka Developer Tools (F12) dan periksa Console untuk error
-- ✅ Pastikan semua izin telah diberikan
-- ✅ Coba nonaktifkan ekstensi lain yang mungkin bentrok
+#### 4. **Permission denied error**
+- ✅ Reload ekstensi secara manual melalui `chrome://extensions/`
+- ✅ Refresh halaman CoreTax
+- ✅ Coba proses kembali
 
 ### Debug Information
 
@@ -171,6 +195,27 @@ Ekstensi menyediakan logging detail di browser console. Untuk melihat logs:
 | Opera | 100+ | ⚠️ Test Required |
 | Firefox | - | ❌ Not Supported |
 
+## 🚀 Tools Lainnya oleh AlatPajakID
+
+### E-faktur Automation
+**Cape kreditkan pajak masukan satu-satu? Otomatisasikan dengan E-faktur Automation!**
+
+- 🚀 **Solusi cerdas** untuk efisiensi pajak Anda
+- ⚡ **Otomasi lengkap** proses input pajak masukan
+- 💡 ** hemat waktu** dan kurangi human error
+- 📈 **Tingkatkan produktivitas** tim akuntansi Anda
+
+**[👉 Cek sekarang di alatpajak.id](https://alatpajak.id)**
+
+## 🤝 Dukung Pengembangan
+
+Jika Anda merasa tools ini bermanfaat, dukung pengembangan kami:
+
+- ☕ **[Buy Me Coffee](https://trakteer.id/alatpajakid/tip)** - Dukung developer dengan donasi
+- 🌟 **Beri bintang** di repository GitHub
+- 🐛 **Report bug** dan berikan feedback
+- 📢 **Bagikan** ke rekan kerja Anda
+
 ## 🤝 Kontribusi
 
 Kami menyambut kontribusi dari komunitas! Untuk berkontribusi:
@@ -190,13 +235,25 @@ Kami menyambut kontribusi dari komunitas! Untuk berkontribusi:
 
 ## 📝 Changelog
 
+### v2.0.1 (2025-01-08)
+- ✨ **NEW**: Clean interface dengan sections yang default minimized
+- ✨ **NEW**: Tips Section dengan panduan troubleshooting terintegrasi
+- ✨ **NEW**: Promosi banner untuk E-faktur Automation
+- ✨ **NEW**: Buy Me Coffee donation link
+- 🐛 **FIX**: Single page download sekarang mengunduh semua file, bukan hanya file pertama
+- 🔧 **IMPROVEMENT**: Update license ke Apache 2.0 + Commons Clause
+- 🔧 **IMPROVEMENT**: Enhanced permission recovery system
+- 🔧 **IMPROVEMENT**: Better error handling dan user feedback
+- 🗑️ **REMOVED**: Hard Refresh button (diganti dengan panduan manual)
+
 ### v2.0.0 (2025-01-08)
 - ✨ **NEW**: Sidebar interface yang persisten
 - ✨ **NEW**: Filter periode pajak otomatis
 - ✨ **NEW**: One-click download functionality
-- 🐛 **FIX**: Enhanced error handling
-- 🔧 **IMPROVEMENT**: Better user experience
+- ✨ **NEW**: Enhanced error handling dengan automatic recovery
 - 🔧 **IMPROVEMENT**: Manifest V3 compatibility
+- 🔧 **IMPROVEMENT**: Better user experience
+- 🔧 **IMPROVEMENT**: Comprehensive logging system
 
 ### v1.x.x - Legacy Versions
 - 📦 Popup interface dasar
@@ -208,18 +265,29 @@ Kami menyambut kontribusi dari komunitas! Untuk berkontribusi:
 Untuk dukungan teknis atau pertanyaan:
 
 - 📧 **Email**: support@alatpajak.my.id
+- 🌐 **Website**: [alatpajak.id](https://alatpajak.id)
+- ☕ **Donasi**: [Trakteer](https://trakteer.id/alatpajakid/tip)
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/username/BukpotExpress/issues)
 - 💬 **Discussions**: [GitHub Discussions](https://github.com/username/BukpotExpress/discussions)
 
 ## ⚖️ Lisensi
 
-Proyek ini dilisensikan di bawah **MIT License** - lihat file [LICENSE](LICENSE) untuk detailnya.
+Proyek ini dilisensikan di bawah **Apache License 2.0 dengan Commons Clause** - lihat file [LICENSE](LICENSE) untuk detailnya.
+
+### 📋 Ringkasan Lisensi
+
+- ✅ **Penggunaan Gratis**: Untuk keperluan personal dan non-komersial
+- ✅ **Modifikasi**: Dapat mengubah source code
+- ✅ **Distribusi**: Dapat mendistribusikan untuk non-komersial
+- ❌ **Komersial**: Diperlukan izin tertulis untuk penggunaan komersial
+- 📞 **Lisensi Komersial**: Hubungi support@alatpajak.my.id
 
 ## 🙏 Kredit
 
 - **Direktorat Jenderal Pajak** - Portal CoreTax DJP
-- **AlatPajakID Dev Team** - Inisiator
-- **Kontributor Komunitas** - Dukungan dan feedback
+- **AlatPajakID Dev Team** - Inisiator dan maintainer
+- **Kontributor Komunitas** - Dukungan, feedback, dan testing
+- **Pengguna Setia** - Yang terus mendukung pengembangan tools pajak gratis
 
 ---
 
@@ -229,6 +297,6 @@ Proyek ini dilisensikan di bawah **MIT License** - lihat file [LICENSE](LICENSE)
 
 Made with ❤️ by [AlatPajakId Dev](mailto:support@alatpajak.my.id)
 
-© 2025 Bukpot Express. All Rights Reserved.
+© 2025 Bukpot Express. Licensed under Apache 2.0 + Commons Clause.
 
 </div>
