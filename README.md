@@ -1,6 +1,6 @@
 # 📋 Bukpot Express
 
-[![Version](https://img.shields.io/badge/version-1.0-blue.svg)](https://github.com/username/BukpotExpress)
+[![Version](https://img.shields.io/badge/version-2.0-blue.svg)](https://github.com/username/BukpotExpress)
 [![Chrome Extension](https://img.shields.io/badge/chrome-extension-green.svg)](https://chrome.google.com/webstore)
 [![License](https://img.shields.io/badge/license-Apache%202.0%20%2B%20Commons%20Clause-orange.svg)](LICENSE)
 
@@ -22,6 +22,12 @@
 
 - **💡 Tips & Trik Terintegrasi** - Panduan lengkap langsung di ekstensi! Dari cara reload hingga solusi masalah, semua ada tanpa perlu browsing.
 
+- **⏹️ Stop Button yang Andal** - Tombol STOP yang berfungsi dengan baik, menampilkan jumlah file yang berhasil diunduh saat proses dihentikan.
+
+- **📄 Multi-Page Download** - Kemampuan mengunduh dokumen dari beberapa halaman secara otomatis dengan navigasi pintar.
+
+- **⏰ Waktu Terbaik Penggunaan** - Tips optimal untuk menggunakan ekstensi saat CoreTax sedang lancar.
+
 ### 🔧 Kemampuan Teknis Canggih di Balik Kemudahan
 - ✅ **Manifest V3 Compatible** - Teknologi terbaru Chrome yang lebih aman dan cepat
 - ✅ **Side Panel API** - Interface modern yang tidak mengganggu workflow
@@ -29,6 +35,10 @@
 - ✅ **Auto Recovery System** - Bangkit sendiri dari error tanpa perlu restart
 - ✅ **Queue Processing** - Download rapih teratur seperti antrian bank
 - ✅ **Permission Management** - Tidak perlu setting manual, semua otomatis
+- ✅ **Enhanced Stop Functionality** - Stop button dengan accurate progress reporting
+- ✅ **Multi-Page Navigation** - Navigasi otomatis antar halaman dengan konfirmasi perubahan
+- ✅ **Frame Broadcasting** - Pengiriman perintah ke semua frame untuk reliability
+- ✅ **Message Port Handling** - Penanganan error komunikasi async yang robust
 
 ## 📋 Persyaratan Sistem
 
@@ -60,14 +70,18 @@
 3. **📅 Pilih Periode Pajak**:
    - Pilih bulan yang diinginkan dari dropdown "Pilih Bulan"
    - Pilih tahun yang diinginkan dari dropdown "Pilih Tahun"
-4. **▶️ Mulai Proses**: Klik tombol "Filter & Download" atau "Unduh Semua Bukti Potong"
-5. **📊 Monitor Progres**: Amati area status untuk update real-time
-6. **✅ Unduh Selesai**: Semua dokumen akan otomatis terunduh ke folder Downloads
+4. **⚙️ Pilih Mode Download**:
+   - **Single Page**: Download semua dokumen dari halaman saat ini
+   - **Multi-Page**: Download dari semua halaman yang tersedia
+5. **▶️ Mulai Proses**: Klik tombol "Filter & Download"
+6. **📊 Monitor Progres**: Amati area status untuk update real-time
+7. **⏹️ Stop Kapan Saja**: Klik tombol "STOP Download" untuk menghentikan proses
+8. **✅ Unduh Selesai**: Semua dokumen akan otomatis terunduh ke folder Downloads
 
 ### Flow Proses
 
 ```
-Pilih Bulan/Tahun → Klik Tombol → Filter Diterapkan → Halaman Refresh → Auto-Download Mulai → File Terunduh
+Pilih Bulan/Tahun → Pilih Mode Download → Klik Tombol → Filter Diterapkan → Halaman Refresh → Auto-Download Mulai → File Terunduh
 ```
 
 ## 🖥️ Antarmuka Pengguna
@@ -76,10 +90,11 @@ Pilih Bulan/Tahun → Klik Tombol → Filter Diterapkan → Halaman Refresh → 
 
 - **🎨 Logo**: Branding Bukpot Express dengan versi
 - **📖 Cara Penggunaan**: Tutorial interaktif yang dapat di-expand/collapse (default minimized)
-- **💡 Tips Penting**: Panduan troubleshooting dan informasi reload manual (default minimized)
+- **💡 Tips Penting**: Panduan troubleshooting, tips penggunaan optimal, dan informasi reload manual (default minimized)
 - **🔍 Filter Section**: Dropdown selector bulan dan tahun
-- **⚡ Action Buttons**: Tombol download dengan tombol STOP untuk menghentikan proses
-- **📊 Status Area**: Pesan progres dan status real-time
+- **⚙️ Mode Download**: Pilihan antara Single Page dan Multi-Page download
+- **⚡ Action Buttons**: Tombol "Filter & Download" dengan tombol "STOP Download" yang andal
+- **📊 Status Area**: Pesan progres dan status real-time dengan update yang jelas
 - **🚀 Promosi Banner**: Informasi tentang E-faktur Automation dan donasi
 - **ℹ️ Footer**: Informasi pendukung dan kredit
 
@@ -92,8 +107,9 @@ Pilih Bulan/Tahun → Klik Tombol → Filter Diterapkan → Halaman Refresh → 
 - **Langkah 4**: Tunggu Proses - Download otomatis dengan jeda
 
 #### 💡 Tips Penting (Default Minimized)
+- **⏰ Waktu Terbaik Penggunaan**: Tips optimal menggunakan ekstensi saat CoreTax lancar
 - **🔄 Cara Reload Ekstensi Manual**: Langkah-langkah jika ekstensi tidak merespon
-- **⏹️ Cara Menghentikan Download**: Metode STOP button dan alternatif tutup browser
+- **⏹️ Cara Menghentikan Download**: Metode STOP button yang andal dan alternatif
 - **🔧 Solusi Masalah Umum**: Troubleshooting untuk berbagai isu
 
 ### Pesan Status
@@ -101,9 +117,11 @@ Pilih Bulan/Tahun → Klik Tombol → Filter Diterapkan → Halaman Refresh → 
 - **🟢 Siap**: "Siap untuk memulai unduh otomatis."
 - **🟡 Memfilter**: "Menerapkan filter masa pajak..."
 - **🔥 Berhasil**: "Filter berhasil diterapkan. Memulai proses unduh otomatis..."
-- **💪 Mengunduh**: "Mengunduh semua dokumen..."
-- **✅ Selesai**: "Proses unduh selesai!"
+- **💪 Mengunduh**: "Mengunduh semua dokumen..." / "📥 Mengunduh halaman X dari beberapa halaman..."
+- **⏹️ Dihentikan**: "⏹️ Download dihentikan oleh user" dengan jumlah file yang berhasil diunduh
+- **✅ Selesai**: "Proses unduh selesai!" / "Download multi-halaman selesai! Total: X file dari Y halaman"
 - **❌ Error**: Pesan error deskriptif
+- **⚠️ Timeout**: "Multi-page download timeout - process may still be running"
 
 ## 🏗️ Struktur Kode
 
@@ -144,6 +162,8 @@ BukpotExpress/
 
 - **`https://coretax.pajak.go.id/*`**: Portal CoreTax DJP
 - **`https://*.coretax.pajak.go.id/*`**: Subdomain Coretax
+- **`https://coretaxdjp.pajak.go.id/*`**: Portal Coretax DJP Alternative
+- **`https://*.coretaxdjp.pajak.go.id/*`**: Subdomain Coretax DJP Alternative
 
 ### 🛡️ Keamanan & Privasi
 
@@ -167,9 +187,10 @@ BukpotExpress/
 - ✅ Coba refresh halaman dan restart proses
 
 #### 3. **Download macet atau error**
-- ✅ Klik tombol **STOP** untuk menghentikan proses
+- ✅ Klik tombol **STOP** untuk menghentikan proses (akan menampilkan jumlah file yang berhasil diunduh)
 - ✅ Jika tombol tidak berfungsi, tutup browser Chrome
 - ✅ Mulai kembali dengan filter yang sama
+- ✅ Multi-page download memiliki safety timeout 60 detik untuk mencegah stuck state
 
 #### 4. **Permission denied error**
 - ✅ Reload ekstensi secara manual melalui `chrome://extensions/`
@@ -186,6 +207,8 @@ Ekstensi menyediakan logging detail di browser console. Untuk melihat logs:
    - `BG:` (Background script logs)
    - `Content script:` (Content script logs)
    - `Collector:` (Collector script logs)
+   - `Downloader:` (Single page download logs)
+   - `Multi-page downloader:` (Multi-page download logs)
    - `FilterChanger:` (Filter automation logs)
 
 ## 📊 Kompatibilitas Browser
@@ -236,6 +259,21 @@ Kami menyambut kontribusi dari komunitas! Untuk berkontribusi:
 - 🐛 Report bug dengan jelas
 
 ## 📝 Changelog
+
+### v2.0 (2025-10-09)
+- 🐛 **FIX**: Stop button sekarang menampilkan jumlah file yang benar saat dihentikan (sebelumnya selalu 0)
+- 🐛 **FIX**: Multi-page download error "message port closed before a response was received" telah diatasi
+- 🐛 **FIX**: Enhanced stop functionality dengan frame broadcasting untuk reliability
+- ✨ **NEW**: Multi-page download dengan navigasi otomatis antar halaman
+- ✨ **NEW**: Mode download pilihan antara Single Page dan Multi-Page
+- ✨ **NEW**: Tips "Waktu Terbaik Penggunaan" untuk optimal performance
+- ✨ **NEW**: Safety timeout 60 detik untuk mencegah stuck state di multi-page download
+- ✨ **NEW**: Enhanced logging system untuk debugging yang lebih baik
+- 🔧 **IMPROVEMENT**: Message port handling untuk komunikasi async yang robust
+- 🔧 **IMPROVEMENT**: Enhanced error handling dengan automatic recovery
+- 🔧 **IMPROVEMENT**: Additional host permissions untuk broader CoreTax compatibility
+- 🔧 **IMPROVEMENT**: UI improvements dengan proper z-index dan pointer events
+- 🔧 **IMPROVEMENT**: Better status reporting untuk multi-page download progress
 
 ### v1.0 (2025-10-08)
 - ✨ **NEW**: Sidebar interface yang persisten dengan Side Panel API
