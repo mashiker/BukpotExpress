@@ -4,7 +4,7 @@
 
 // DOM Elements - akan diinisialisasi setelah DOM dimuat
 let loadingOverlay, mainSection, bulanSelect, tahunSelect;
-let filterBtn, statusLog, clearLogBtn, stopBtn;
+let filterBtn, statusLog, clearLogBtn, stopBtn, hardForceStopBtn;
 let downloadModeRadios;
 
 // Inisialisasi DOM elements
@@ -15,6 +15,7 @@ function initializeElements() {
     tahunSelect = document.getElementById('tahunSelect');
     filterBtn = document.getElementById('filterBtn');
     stopBtn = document.getElementById('stopBtn');
+    hardForceStopBtn = document.getElementById('hardForceStopBtn');
     statusLog = document.getElementById('statusLog');
     clearLogBtn = document.getElementById('clearLogBtn');
     downloadModeRadios = document.querySelectorAll('input[name="downloadMode"]');
@@ -148,6 +149,52 @@ function setupEventListeners() {
                 updateAndSaveStatus("❌ Tidak ada tab aktif ditemukan");
             }
         });
+    });
+
+    // Force Close Browser button - alternative stop method
+    hardForceStopBtn.addEventListener('click', () => {
+        console.log('Force Close Browser button clicked!');
+
+        // Show confirmation dialog
+        const confirmed = confirm(
+            "Force Close Browser\n\n" +
+            "This will close the entire Chrome browser window.\n" +
+            "All downloads will stop immediately.\n\n" +
+            "You can reopen the browser and continue later.\n\n" +
+            "Continue with force close?"
+        );
+
+        if (confirmed) {
+            updateAndSaveStatus("🔄 Force closing browser in 3 seconds...");
+            console.log('Force close confirmed - Closing browser...');
+
+            // Show countdown
+            let countdown = 3;
+            const countdownInterval = setInterval(() => {
+                updateAndSaveStatus(`Closing browser in ${countdown} seconds...`);
+                countdown--;
+
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    updateAndSaveStatus("✅ Browser closed successfully.");
+
+                    // Close the browser window
+                    setTimeout(() => {
+                        window.close();
+                    }, 500);
+                }
+            }, 1000);
+
+            // Try to close all browser windows using Chrome API
+            chrome.windows.getAll({}, (windows) => {
+                windows.forEach(window => {
+                    chrome.windows.remove(window.id);
+                });
+            });
+        } else {
+            updateAndSaveStatus("Force close cancelled.");
+            console.log('Force close cancelled by user');
+        }
     });
 
     // Hard refresh button has been removed and replaced with Tips section
