@@ -134,13 +134,18 @@ function setupEventListeners() {
 
     // Stop button - stop download
     stopBtn.addEventListener('click', () => {
+        console.log('Stop button clicked!');
+        updateAndSaveStatus("⏹️ Tombol stop ditekan, menghentikan proses download...");
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             if (tabs.length > 0) {
-                updateAndSaveStatus("⏹️ Menghentikan proses download...");
+                console.log('Sending STOP_DOWNLOAD message for tab:', tabs[0].id);
                 chrome.runtime.sendMessage({
                     type: "STOP_DOWNLOAD",
                     tabId: tabs[0].id
                 });
+            } else {
+                console.log('No active tabs found');
+                updateAndSaveStatus("❌ Tidak ada tab aktif ditemukan");
             }
         });
     });

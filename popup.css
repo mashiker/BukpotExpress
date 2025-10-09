@@ -252,7 +252,8 @@ select:focus {
   transition: all 0.2s ease-in-out;
   box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
   position: relative;
-  z-index: 10000; /* Higher than loading overlay */
+  z-index: 10001; /* Higher than loading overlay */
+  pointer-events: auto; /* Ensure button is clickable */
 }
 
 #stopBtn:hover:not(:disabled) {
@@ -443,6 +444,7 @@ select:focus {
   z-index: 9999;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
+  pointer-events: none; /* Allow clicks to pass through to stop button */
 }
 
 .spinner {

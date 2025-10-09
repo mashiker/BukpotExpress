@@ -213,12 +213,39 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 isDownloading = false;
                 downloadTabId = null;
 
-                // Send stop message to content scripts
+                // Send stop message to content scripts with error handling
                 chrome.tabs.sendMessage(tabId, {
                     action: 'stopDownload'
+                }, (response) => {
+                    if (chrome.runtime.lastError) {
+                        console.log("BG: Error sending stop message:", chrome.runtime.lastError.message);
+                    } else {
+                        console.log("BG: Stop message sent successfully");
+                    }
+                });
+
+                // Also try to broadcast to all frames as backup
+                chrome.webNavigation.getAllFrames({tabId: tabId}, (frames) => {
+                    if (chrome.runtime.lastError) {
+                        console.log("BG: Could not get frames:", chrome.runtime.lastError.message);
+                        return;
+                    }
+
+                    frames.forEach(frame => {
+                        chrome.tabs.sendMessage(tabId, {
+                            action: 'stopDownload'
+                        }, {frameId: frame.frameId}, (response) => {
+                            if (chrome.runtime.lastError) {
+                                console.log(`BG: Error sending stop to frame ${frame.frameId}:`, chrome.runtime.lastError.message);
+                            }
+                        });
+                    });
                 });
 
                 sendStatusUpdate("⏹️ Download dihentikan oleh user", true);
+            } else {
+                console.log("BG: Not currently downloading or tab mismatch");
+                sendStatusUpdate("⚠️ Tidak ada download yang sedang berjalan", true);
             }
             break;
 
@@ -455,39 +482,33 @@ function injectMultiPageDownloader(tabId) {
 
 // Helper function to start the multi-page process after successful injection
 function startMultiPageProcess(tabId) {
-    // Send message to start multi-page download (expecting immediate response)
-    const messageTimeout = setTimeout(() => {
-        console.warn("BG: Multi-page download start message timeout - but proceeding anyway");
-        sendStatusUpdate("Multi-page download starting (timeout warning)...");
-    }, 5000); // 5 second timeout
+    console.log("BG: Starting multi-page process without response expectation");
 
+    // Send message to start multi-page download (fire and forget)
     chrome.tabs.sendMessage(tabId, {
         action: 'startMultiPageDownload'
     }, (response) => {
-        clearTimeout(messageTimeout); // Clear timeout if we get response
-
+        // Ignore any response or errors - the multi-page downloader will handle its own completion
         if (chrome.runtime.lastError) {
-            console.error("BG: Error starting multi-page download:", chrome.runtime.lastError);
-            isDownloading = false;
-            downloadTabId = null;
-            sendStatusUpdate("Error starting multi-page download: " + chrome.runtime.lastError.message, true);
-            return;
-        }
-
-        console.log("BG: Multi-page download response received:", response);
-
-        // Check if we got a valid response
-        if (response && response.success) {
-            console.log("BG: Multi-page download started successfully");
-            // Don't reset state here - wait for completion message
-            sendStatusUpdate("Multi-page download in progress...");
+            console.log("BG: Expected message port closure for async multi-page download:", chrome.runtime.lastError.message);
         } else {
-            console.error("BG: Failed to start multi-page download - invalid response");
-            isDownloading = false;
-            downloadTabId = null;
-            sendStatusUpdate("Gagal memulai multi-page download - tidak ada respons", true);
+            console.log("BG: Multi-page download start acknowledged:", response);
         }
     });
+
+    // Update status immediately
+    console.log("BG: Multi-page download initiated successfully");
+    sendStatusUpdate("Multi-page download in progress...");
+
+    // Set up a safety timeout to reset state if completion message is never received
+    setTimeout(() => {
+        if (isDownloading && downloadTabId === tabId) {
+            console.log("BG: Multi-page download safety timeout reached - resetting state");
+            isDownloading = false;
+            downloadTabId = null;
+            sendStatusUpdate("⚠️ Multi-page download timeout - process may still be running", true);
+        }
+    }, 60000); // 60 second safety timeout
 }
 
 // Listen for automatic download completion

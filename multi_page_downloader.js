@@ -468,6 +468,15 @@ function completeMultiPageDownload() {
 
     displayModal(title, message, details, true);
 
+    // Send completion message to background script to reset UI state
+    chrome.runtime.sendMessage({
+        type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
+        totalFiles: totalFilesDownloaded,
+        totalPages: totalPagesDownloaded
+    }).catch(error => {
+        console.log('Multi-page downloader: Could not send completion message:', error.message);
+    });
+
     // Auto-close modal after 5 seconds (longer for multi-page)
     setTimeout(() => {
         if (typeof closeModal === 'function') {
@@ -481,9 +490,7 @@ function completeMultiPageDownload() {
         }
     }, 5000);
 
-    // Note: No longer sending message to background script
-    // Background script is already waiting for the response from startMultiPageDownload
-    console.log('Multi-page downloader: Completion handled by async response');
+    console.log('Multi-page downloader: Completion message sent to background script');
 }
 
 // Chrome runtime message handler

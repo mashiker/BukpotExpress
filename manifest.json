@@ -21,7 +21,9 @@
    "permissions": [ "activeTab", "scripting", "sidePanel", "storage", "tabs" ],
    "host_permissions": [
       "https://coretax.pajak.go.id/*",
-      "https://*.coretax.pajak.go.id/*"
+      "https://*.coretax.pajak.go.id/*",
+      "https://coretaxdjp.pajak.go.id/*",
+      "https://*.coretaxdjp.pajak.go.id/*"
    ],
    "side_panel": {
       "default_path": "popup.html"

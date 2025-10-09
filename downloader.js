@@ -92,6 +92,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log("Downloader: stopDownload received");
         isDownloadStopped = true;
 
+        // Store success count before clearing sessionStorage
+        const successCount = parseInt(sessionStorage.getItem('coretaxSuccessCount') || 0);
+
         // Clear sessionStorage
         Object.keys(sessionStorage).forEach(key => {
             if (key.startsWith('coretax')) {
@@ -104,8 +107,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             closeModal();
         }
 
-        // Show stopped message
-        const successCount = parseInt(sessionStorage.getItem('coretaxSuccessCount') || 0);
+        // Show stopped message with correct count
         displayModal('Download Stopped', 'Download dihentikan', `Total files downloaded: ${successCount}`, true);
 
         // Auto-close modal after 3 seconds

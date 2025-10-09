@@ -69,12 +69,16 @@ function collectAndStoreIdentifiers() {
                     if (idText) {
                         identifierSet.add(idText);
                         console.log(`Collector: Added identifier: ${idText}`);
+                    } else {
+                        console.log(`Collector: Row ${index} has empty identifier text`);
                     }
+                } else {
+                    console.log(`Collector: Row ${index} has no identifier cell at index ${identifierColumnIndex}`);
                 }
             } else {
                 skippedCount++;
                 if (skippedCount <= 5) { // Only log first 5 to avoid spam
-                    console.log(`Collector: Row ${index} has no download button`);
+                    console.log(`Collector: Row ${index} has no download button - checking row content:`, row.innerText.substring(0, 100));
                 }
             }
         });
