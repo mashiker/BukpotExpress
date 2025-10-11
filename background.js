@@ -5,6 +5,44 @@
 let isDownloading = false;
 let downloadTabId = null;
 
+// Input validation function
+function validateFilterRequest(request) {
+    // Check required fields
+    if (!request || typeof request !== 'object') {
+        return { valid: false, error: "Request format tidak valid" };
+    }
+
+    // Validate tabId
+    if (!request.tabId || typeof request.tabId !== 'number') {
+        return { valid: false, error: "Tab ID tidak valid" };
+    }
+
+    // Validate month if provided
+    if (request.month) {
+        const monthNum = parseInt(request.month);
+        if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
+            return { valid: false, error: "Bulan tidak valid. Harus antara 1-12." };
+        }
+    }
+
+    // Validate year if provided
+    if (request.year) {
+        const currentYear = new Date().getFullYear();
+        const yearNum = parseInt(request.year);
+        if (isNaN(yearNum) || yearNum < 2000 || yearNum > currentYear + 1) {
+            return { valid: false, error: `Tahun tidak valid. Harus antara 2000-${currentYear + 1}.` };
+        }
+    }
+
+    // Validate download mode
+    const validModes = ['single', 'all'];
+    if (request.downloadMode && !validModes.includes(request.downloadMode)) {
+        return { valid: false, error: "Mode download tidak valid." };
+    }
+
+    return { valid: true };
+}
+
 // Function to validate tab state and permissions before injection
 function validateTabState(tabId) {
     return new Promise((resolve) => {
@@ -150,6 +188,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         case "APPLY_FILTER_AND_DOWNLOAD":
             if (!isDownloading) {
+                // Validate request data
+                const validation = validateFilterRequest(request);
+                if (!validation.valid) {
+                    console.error("BG: Invalid request data:", validation.error);
+                    sendStatusUpdate(`❌ ${validation.error}`, true);
+                    return;
+                }
+
                 isDownloading = true;
                 downloadTabId = tabId;
                 const downloadMode = request.downloadMode || 'single';

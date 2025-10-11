@@ -1,4 +1,47 @@
+// Theme Management Functions
+function initializeTheme() {
+    // Load saved theme preference
+    chrome.storage.local.get(['theme'], (result) => {
+        const theme = result.theme || 'light';
+        applyTheme(theme);
+    });
+}
+
+function applyTheme(theme) {
+    const body = document.body;
+    const themeIcon = document.querySelector('.theme-icon');
+
+    if (theme === 'dark') {
+        body.setAttribute('data-theme', 'dark');
+        if (themeIcon) themeIcon.textContent = '☀️';
+    } else {
+        body.removeAttribute('data-theme');
+        if (themeIcon) themeIcon.textContent = '🌙';
+    }
+
+    // Save theme preference
+    chrome.storage.local.set({ theme: theme });
+}
+
+function toggleTheme() {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
+}
+
+// Theme toggle event listener setup
+function setupThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize theme
+    setupThemeToggle();
+    initializeTheme();
+
     const monthSelect = document.getElementById('monthSelect');
     const yearSelect = document.getElementById('yearSelect');
     const applyDownloadBtn = document.getElementById('applyDownloadBtn');

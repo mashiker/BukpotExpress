@@ -101,6 +101,32 @@ function setDownloadButtonState(isDownloading) {
     }
 }
 
+// Input validation functions
+function validateMonthYear(month, year) {
+    // Validate month (01-12)
+    const monthNum = parseInt(month);
+    if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
+        return { valid: false, error: "Bulan tidak valid. Pilih antara Januari-Desember." };
+    }
+
+    // Validate year (reasonable range)
+    const currentYear = new Date().getFullYear();
+    const yearNum = parseInt(year);
+    if (isNaN(yearNum) || yearNum < 2000 || yearNum > currentYear + 1) {
+        return { valid: false, error: `Tahun tidak valid. Masukkan tahun antara 2000-${currentYear + 1}.` };
+    }
+
+    return { valid: true };
+}
+
+function validateDownloadMode(mode) {
+    const validModes = ['single', 'all'];
+    if (!validModes.includes(mode)) {
+        return { valid: false, error: "Mode download tidak valid." };
+    }
+    return { valid: true };
+}
+
 // Event listeners
 function setupEventListeners() {
     // Filter button - filter by tax period then download
@@ -108,14 +134,42 @@ function setupEventListeners() {
         const selectedMonth = bulanSelect.value;
         const selectedYear = tahunSelect.value;
 
+        // Validate inputs
         if (!selectedMonth || !selectedYear) {
             updateAndSaveStatus("⚠️ Silakan pilih bulan dan tahun terlebih dahulu");
             return;
         }
 
+        // Sanitize and validate inputs
+        const monthValidation = validateMonthYear(selectedMonth, selectedYear);
+        if (!monthValidation.valid) {
+            updateAndSaveStatus(`❌ ${monthValidation.error}`);
+            return;
+        }
+
+        const downloadMode = getSelectedDownloadMode();
+        const modeValidation = validateDownloadMode(downloadMode);
+        if (!modeValidation.valid) {
+            updateAndSaveStatus(`❌ ${modeValidation.error}`);
+            return;
+        }
+
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             if (tabs.length > 0) {
-                const downloadMode = getSelectedDownloadMode();
+                // Additional validation: ensure we're on a valid domain
+                const tabUrl = tabs[0].url;
+                const isValidDomain = tabUrl && (
+                    tabUrl.includes('coretax.pajak.go.id') ||
+                    tabUrl.includes('.coretax.pajak.go.id') ||
+                    tabUrl.includes('coretaxdjp.pajak.go.id') ||
+                    tabUrl.includes('.coretaxdjp.pajak.go.id')
+                );
+
+                if (!isValidDomain) {
+                    updateAndSaveStatus("❌ Pastikan Anda berada di halaman CoreTax DJP yang valid");
+                    return;
+                }
+
                 const monthName = bulanSelect.options[bulanSelect.selectedIndex].text;
                 const modeText = downloadMode === 'single' ? 'satu halaman' : 'semua halaman';
                 updateAndSaveStatus(`Menerapkan filter: ${monthName} ${selectedYear} (mode: ${modeText})`);
@@ -125,8 +179,8 @@ function setupEventListeners() {
                 chrome.runtime.sendMessage({
                     type: "APPLY_FILTER_AND_DOWNLOAD",
                     tabId: tabs[0].id,
-                    month: selectedMonth,
-                    year: selectedYear,
+                    month: selectedMonth.trim(),
+                    year: selectedYear.trim(),
                     downloadMode: downloadMode
                 });
             }
@@ -220,6 +274,45 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
+// Theme Management Functions
+function initializeTheme() {
+    // Load saved theme preference
+    chrome.storage.local.get(['theme'], (result) => {
+        const theme = result.theme || 'light';
+        applyTheme(theme);
+    });
+}
+
+function applyTheme(theme) {
+    const body = document.body;
+    const themeIcon = document.querySelector('.theme-icon');
+
+    if (theme === 'dark') {
+        body.setAttribute('data-theme', 'dark');
+        if (themeIcon) themeIcon.textContent = '☀️';
+    } else {
+        body.removeAttribute('data-theme');
+        if (themeIcon) themeIcon.textContent = '🌙';
+    }
+
+    // Save theme preference
+    chrome.storage.local.set({ theme: theme });
+}
+
+function toggleTheme() {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
+}
+
+// Theme toggle event listener setup
+function setupThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+}
+
 // Initialize saat DOM dimuat
 document.addEventListener('DOMContentLoaded', () => {
     initializeElements();
@@ -227,6 +320,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     setupTutorialToggle();
     setupPromotionalCards();
+    setupThemeToggle();
+    initializeTheme();
 
     // Load existing logs dari storage
     chrome.storage.local.get({ efakturLogs: [] }, (result) => {

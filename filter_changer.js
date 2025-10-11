@@ -343,10 +343,51 @@ async function selectOption(option, bulan) {
     });
 }
 
+// Input validation function
+function validateFilterInput(bulan, tahun) {
+    // Validate month
+    if (!bulan || typeof bulan !== 'string') {
+        return { valid: false, error: "Format bulan tidak valid" };
+    }
+
+    const monthNum = parseInt(bulan);
+    if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
+        return { valid: false, error: "Bulan tidak valid. Harus antara 1-12." };
+    }
+
+    // Validate year
+    if (!tahun || typeof tahun !== 'string') {
+        return { valid: false, error: "Format tahun tidak valid" };
+    }
+
+    const currentYear = new Date().getFullYear();
+    const yearNum = parseInt(tahun);
+    if (isNaN(yearNum) || yearNum < 2000 || yearNum > currentYear + 1) {
+        return { valid: false, error: `Tahun tidak valid. Harus antara 2000-${currentYear + 1}.` };
+    }
+
+    return { valid: true };
+}
+
 // Chrome runtime message handler
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'applyTaxPeriodFilter') {
         console.log("Content script: applyTaxPeriodFilter received with data:", message.bulan, message.tahun);
+
+        // Validate input data
+        const validation = validateFilterInput(message.bulan, message.tahun);
+        if (!validation.valid) {
+            console.error("Content script: Invalid filter data:", validation.error);
+            sendResponse({
+                success: false,
+                message: validation.error,
+                error: validation.error,
+                bulan: message.bulan,
+                tahun: message.tahun
+            });
+            return;
+        }
+
         try {
             setupFilterMasaPajak(message.bulan, message.tahun)
                 .then(result => {

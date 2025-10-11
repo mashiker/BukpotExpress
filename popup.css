@@ -1,11 +1,45 @@
+/* Light Theme (Default) */
 :root {
   --primary-color: #005A9C;
   --primary-hover: #004170;
   --background-color: #ffffff;
+  --card-background: #ffffff;
   --light-gray: #f4f7f9;
+  --section-bg: #ffffff;
   --dark-text: #2c3e50;
   --light-text: #7f8c8d;
   --border-color: #e0e0e0;
+  --shadow: 0 2px 8px rgba(0,0,0,0.1);
+  --header-bg: linear-gradient(135deg, #005A9C 0%, #0074cc 100%);
+  --tutorial-bg: #f8f9fa;
+  --input-bg: #ffffff;
+  --input-border: #ddd;
+  --button-text: #ffffff;
+  --mode-bg: #f8f9fa;
+  --promo-bg: #f8f9fa;
+  --footer-bg: #f8f9fa;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --primary-color: #4a9eff;
+  --primary-hover: #2d8cf0;
+  --background-color: #1a1a1a;
+  --card-background: #242424;
+  --light-gray: #2d2d2d;
+  --section-bg: #2d2d2d;
+  --dark-text: #e0e0e0;
+  --light-text: #a0a0a0;
+  --border-color: #404040;
+  --shadow: 0 2px 8px rgba(0,0,0,0.3);
+  --header-bg: linear-gradient(135deg, #2d8cf0 0%, #4a9eff 100%);
+  --tutorial-bg: #2d2d2d;
+  --input-bg: #2d2d2d;
+  --input-border: #404040;
+  --button-text: #ffffff;
+  --mode-bg: #2d2d2d;
+  --promo-bg: #2d2d2d;
+  --footer-bg: #2d2d2d;
 }
 
 body {
@@ -16,8 +50,10 @@ body {
   min-height: 600px;
   margin: 0;
   background-color: var(--background-color);
+  color: var(--dark-text);
   padding: 0;
   overflow: visible;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .main-container {
@@ -34,7 +70,7 @@ body {
 .tutorial-section {
   width: 100%;
   margin-bottom: 20px;
-  background-color: white;
+  background-color: var(--section-bg);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
@@ -53,7 +89,7 @@ body {
 }
 
 .tutorial-header:hover {
-  background-color: #e8f4f8;
+  background-color: rgba(0, 90, 156, 0.1);
 }
 
 .tutorial-title {
@@ -120,23 +156,34 @@ body {
 
 /* Card Container */
 .card {
-  background: white;
+  background: var(--card-background);
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
   overflow: hidden;
   margin: 0;
+  transition: background-color 0.3s ease;
 }
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, var(--primary-color), #004170);
+  background: var(--header-bg);
   color: white;
   padding: 20px;
-  text-align: center;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 12px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
 }
 
 .header img {
@@ -148,6 +195,35 @@ body {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.theme-icon {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:active .theme-icon {
+  transform: scale(0.9);
 }
 
 /* Container */
@@ -182,7 +258,8 @@ select {
   border-radius: 6px;
   font-size: 14px;
   font-family: inherit;
-  background-color: white;
+  background-color: var(--input-bg);
+  color: var(--dark-text);
   transition: border-color 0.2s;
 }
 
@@ -414,9 +491,10 @@ select:focus {
 .tip-note {
   margin-top: 12px;
   padding: 8px 12px;
-  background-color: #e8f4f8;
+  background-color: var(--tutorial-bg);
   border-left: 3px solid var(--primary-color);
   border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
 .tip-note p {
@@ -538,7 +616,8 @@ select:focus {
   border: 2px solid var(--border-color);
   border-radius: 8px;
   transition: all 0.2s ease;
-  background-color: white;
+  background-color: var(--mode-bg);
+  color: var(--dark-text);
 }
 
 .radio-label:hover {
@@ -608,7 +687,7 @@ select:focus {
   align-items: center;
   gap: 16px;
   padding: 16px 20px;
-  background: white;
+  background: var(--promo-bg);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   transition: all 0.3s ease;
