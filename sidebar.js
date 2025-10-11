@@ -212,7 +212,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'APPLY_FILTER_AND_DOWNLOAD',
                 tabId: tab.id,
                 month: selectedMonth,
-                year: selectedYear
+                year: selectedYear,
+                downloadMode: 'all'
             }, function(response) {
                 if (chrome.runtime.lastError) {
                     console.error('Error sending message:', chrome.runtime.lastError);

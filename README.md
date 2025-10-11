@@ -1,6 +1,6 @@
 # 📋 Bukpot Express
 
-[![Version](https://img.shields.io/badge/version-2.0-blue.svg)](https://github.com/username/BukpotExpress)
+[![Version](https://img.shields.io/badge/version-1.0-blue.svg)](https://github.com/username/BukpotExpress)
 [![Chrome Extension](https://img.shields.io/badge/chrome-extension-green.svg)](https://chrome.google.com/webstore)
 [![License](https://img.shields.io/badge/license-Apache%202.0%20%2B%20Commons%20Clause-orange.svg)](LICENSE)
 
@@ -17,6 +17,8 @@
 - **🔄 Filter Otomatis Anti Ribet** - Lupakan scroll-scroll mencari periode pajak! Cukup pilih bulan & tahun dari dropdown, ekstensi yang akan mengatur semuanya.
 
 - **🛡️ Anti Error & Auto Recovery** - Sistem cerdas yang secara otomatis memperbaiki error dan melanjutkan download dari mana berhenti. **No more frustasi!**
+
+- **🔄 Mode Switching yang Andal** - Beralih antara multi-page dan single-page download tanpa perlu restart ekstensi. State management yang diperbaiki memastikan tidak ada konflik proses.
 
 - **📊 Progres Real-time yang Memuaskan** - Pantau setiap file yang diunduh dengan status update yang jelas. Tahu persis kapan pekerjaan selesai!
 
@@ -191,8 +193,15 @@ BukpotExpress/
 - ✅ Jika tombol tidak berfungsi, tutup browser Chrome
 - ✅ Mulai kembali dengan filter yang sama
 - ✅ Multi-page download memiliki safety timeout 60 detik untuk mencegah stuck state
+- ✅ **NEW**: Timeout conflicts telah diperbaiki - switching antar mode download sekarang lebih andal
+- ✅ **NEW**: State management diperbaiki untuk mencegah bug saat berpindah mode download
 
-#### 4. **Permission denied error**
+#### 4. **Mode switching tidak berfungsi**
+- ✅ **Issue**: Single-page download tidak bekerja setelah multi-page download
+- ✅ **Solution**: Timeout conflicts telah diperbaiki di v2.0.1 - restart ekstensi jika masih terjadi
+- ✅ **Prevention**: Tunggu proses download selesai sempurna sebelum mengganti mode
+
+#### 5. **Permission denied error**
 - ✅ Reload ekstensi secara manual melalui `chrome://extensions/`
 - ✅ Refresh halaman CoreTax
 - ✅ Coba proses kembali
@@ -260,36 +269,38 @@ Kami menyambut kontribusi dari komunitas! Untuk berkontribusi:
 
 ## 📝 Changelog
 
-### v2.0 (2025-10-09)
-- 🐛 **FIX**: Stop button sekarang menampilkan jumlah file yang benar saat dihentikan (sebelumnya selalu 0)
-- 🐛 **FIX**: Multi-page download error "message port closed before a response was received" telah diatasi
-- 🐛 **FIX**: Enhanced stop functionality dengan frame broadcasting untuk reliability
-- ✨ **NEW**: Multi-page download dengan navigasi otomatis antar halaman
-- ✨ **NEW**: Mode download pilihan antara Single Page dan Multi-Page
-- ✨ **NEW**: Tips "Waktu Terbaik Penggunaan" untuk optimal performance
-- ✨ **NEW**: Safety timeout 60 detik untuk mencegah stuck state di multi-page download
-- ✨ **NEW**: Enhanced logging system untuk debugging yang lebih baik
-- 🔧 **IMPROVEMENT**: Message port handling untuk komunikasi async yang robust
-- 🔧 **IMPROVEMENT**: Enhanced error handling dengan automatic recovery
-- 🔧 **IMPROVEMENT**: Additional host permissions untuk broader CoreTax compatibility
-- 🔧 **IMPROVEMENT**: UI improvements dengan proper z-index dan pointer events
-- 🔧 **IMPROVEMENT**: Better status reporting untuk multi-page download progress
-
-### v1.0 (2025-10-08)
+### v1.0 (2025-10-11) - Chrome Web Store Release
 - ✨ **NEW**: Sidebar interface yang persisten dengan Side Panel API
 - ✨ **NEW**: Filter periode pajak otomatis dengan dropdown bulan/tahun
 - ✨ **NEW**: One-click download functionality untuk kemudahan pengguna
+- ✨ **NEW**: Multi-page download dengan navigasi otomatis antar halaman
+- ✨ **NEW**: Mode download pilihan antara Single Page dan Multi-Page
 - ✨ **NEW**: Enhanced error handling dengan automatic recovery
 - ✨ **NEW**: Clean interface dengan sections yang default minimized
 - ✨ **NEW**: Tips Section dengan panduan troubleshooting terintegrasi
 - ✨ **NEW**: Promosi cards untuk E-faktur Automation dan Buy Me Coffee donation
 - ✨ **NEW**: Modern UI/UX design dengan gradient dan smooth animations
+- ✨ **NEW**: Enhanced logging system untuk debugging yang lebih baik
+- ✨ **NEW**: Safety timeout 60 detik untuk mencegah stuck state di multi-page download
+- ✨ **NEW**: Tips "Waktu Terbaik Penggunaan" untuk optimal performance
 - 🔧 **IMPROVEMENT**: Manifest V3 compatibility
 - 🔧 **IMPROVEMENT**: Enhanced permission recovery system
 - 🔧 **IMPROVEMENT**: Comprehensive logging system
 - 🔧 **IMPROVEMENT**: Better error handling dan user feedback
+- 🔧 **IMPROVEMENT**: Message port handling untuk komunikasi async yang robust
+- 🔧 **IMPROVEMENT**: Additional host permissions untuk broader CoreTax compatibility
+- 🔧 **IMPROVEMENT**: UI improvements dengan proper z-index dan pointer events
+- 🔧 **IMPROVEMENT**: Better status reporting untuk multi-page download progress
+- 🔧 **IMPROVEMENT**: Timeout tracking system untuk mencegah konflik antar proses
+- 🔧 **IMPROVEMENT**: Enhanced state cleanup saat berpindah mode download
 - 🔧 **IMPROVEMENT**: Update license ke Apache 2.0 + Commons Clause
+- 🐛 **FIX**: Stop button sekarang menampilkan jumlah file yang benar saat dihentikan
+- 🐛 **FIX**: Multi-page download error "message port closed before a response was received" telah diatasi
+- 🐛 **FIX**: Enhanced stop functionality dengan frame broadcasting untuk reliability
 - 🐛 **FIX**: Single page download sekarang mengunduh semua file, bukan hanya file pertama
+- 🐛 **FIX**: Multi-page download tidak berfungsi dari sidebar setelah perubahan validasi
+- 🐛 **FIX**: State management bug yang mencegah single-page download berfungsi setelah multi-page download
+- 🐛 **FIX**: Timeout conflicts antar proses download yang menyebabkan race conditions
 - 🗑️ **REMOVED**: Hard Refresh button (diganti dengan panduan manual On/Off)
 
 ## 📞 Dukungan & Kontak

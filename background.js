@@ -5,6 +5,30 @@
 let isDownloading = false;
 let downloadTabId = null;
 
+// Track pending timeouts for cleanup
+let pendingTimeouts = [];
+
+// Function to clear all pending timeouts
+function clearPendingTimeouts() {
+    pendingTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+    pendingTimeouts = [];
+    console.log("BG: Cleared all pending timeouts");
+}
+
+// Helper function to create tracked timeout
+function createTrackedTimeout(callback, delay) {
+    const timeoutId = setTimeout(() => {
+        // Remove this timeout from the tracking array
+        const index = pendingTimeouts.indexOf(timeoutId);
+        if (index > -1) {
+            pendingTimeouts.splice(index, 1);
+        }
+        callback();
+    }, delay);
+    pendingTimeouts.push(timeoutId);
+    return timeoutId;
+}
+
 // Input validation function
 function validateFilterRequest(request) {
     // Check required fields
@@ -97,7 +121,7 @@ function injectScriptWithRetry(tabId, scriptFile, callback, retryCount = 0) {
                     console.log(`BG: Retrying ${scriptFile} injection in ${retryDelays[retryCount]}ms...`);
                     sendStatusUpdate(`🔄 Memulihkan izin otomatis... (${retryCount + 1}/${maxRetries})`);
 
-                    setTimeout(() => {
+                    createTrackedTimeout(() => {
                         injectScriptWithRetry(tabId, scriptFile, callback, retryCount + 1);
                     }, retryDelays[retryCount]);
                     return;
@@ -107,7 +131,7 @@ function injectScriptWithRetry(tabId, scriptFile, callback, retryCount = 0) {
                     sendStatusUpdate("🔄 Mencoba pendekatan alternatif...");
 
                     // Simple wait and try one final time
-                    setTimeout(() => {
+                    createTrackedTimeout(() => {
                         console.log(`BG: Final attempt to inject ${scriptFile}`);
                         chrome.scripting.executeScript({
                             target: { tabId: tabId },
@@ -188,6 +212,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         case "APPLY_FILTER_AND_DOWNLOAD":
             if (!isDownloading) {
+                // Clear any pending timeouts from previous operations
+                clearPendingTimeouts();
+
                 // Validate request data
                 const validation = validateFilterRequest(request);
                 if (!validation.valid) {
@@ -256,6 +283,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             console.log("BG: Stop download requested for tab:", tabId);
             if (isDownloading && downloadTabId === tabId) {
                 console.log("BG: Stopping download process...");
+                // Clear any pending timeouts
+                clearPendingTimeouts();
                 isDownloading = false;
                 downloadTabId = null;
 
@@ -302,7 +331,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse({ success: true, message: "Extension reload initiated" });
 
             // Use longer timeout to ensure response is delivered before reload
-            setTimeout(() => {
+            createTrackedTimeout(() => {
                 console.log("BG: Performing extension reload...");
                 chrome.runtime.reload();
             }, 300);
@@ -386,7 +415,7 @@ function injectCollectorScript(tabId) {
                     console.log("BG: Direct collector.js injection successful!");
                     sendStatusUpdate("✅ Injeksi collector berhasil, mengumpulkan dokumen...");
                     // Wait a moment for collector to process, then inject downloader
-                    setTimeout(() => {
+                    createTrackedTimeout(() => {
                         injectDownloaderScript(tabId);
                     }, 1000);
                 }
@@ -398,13 +427,13 @@ function injectCollectorScript(tabId) {
         sendStatusUpdate("Mengumpulkan daftar dokumen...");
 
         // Inject downloader as backup in case collector doesn't send message
-        setTimeout(() => {
+        createTrackedTimeout(() => {
             console.log("BG: Backup - injecting downloader script (collector might not have sent message)");
             injectDownloaderScript(tabId);
         }, 4000);
 
         // Final fallback - complete the process if still stuck
-        setTimeout(() => {
+        createTrackedTimeout(() => {
             if (isDownloading && downloadTabId === tabId) {
                 console.log("BG: Final fallback - completing single page download");
                 isDownloading = false;
@@ -547,7 +576,7 @@ function startMultiPageProcess(tabId) {
     sendStatusUpdate("Multi-page download in progress...");
 
     // Set up a safety timeout to reset state if completion message is never received
-    setTimeout(() => {
+    createTrackedTimeout(() => {
         if (isDownloading && downloadTabId === tabId) {
             console.log("BG: Multi-page download safety timeout reached - resetting state");
             isDownloading = false;
@@ -567,6 +596,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         case "AUTOMATIC_DOWNLOAD_COMPLETE":
             console.log("BG: Automatic download completed");
+            // Clear any pending timeouts to ensure clean state
+            clearPendingTimeouts();
             isDownloading = false;
             downloadTabId = null;
             sendStatusUpdate(`Download selesai! Total: ${message.totalDownloads} file`, true);
@@ -574,6 +605,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         case "MULTI_PAGE_DOWNLOAD_COMPLETE":
             console.log("BG: Multi-page download completed");
+            // Clear any pending timeouts to ensure clean state
+            clearPendingTimeouts();
             isDownloading = false;
             downloadTabId = null;
             sendStatusUpdate(`Download multi-halaman selesai! Total: ${message.totalFiles} file dari ${message.totalPages} halaman`, true);
@@ -611,7 +644,7 @@ function applyFilterAfterInjection(tabId, month, year, downloadMode) {
             sendStatusUpdate(`Filter berhasil diterapkan. Memulai proses unduh ${modeText}...`);
 
             // Wait 2 seconds for data to load, then start download
-            setTimeout(() => {
+            createTrackedTimeout(() => {
                 console.log("BG: Starting download process... Mode:", downloadMode);
                 if (downloadMode === 'all') {
                     sendStatusUpdate("Memulai download multi-halaman...");
