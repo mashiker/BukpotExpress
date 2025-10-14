@@ -37,19 +37,11 @@ async function processSingleDownload() {
     const details = `Skipped (no download button): ${skippedCount} file(s)`;
 
     // Show completion modal briefly, then auto-close
-    displayModal(title, message, details, true);
+    displayModalSafe(title, message, details, true);
 
     // Auto-close modal after 3 seconds
     setTimeout(() => {
-      if (typeof closeModal === 'function') {
-        closeModal();
-      } else {
-        // Fallback: force remove modal if closeModal not available
-        const modal = document.querySelector('.ct-modal-overlay');
-        if (modal) {
-          modal.remove();
-        }
-      }
+      closeModalSafe();
     }, 3000);
 
     // Clean up sessionStorage
@@ -65,7 +57,7 @@ async function processSingleDownload() {
 
   const itemToDownload = queue.shift();
   const currentProgress = successCount + 1;
-  displayModal('Download in Progress', `Downloading ${currentProgress} of ${totalCount}`, `Document: ${itemToDownload}`, false);
+  displayModalSafe('Download in Progress', `Downloading ${currentProgress} of ${totalCount}`, `Document: ${itemToDownload}`, false);
 
   const targetRow = Array.from(document.querySelectorAll("tbody tr")).find(row => {
     const idCell = row.children[idColumnIndex];
@@ -105,6 +97,25 @@ function resetDownloaderState() {
     isDownloadStopped = false;
 }
 
+const displayModalSafe = (title, message, details = '', showButton = true) => {
+    if (typeof displayModal === 'function') {
+        displayModal(title, message, details, showButton);
+    } else {
+        console.log(`Downloader modal: ${title} - ${message} (${details})`);
+    }
+};
+
+const closeModalSafe = () => {
+    if (typeof closeModal === 'function') {
+        closeModal();
+    } else {
+        const modal = document.querySelector('.ct-modal-overlay');
+        if (modal) {
+            modal.remove();
+        }
+    }
+};
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'stopDownload') {
         console.log("Downloader: stopDownload received");
@@ -121,18 +132,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
 
         // Close any open modals
-        if (typeof closeModal === 'function') {
-            closeModal();
-        }
+        closeModalSafe();
 
         // Show stopped message with correct count
-        displayModal('Download Stopped', 'Download dihentikan', `Total files downloaded: ${successCount}`, true);
+        displayModalSafe('Download Stopped', 'Download dihentikan', `Total files downloaded: ${successCount}`, true);
 
         // Auto-close modal after 3 seconds
         setTimeout(() => {
-            if (typeof closeModal === 'function') {
-                closeModal();
-            }
+            closeModalSafe();
         }, 3000);
 
         // Send completion message to background

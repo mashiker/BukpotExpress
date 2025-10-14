@@ -22,6 +22,25 @@ let stopAfterCurrentPage = false; // Finish current page, then stop
 let maxPagesToDownload = 10; // Safety limit: max 10 pages
 let downloadedFileIds = new Set(); // Track downloaded files to avoid duplicates
 
+const displayModalSafe = (title, message, details = '', showButton = true) => {
+    if (typeof displayModal === 'function') {
+        displayModal(title, message, details, showButton);
+    } else {
+        console.log(`Multi-page downloader modal: ${title} - ${message} (${details})`);
+    }
+};
+
+const closeModalSafe = () => {
+    if (typeof closeModal === 'function') {
+        closeModal();
+    } else {
+        const modal = document.querySelector('.ct-modal-overlay');
+        if (modal) {
+            modal.remove();
+        }
+    }
+};
+
 function resetModuleState() {
     totalPagesDownloaded = 1;
     totalFilesDownloaded = 0;
@@ -74,7 +93,7 @@ async function downloadCurrentPage() {
 
     try {
         // Show progress modal
-        displayModal('Multi-Page Download',
+        displayModalSafe('Multi-Page Download',
             `Downloading Page ${totalPagesDownloaded}`,
             `Total files so far: ${totalFilesDownloaded}`,
             false);
@@ -151,7 +170,7 @@ async function downloadCurrentPage() {
 
     } catch (error) {
         console.error('Multi-page downloader: Error downloading current page:', error);
-        displayModal('Multi-Page Download Error',
+        displayModalSafe('Multi-Page Download Error',
             `Error on page ${totalPagesDownloaded}`,
             `Error: ${error.message}`,
             true);
@@ -559,7 +578,7 @@ function completeMultiPageDownload() {
     const message = `Downloaded ${filesDownloaded} file(s) from ${pagesCompleted} page(s)`;
     const details = `Process completed successfully`;
 
-    displayModal(title, message, details, true);
+    displayModalSafe(title, message, details, true);
 
     // Send completion message to background script to reset UI state
     chrome.runtime.sendMessage({
@@ -572,15 +591,7 @@ function completeMultiPageDownload() {
 
     // Auto-close modal after 5 seconds (longer for multi-page)
     setTimeout(() => {
-        if (typeof closeModal === 'function') {
-            closeModal();
-        } else {
-            // Fallback: force remove modal if closeModal not available
-            const modal = document.querySelector('.ct-modal-overlay');
-            if (modal) {
-                modal.remove();
-            }
-        }
+        closeModalSafe();
     }, 5000);
 
     console.log('Multi-page downloader: Completion message sent to background script');
