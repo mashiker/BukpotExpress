@@ -2,6 +2,18 @@
 // Version 2.0
 // Automated tax document downloader with period filtering
 
+(function () {
+    if (typeof window !== 'undefined' && window.__BPE_INJECTOR_LOADED__) {
+        console.log('Modal injector: script already loaded, resetting state');
+        if (typeof window.__BPE_INJECTOR_RESET__ === 'function') {
+            window.__BPE_INJECTOR_RESET__();
+        }
+        return;
+    }
+    if (typeof window !== 'undefined') {
+        window.__BPE_INJECTOR_LOADED__ = true;
+    }
+
 let modalInstance = null;
 
 function injectModalStyles() {
@@ -113,5 +125,16 @@ function closeModal() {
         }, 200); // Reduced timeout for faster closing
     }
 }
-
 injectModalStyles();
+
+if (typeof window !== 'undefined') {
+    window.displayModal = displayModal;
+    window.closeModal = closeModal;
+    window.__BPE_INJECTOR_RESET__ = () => {
+        if (modalInstance && modalInstance.parentNode) {
+            modalInstance.parentNode.removeChild(modalInstance);
+        }
+        modalInstance = null;
+    };
+}
+})();

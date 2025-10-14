@@ -2,6 +2,18 @@
 // Version 2.0 - Simplified Page-Based Navigation
 // Multi-page downloader with reliable page confirmation
 
+(function () {
+    if (typeof window !== 'undefined' && window.__BPE_MULTI_PAGE_LOADED__) {
+        console.log('Multi-page downloader: script already loaded, resetting state');
+        if (typeof window.__BPE_MULTI_PAGE_RESET__ === 'function') {
+            window.__BPE_MULTI_PAGE_RESET__();
+        }
+        return;
+    }
+    if (typeof window !== 'undefined') {
+        window.__BPE_MULTI_PAGE_LOADED__ = true;
+    }
+
 let totalPagesDownloaded = 0;
 let totalFilesDownloaded = 0;
 let currentPageInfo = { current: 1, total: 1 };
@@ -9,6 +21,16 @@ let isDownloadStopped = false;
 let stopAfterCurrentPage = false; // Finish current page, then stop
 let maxPagesToDownload = 10; // Safety limit: max 10 pages
 let downloadedFileIds = new Set(); // Track downloaded files to avoid duplicates
+
+function resetModuleState() {
+    totalPagesDownloaded = 1;
+    totalFilesDownloaded = 0;
+    currentPageInfo = { current: 1, total: 1 };
+    isDownloadStopped = false;
+    stopAfterCurrentPage = false;
+    downloadedFileIds.clear();
+}
+
 
 async function startMultiPageDownload() {
     console.log('Multi-page downloader: === STARTING MULTI-PAGE DOWNLOAD ===');
@@ -20,10 +42,7 @@ async function startMultiPageDownload() {
     stopAfterCurrentPage = false;
     isDownloadStopped = false;
 
-    // Initialize counters
-    totalPagesDownloaded = 1; // Start with page 1
-    totalFilesDownloaded = 0;
-    downloadedFileIds.clear(); // Clear previous downloads
+    resetModuleState();
 
     try {
         // Start downloading from current page
@@ -529,12 +548,15 @@ async function downloadFilesOnCurrentPage() {
 }
 
 function completeMultiPageDownload() {
+    const pagesCompleted = totalPagesDownloaded;
+    const filesDownloaded = totalFilesDownloaded;
+
     console.log('Multi-page downloader: === MULTI-PAGE DOWNLOAD COMPLETE ===');
-    console.log(`Multi-page downloader: Total pages: ${totalPagesDownloaded}, Total files: ${totalFilesDownloaded}`);
+    console.log(`Multi-page downloader: Total pages: ${pagesCompleted}, Total files: ${filesDownloaded}`);
 
     // Show completion modal
     const title = 'Multi-Page Download Complete!';
-    const message = `Downloaded ${totalFilesDownloaded} file(s) from ${totalPagesDownloaded} page(s)`;
+    const message = `Downloaded ${filesDownloaded} file(s) from ${pagesCompleted} page(s)`;
     const details = `Process completed successfully`;
 
     displayModal(title, message, details, true);
@@ -542,8 +564,8 @@ function completeMultiPageDownload() {
     // Send completion message to background script to reset UI state
     chrome.runtime.sendMessage({
         type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
-        totalFiles: totalFilesDownloaded,
-        totalPages: totalPagesDownloaded
+        totalFiles: filesDownloaded,
+        totalPages: pagesCompleted
     }).catch(error => {
         console.log('Multi-page downloader: Could not send completion message:', error.message);
     });
@@ -562,6 +584,7 @@ function completeMultiPageDownload() {
     }, 5000);
 
     console.log('Multi-page downloader: Completion message sent to background script');
+    resetModuleState();
 }
 
 // Chrome runtime message handler
@@ -641,7 +664,8 @@ if (typeof window !== 'undefined' && window.location) {
     }
 }
 
-
-
-
-
+if (typeof window !== 'undefined') {
+    window.__BPE_MULTI_PAGE_RESET__ = resetModuleState;
+}
+resetModuleState();
+})();

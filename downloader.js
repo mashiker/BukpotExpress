@@ -2,6 +2,18 @@
 // Version 2.0
 // Automated tax document downloader with period filtering
 
+(function () {
+    if (typeof window !== 'undefined' && window.__BPE_DOWNLOADER_LOADED__) {
+        console.log('Downloader: script already loaded, resetting state');
+        if (typeof window.__BPE_DOWNLOADER_RESET__ === 'function') {
+            window.__BPE_DOWNLOADER_RESET__();
+        }
+        return;
+    }
+    if (typeof window !== 'undefined') {
+        window.__BPE_DOWNLOADER_LOADED__ = true;
+    }
+
 async function processSingleDownload() {
   // Check if download was stopped
   if (isDownloadStopped) {
@@ -17,6 +29,8 @@ async function processSingleDownload() {
 
   if (queue.length === 0) {
     console.log("Downloader: Queue is empty. Finishing.");
+
+    resetDownloaderState();
 
     const title = 'Download Complete!';
     const message = `Successfully Downloaded: ${successCount} file(s)`;
@@ -87,6 +101,10 @@ async function processSingleDownload() {
 // Add stop download functionality
 let isDownloadStopped = false;
 
+function resetDownloaderState() {
+    isDownloadStopped = false;
+}
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'stopDownload') {
         console.log("Downloader: stopDownload received");
@@ -130,3 +148,9 @@ if (typeof displayModal === 'function') {
 } else {
     setTimeout(processSingleDownload, 100);
 }
+
+if (typeof window !== 'undefined') {
+    window.__BPE_DOWNLOADER_RESET__ = resetDownloaderState;
+}
+resetDownloaderState();
+})();
