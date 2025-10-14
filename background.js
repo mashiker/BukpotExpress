@@ -229,19 +229,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 console.log("BG: Starting filter and download process. Month:", request.month, "Year:", request.year, "Mode:", downloadMode);
 
                 // Check if this is quick download (no filter)
+                const resetStatePayload = { isDownloading: true, stopRequested: false };
+
                 if (!request.month || !request.year) {
                     console.log("BG: Quick download mode (no filter), Mode:", downloadMode);
                     if (downloadMode === 'all') {
+                        chrome.storage.local.set(resetStatePayload);
                         sendStatusUpdate("Memulai download multi-halaman tanpa filter...");
                         startMultiPageDownload(tabId);
                     } else {
+                        chrome.storage.local.set(resetStatePayload);
                         sendStatusUpdate("Memulai download cepat...");
                         startAutomaticDownload(tabId);
                     }
                     return;
                 }
 
-                // Update status in sidebar
+                // Update status in sidebar and persist state
+                chrome.storage.local.set(resetStatePayload);
                 sendStatusUpdate("Menerapkan filter masa pajak...");
 
                 // Inject filter changer script with automatic permission recovery
@@ -287,6 +292,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 clearPendingTimeouts();
                 isDownloading = false;
                 downloadTabId = null;
+                chrome.storage.local.set({ isDownloading: false, stopRequested: true });
 
                 // Send stop message to content scripts with error handling
                 chrome.tabs.sendMessage(tabId, {
@@ -300,22 +306,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 });
 
                 // Also try to broadcast to all frames as backup
-                chrome.webNavigation.getAllFrames({tabId: tabId}, (frames) => {
-                    if (chrome.runtime.lastError) {
-                        console.log("BG: Could not get frames:", chrome.runtime.lastError.message);
-                        return;
-                    }
+                if (chrome.webNavigation && chrome.webNavigation.getAllFrames) {
+                    chrome.webNavigation.getAllFrames({ tabId: tabId }, (frames) => {
+                        if (chrome.runtime.lastError) {
+                            console.log("BG: Could not get frames:", chrome.runtime.lastError.message);
+                            return;
+                        }
 
-                    frames.forEach(frame => {
-                        chrome.tabs.sendMessage(tabId, {
-                            action: 'stopDownload'
-                        }, {frameId: frame.frameId}, (response) => {
-                            if (chrome.runtime.lastError) {
-                                console.log(`BG: Error sending stop to frame ${frame.frameId}:`, chrome.runtime.lastError.message);
-                            }
+                        frames.forEach(frame => {
+                            chrome.tabs.sendMessage(tabId, {
+                                action: 'stopDownload'
+                            }, {frameId: frame.frameId}, (response) => {
+                                if (chrome.runtime.lastError) {
+                                    console.log(`BG: Error sending stop to frame ${frame.frameId}:`, chrome.runtime.lastError.message);
+                                }
+                            });
                         });
                     });
-                });
+                }
 
                 sendStatusUpdate("⏹️ Download dihentikan oleh user", true);
             } else {
@@ -600,6 +608,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             clearPendingTimeouts();
             isDownloading = false;
             downloadTabId = null;
+            chrome.storage.local.set({ isDownloading: false, stopRequested: false });
             sendStatusUpdate(`Download selesai! Total: ${message.totalDownloads} file`, true);
             break;
 
@@ -609,6 +618,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             clearPendingTimeouts();
             isDownloading = false;
             downloadTabId = null;
+            chrome.storage.local.set({ isDownloading: false, stopRequested: false });
             sendStatusUpdate(`Download multi-halaman selesai! Total: ${message.totalFiles} file dari ${message.totalPages} halaman`, true);
             break;
 

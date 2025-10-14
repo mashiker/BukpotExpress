@@ -6,11 +6,19 @@ let totalPagesDownloaded = 0;
 let totalFilesDownloaded = 0;
 let currentPageInfo = { current: 1, total: 1 };
 let isDownloadStopped = false;
+let stopAfterCurrentPage = false; // Finish current page, then stop
 let maxPagesToDownload = 10; // Safety limit: max 10 pages
 let downloadedFileIds = new Set(); // Track downloaded files to avoid duplicates
 
 async function startMultiPageDownload() {
     console.log('Multi-page downloader: === STARTING MULTI-PAGE DOWNLOAD ===');
+
+    // Clear any prior stop request persisted by background
+    try { chrome.storage?.local?.set({ stopRequested: false }); } catch (e) {}
+
+    // Make sure all internal flags are reset before starting
+    stopAfterCurrentPage = false;
+    isDownloadStopped = false;
 
     // Initialize counters
     totalPagesDownloaded = 1; // Start with page 1
@@ -96,46 +104,29 @@ async function downloadCurrentPage() {
             }
         }
 
-        // Check if download was stopped after downloading
-        if (isDownloadStopped) {
-            console.log('Multi-page downloader: Download stopped after downloading files');
+        // Check if stop is requested after finishing this page
+        if (isDownloadStopped || stopAfterCurrentPage) {
+            console.log('Multi-page downloader: Stop requested after current page, not navigating further');
             completeMultiPageDownload();
             return;
         }
 
-        // Check if there's a next page using the new simplified approach
-        console.log('\n🔍 === CHECKING FOR NEXT PAGE ===');
+        if (stopAfterCurrentPage) {
+            console.log('Multi-page downloader: Boundary stop active, skipping next page navigation');
+            completeMultiPageDownload();
+            return;
+        }
         const hasNextPage = await checkAndNavigateToNextSimple();
-
-        console.log(`📊 Next page result: ${hasNextPage}`);
-
-        if (hasNextPage && !isDownloadStopped) {
-            // Continue to next page
+        if (hasNextPage && !isDownloadStopped && !stopAfterCurrentPage) {
             totalPagesDownloaded++;
-            console.log(`\n🚀 === MOVING TO PAGE ${totalPagesDownloaded} ===`);
-            console.log('⏳ Waiting 3 seconds before processing next page...');
-
-            // Send navigation update to maintain UI state
-            chrome.runtime.sendMessage({
-                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                status: `🔄 Beralih ke halaman ${totalPagesDownloaded}...`
-            }).catch(error => {
-                console.log('Multi-page downloader: Could not send navigation update:', error.message);
-            });
-
             setTimeout(() => {
-                if (!isDownloadStopped) {
-                    console.log(`\n🔄 === STARTING PAGE ${totalPagesDownloaded} PROCESS ===`);
+                if (!isDownloadStopped && !stopAfterCurrentPage) {
                     downloadCurrentPage();
                 } else {
-                    console.log('Multi-page downloader: Download stopped before next page processing');
                     completeMultiPageDownload();
                 }
-            }, 3000); // Wait 3 seconds before next page
+            }, 3000);
         } else {
-            // No more pages or download stopped, finish the process
-            console.log('\n🏁 === NO MORE PAGES OR STOPPED, FINISHING ===');
-            console.log(`📊 Has next page: ${hasNextPage}, Stopped: ${isDownloadStopped}`);
             completeMultiPageDownload();
         }
 
@@ -160,6 +151,11 @@ async function checkAndNavigateToNextSimple() {
     // STEP 1: Get current page number before clicking
     console.log('📋 STEP 1: Detecting current page number...');
     const currentPageNumber = getCurrentPageNumber();
+    if (stopAfterCurrentPage) {
+        console.log('Multi-page downloader: Boundary stop active - not navigating to next page');
+        return false;
+    }
+
     console.log(`📍 Current page number detected: ${currentPageNumber}`);
 
     if (currentPageNumber === null) {
@@ -204,7 +200,7 @@ async function checkAndNavigateToNextSimple() {
             } else {
                 console.log(`❌ Page change failed or no change detected`);
                 console.log(`   Expected: page > ${currentPageNumber}, Got: ${newPageNumber}`);
-                console.log('🛑 This appears to be the last page');
+                console.log('This appears to be the last page');
                 resolve(false);
             }
         }, 3000); // Wait 3 seconds for navigation
@@ -304,36 +300,20 @@ function findNextPageButton() {
 }
 
 // Function to stop the download process
-function stopDownload() {
+function stopDownload(boundary = true) {
     console.log('Multi-page downloader: === STOP DOWNLOAD REQUESTED ===');
-    isDownloadStopped = true;
-
-    // Close any open modals
-    if (typeof closeModal === 'function') {
-        closeModal();
+    if (boundary) {
+        stopAfterCurrentPage = true; // finish current page, then stop
+        try {
+            chrome.runtime.sendMessage({
+                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                status: `Stop diminta - berhenti setelah halaman ${totalPagesDownloaded}`
+            });
+        } catch (e) {}
+    } else {
+        isDownloadStopped = true;
+        completeMultiPageDownload();
     }
-
-    // Show stopped message
-    displayModal('Download Stopped',
-        `Download dihentikan`,
-        `Total files downloaded: ${totalFilesDownloaded} dari ${totalPagesDownloaded} halaman`,
-        true);
-
-    // Send completion message to background script to reset UI
-    chrome.runtime.sendMessage({
-        type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
-        totalFiles: totalFilesDownloaded,
-        totalPages: totalPagesDownloaded
-    }).catch(error => {
-        console.log('Multi-page downloader: Could not send completion message:', error.message);
-    });
-
-    // Auto-close modal after 3 seconds
-    setTimeout(() => {
-        if (typeof closeModal === 'function') {
-            closeModal();
-        }
-    }, 3000);
 }
 
 async function waitForPageLoad() {
@@ -393,20 +373,26 @@ async function downloadFilesOnCurrentPage() {
         // Get unique identifiers for each download button to avoid duplicates
         const buttonsWithIds = Array.from(downloadButtons).map((button, index) => {
             const row = button.closest('tr');
-            let fileId = `page_${totalPagesDownloaded}_btn_${index}`; // Default ID
+            // Always scope the dedupe key by page to avoid cross-page collisions
+            let fileId = `page_${totalPagesDownloaded}_btn_${index}`; // Default per-page unique ID
+            let firstCellText = '';
+            let rowIndex = -1;
 
             if (row) {
-                // Try to get a unique identifier from the row
+                // Prefer a more stable identifier from the row if available,
+                // but keep page-scoping to prevent repeats across pages
                 const cells = row.querySelectorAll('td');
                 if (cells.length > 0) {
-                    const firstCell = cells[0].textContent.trim();
-                    if (firstCell) {
-                        fileId = `file_${firstCell}`;
+                    firstCellText = (cells[0].textContent || '').trim();
+                    if (firstCellText) {
+                        fileId = `page_${totalPagesDownloaded}_file_${firstCellText}_${index}`;
                     }
                 }
+                const rows = Array.from(document.querySelectorAll('tbody tr'));
+                rowIndex = rows.indexOf(row);
             }
 
-            return { button, fileId };
+            return { fileId, firstCellText, rowIndex };
         });
 
         // Filter out already downloaded files
@@ -422,37 +408,122 @@ async function downloadFilesOnCurrentPage() {
         let downloadedCount = 0;
         let completedCount = 0;
 
-        // Click each download button with delay
-        newButtons.forEach(({ button, fileId }, index) => {
+        // Click each download button with delay. Re-query elements on each click for robustness.
+        const baseDelay = 2500; // slightly increased for reliability
+        const maxRetries = 2;
+        const retryDelay = 1200;
+
+        newButtons.forEach(({ fileId, firstCellText, rowIndex }, index) => {
             setTimeout(() => {
-                // Check if download was stopped
-                if (isDownloadStopped) {
-                    console.log(`Multi-page downloader: Download stopped, skipping button ${index + 1}`);
+                const itemLabel = firstCellText || `row_${rowIndex}`;
+
+                const finalize = () => {
                     completedCount++;
                     if (completedCount === newButtons.length) {
+                        console.log(`Multi-page downloader: Page download complete. Downloaded ${downloadedCount} files.`);
                         resolve(downloadedCount);
                     }
-                    return;
-                }
+                };
 
-                try {
-                    console.log(`Multi-page downloader: Clicking download button ${index + 1}/${newButtons.length} (ID: ${fileId})`);
-                    button.click();
-                    downloadedCount++;
-                    downloadedFileIds.add(fileId); // Mark as downloaded
-                    console.log(`Multi-page downloader: Download ${index + 1} initiated successfully`);
-                } catch (error) {
-                    console.error(`Multi-page downloader: Error clicking download button ${index + 1}:`, error);
-                }
+                const attemptClick = (attempt) => {
+                    // Check stop on every attempt
+                    if (isDownloadStopped) {
+                        console.log(`Multi-page downloader: Download stopped, skipping '${itemLabel}'`);
+                        return finalize();
+                    }
 
-                completedCount++;
+                    try {
+                        if (attempt === 0) {
+                            try {
+                                chrome.runtime.sendMessage({
+                                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                    status: `Memulai unduh: ${itemLabel} (halaman ${totalPagesDownloaded}, item ${index + 1}/${newButtons.length})`
+                                });
+                            } catch (e) { /* noop */ }
+                        } else {
+                            try {
+                                chrome.runtime.sendMessage({
+                                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                    status: `Retry ${attempt}/${maxRetries}: ${itemLabel} (halaman ${totalPagesDownloaded})`
+                                });
+                            } catch (e) { /* noop */ }
+                        }
 
-                // When all downloads are initiated
-                if (completedCount === newButtons.length) {
-                    console.log(`Multi-page downloader: Page download complete. Downloaded ${downloadedCount} files.`);
-                    resolve(downloadedCount);
-                }
-            }, 2000 * index); // 2 second delay between each download (increased for reliability)
+                        // Re-query target button
+                        let targetButton = null;
+
+                        // Strategy 1: by first cell text
+                        if (firstCellText) {
+                            const rows = Array.from(document.querySelectorAll('tbody tr'));
+                            const matchRow = rows.find(r => {
+                                const cell = r.querySelector('td');
+                                return cell && (cell.textContent || '').trim() === firstCellText;
+                            });
+                            if (matchRow) {
+                                targetButton = matchRow.querySelector('#DownloadButton');
+                            }
+                        }
+
+                        // Strategy 2: by row index
+                        if (!targetButton && rowIndex >= 0) {
+                            const rowsNow = Array.from(document.querySelectorAll('tbody tr'));
+                            const rowAtIndex = rowsNow[rowIndex];
+                            if (rowAtIndex) {
+                                targetButton = rowAtIndex.querySelector('#DownloadButton');
+                            }
+                        }
+
+                        // Strategy 3: nth button fallback
+                        if (!targetButton) {
+                            const allButtonsNow = Array.from(document.querySelectorAll('#DownloadButton'));
+                            targetButton = allButtonsNow[index] || null;
+                        }
+
+                        if (targetButton) {
+                            targetButton.click();
+                            downloadedCount++;
+                            downloadedFileIds.add(fileId);
+                            console.log(`Multi-page downloader: Download ${index + 1} clicked (attempt ${attempt}).`);
+                            try {
+                                chrome.runtime.sendMessage({
+                                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                    status: `Berhasil klik unduh: ${itemLabel} (halaman ${totalPagesDownloaded})`
+                                });
+                            } catch (e) { /* noop */ }
+                            return finalize();
+                        }
+
+                        // Retry or give up
+                        if (attempt < maxRetries) {
+                            setTimeout(() => attemptClick(attempt + 1), retryDelay);
+                        } else {
+                            console.log(`Multi-page downloader: Gagal menemukan tombol untuk '${itemLabel}' setelah ${maxRetries + 1} percobaan.`);
+                            try {
+                                chrome.runtime.sendMessage({
+                                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                    status: `Gagal menemukan tombol unduh: ${itemLabel} (halaman ${totalPagesDownloaded})`
+                                });
+                            } catch (e) { /* noop */ }
+                            return finalize();
+                        }
+                    } catch (error) {
+                        console.error(`Multi-page downloader: Error on '${itemLabel}' attempt ${attempt}:`, error);
+                        try {
+                            chrome.runtime.sendMessage({
+                                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                status: `Error klik unduh '${itemLabel}' (halaman ${totalPagesDownloaded}): ${error.message}`
+                            });
+                        } catch (e) { /* noop */ }
+                        if (attempt < maxRetries) {
+                            setTimeout(() => attemptClick(attempt + 1), retryDelay);
+                        } else {
+                            return finalize();
+                        }
+                    }
+                };
+
+                attemptClick(0);
+            }, baseDelay * index);
         });
     });
 }
@@ -500,6 +571,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         // Reset stop flag when starting new download
         isDownloadStopped = false;
+        stopAfterCurrentPage = false;
 
         // Send immediate response to prevent message port error
         sendResponse({
@@ -538,7 +610,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return true; // Keep message channel open
     } else if (message.action === 'stopDownload') {
         console.log("Multi-page downloader: stopDownload received");
-        stopDownload();
+        stopDownload(true);
         sendResponse({
             success: true,
             message: "Multi-page download stopped successfully"
@@ -546,6 +618,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return true;
     }
 });
+
+// React immediately if background toggles stopRequested in storage
+try {
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+        if (areaName === 'local' && changes.stopRequested) {
+            const val = changes.stopRequested.newValue;
+            if (val === true) {
+                console.log('Multi-page downloader: stopRequested flag detected from storage. Will stop after current page.');
+                stopDownload(true);
+            }
+        }
+    });
+} catch (e) {}
 
 // Auto-start if called directly
 if (typeof window !== 'undefined' && window.location) {
@@ -555,3 +640,8 @@ if (typeof window !== 'undefined' && window.location) {
         startMultiPageDownload();
     }
 }
+
+
+
+
+

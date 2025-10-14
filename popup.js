@@ -5,7 +5,7 @@
 // DOM Elements - akan diinisialisasi setelah DOM dimuat
 let loadingOverlay, mainSection, bulanSelect, tahunSelect;
 let filterBtn, statusLog, clearLogBtn, stopBtn, hardForceStopBtn;
-let downloadModeRadios;
+let downloadModeRadios, filterSection, modeInfo, filterHelper;
 
 // Inisialisasi DOM elements
 function initializeElements() {
@@ -19,6 +19,9 @@ function initializeElements() {
     statusLog = document.getElementById('statusLog');
     clearLogBtn = document.getElementById('clearLogBtn');
     downloadModeRadios = document.querySelectorAll('input[name="downloadMode"]');
+    filterSection = document.querySelector('.filter-section');
+    modeInfo = document.getElementById('modeInfo');
+    filterHelper = document.getElementById('filterHelper');
 }
 
 // Fungsi untuk menampilkan log real-time
@@ -127,70 +130,124 @@ function validateDownloadMode(mode) {
     return { valid: true };
 }
 
+function updateModeUI() {
+    if (!bulanSelect || !tahunSelect) {
+        return;
+    }
+
+    const selectedMode = getSelectedDownloadMode();
+    const isSingleMode = selectedMode === 'single';
+
+    bulanSelect.disabled = isSingleMode;
+    tahunSelect.disabled = isSingleMode;
+
+    if (isSingleMode) {
+        bulanSelect.setAttribute('aria-disabled', 'true');
+        tahunSelect.setAttribute('aria-disabled', 'true');
+        if (filterSection) {
+            filterSection.classList.add('disabled');
+        }
+        if (modeInfo) {
+            modeInfo.textContent = 'Download Satu Halaman mengunduh halaman yang sedang tampil tanpa mengganti filter.';
+        }
+        if (filterHelper) {
+            filterHelper.textContent = 'Filter dinonaktifkan untuk mode ini. Sistem akan menggunakan filter yang sudah aktif di halaman Coretax.';
+        }
+    } else {
+        bulanSelect.removeAttribute('aria-disabled');
+        tahunSelect.removeAttribute('aria-disabled');
+        if (filterSection) {
+            filterSection.classList.remove('disabled');
+        }
+        if (modeInfo) {
+            modeInfo.textContent = 'Download Semua Halaman menerapkan filter masa pajak yang dipilih dan melanjutkan sampai halaman terakhir.';
+        }
+        if (filterHelper) {
+            filterHelper.textContent = 'Pilih bulan dan tahun masa pajak sebelum memulai download.';
+        }
+    }
+}
+
 // Event listeners
 function setupEventListeners() {
     // Filter button - filter by tax period then download
     filterBtn.addEventListener('click', () => {
-        const selectedMonth = bulanSelect.value;
-        const selectedYear = tahunSelect.value;
-
-        // Validate inputs
-        if (!selectedMonth || !selectedYear) {
-            updateAndSaveStatus("⚠️ Silakan pilih bulan dan tahun terlebih dahulu");
-            return;
-        }
-
-        // Sanitize and validate inputs
-        const monthValidation = validateMonthYear(selectedMonth, selectedYear);
-        if (!monthValidation.valid) {
-            updateAndSaveStatus(`❌ ${monthValidation.error}`);
-            return;
-        }
-
         const downloadMode = getSelectedDownloadMode();
         const modeValidation = validateDownloadMode(downloadMode);
         if (!modeValidation.valid) {
-            updateAndSaveStatus(`❌ ${modeValidation.error}`);
+            updateAndSaveStatus(`Mode download tidak valid: ${modeValidation.error}`);
             return;
         }
 
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs.length > 0) {
-                // Additional validation: ensure we're on a valid domain
-                const tabUrl = tabs[0].url;
-                const isValidDomain = tabUrl && (
-                    tabUrl.includes('coretax.pajak.go.id') ||
-                    tabUrl.includes('.coretax.pajak.go.id') ||
-                    tabUrl.includes('coretaxdjp.pajak.go.id') ||
-                    tabUrl.includes('.coretaxdjp.pajak.go.id')
-                );
+        const selectedMonth = bulanSelect.value;
+        const selectedYear = tahunSelect.value;
 
-                if (!isValidDomain) {
-                    updateAndSaveStatus("❌ Pastikan Anda berada di halaman CoreTax DJP yang valid");
-                    return;
-                }
-
-                const monthName = bulanSelect.options[bulanSelect.selectedIndex].text;
-                const modeText = downloadMode === 'single' ? 'satu halaman' : 'semua halaman';
-                updateAndSaveStatus(`Menerapkan filter: ${monthName} ${selectedYear} (mode: ${modeText})`);
-                showLoading();
-                setDownloadButtonState(true);
-
-                chrome.runtime.sendMessage({
-                    type: "APPLY_FILTER_AND_DOWNLOAD",
-                    tabId: tabs[0].id,
-                    month: selectedMonth.trim(),
-                    year: selectedYear.trim(),
-                    downloadMode: downloadMode
-                });
+        if (downloadMode === 'all') {
+            if (!selectedMonth || !selectedYear) {
+                updateAndSaveStatus('Silakan pilih bulan dan tahun terlebih dahulu.');
+                return;
             }
+
+            const monthValidation = validateMonthYear(selectedMonth, selectedYear);
+            if (!monthValidation.valid) {
+                updateAndSaveStatus(`Terjadi kesalahan: ${monthValidation.error}`);
+                return;
+            }
+        }
+
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs.length === 0) {
+                updateAndSaveStatus('Tidak ada tab aktif ditemukan.');
+                return;
+            }
+
+            const tabUrl = tabs[0].url;
+            const isValidDomain = tabUrl && (
+                tabUrl.includes('coretax.pajak.go.id') ||
+                tabUrl.includes('.coretax.pajak.go.id') ||
+                tabUrl.includes('coretaxdjp.pajak.go.id') ||
+                tabUrl.includes('.coretaxdjp.pajak.go.id')
+            );
+
+            if (!isValidDomain) {
+                updateAndSaveStatus('Pastikan Anda berada di halaman CoreTax DJP yang valid.');
+                return;
+            }
+
+            showLoading();
+            setDownloadButtonState(true);
+            chrome.storage.local.set({ isDownloading: true, stopRequested: false });
+
+            const payload = {
+                type: 'APPLY_FILTER_AND_DOWNLOAD',
+                tabId: tabs[0].id,
+                downloadMode: downloadMode
+            };
+
+            if (downloadMode === 'all') {
+                const monthOption = bulanSelect.options[bulanSelect.selectedIndex];
+                const monthName = monthOption ? monthOption.text : selectedMonth;
+                updateAndSaveStatus(`Menerapkan filter: ${monthName} ${selectedYear} (mode: semua halaman).`);
+                payload.month = selectedMonth.trim();
+                payload.year = selectedYear.trim();
+            } else {
+                updateAndSaveStatus('Mengunduh halaman aktif tanpa mengubah filter masa pajak.');
+            }
+
+            chrome.runtime.sendMessage(payload);
+        });
+    });
+
+    downloadModeRadios.forEach((radio) => {
+        radio.addEventListener('change', () => {
+            updateModeUI();
         });
     });
 
     // Stop button - stop download
     stopBtn.addEventListener('click', () => {
         console.log('Stop button clicked!');
-        updateAndSaveStatus("⏹️ Tombol stop ditekan, menghentikan proses download...");
+        updateAndSaveStatus("Tombol STOP ditekan, menghentikan proses download...");
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             if (tabs.length > 0) {
                 console.log('Sending STOP_DOWNLOAD message for tab:', tabs[0].id);
@@ -198,9 +255,11 @@ function setupEventListeners() {
                     type: "STOP_DOWNLOAD",
                     tabId: tabs[0].id
                 });
+                chrome.storage.local.set({ isDownloading: false });
+                setDownloadButtonState(false);
             } else {
                 console.log('No active tabs found');
-                updateAndSaveStatus("❌ Tidak ada tab aktif ditemukan");
+                updateAndSaveStatus("Tidak ada tab aktif ditemukan");
             }
         });
     });
@@ -219,7 +278,7 @@ function setupEventListeners() {
         );
 
         if (confirmed) {
-            updateAndSaveStatus("🔄 Force closing browser in 3 seconds...");
+            updateAndSaveStatus("Menutup browser secara paksa dalam 3 detik...");
             console.log('Force close confirmed - Closing browser...');
 
             // Show countdown
@@ -230,7 +289,7 @@ function setupEventListeners() {
 
                 if (countdown <= 0) {
                     clearInterval(countdownInterval);
-                    updateAndSaveStatus("✅ Browser closed successfully.");
+                    updateAndSaveStatus("Browser berhasil ditutup.");
 
                     // Close the browser window
                     setTimeout(() => {
@@ -270,6 +329,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (message.complete) {
             hideLoading();
             setDownloadButtonState(false);
+            chrome.storage.local.set({ isDownloading: false });
+        } else {
+            setDownloadButtonState(true);
+            chrome.storage.local.set({ isDownloading: true });
         }
     }
 });
@@ -322,6 +385,16 @@ document.addEventListener('DOMContentLoaded', () => {
     setupPromotionalCards();
     setupThemeToggle();
     initializeTheme();
+    updateModeUI();
+
+    // Restore downloading state if any (keep stop visible on reopen)
+    chrome.storage.local.get(['isDownloading'], (result) => {
+        if (result && result.isDownloading) {
+            setDownloadButtonState(true);
+        } else {
+            setDownloadButtonState(false);
+        }
+    });
 
     // Load existing logs dari storage
     chrome.storage.local.get({ efakturLogs: [] }, (result) => {
@@ -403,3 +476,4 @@ function setupPromotionalCards() {
         });
     }
 }
+

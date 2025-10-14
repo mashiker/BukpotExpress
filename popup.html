@@ -56,6 +56,7 @@
             <!-- Tax Period Filter Section -->
             <div class="filter-section">
                 <h3>Filter Masa Pajak</h3>
+                <p id="filterHelper" class="filter-helper">Pilih bulan dan tahun masa pajak sebelum memulai download.</p>
                 <div class="filter-controls">
                     <select id="bulanSelect">
                         <option value="">Pilih Bulan</option>
@@ -85,16 +86,23 @@
                 <div class="mode-controls">
                     <div class="radio-group">
                         <label class="radio-label">
-                            <input type="radio" name="downloadMode" value="single" checked>
-                            <span class="radio-custom"></span>
-                            <span class="radio-text">Download Satu Halaman</span>
-                        </label>
-                        <label class="radio-label">
                             <input type="radio" name="downloadMode" value="all">
                             <span class="radio-custom"></span>
-                            <span class="radio-text">Download Semua Halaman</span>
+                            <div class="radio-content">
+                                <span class="radio-text">Download Semua Halaman</span>
+                                <span class="radio-subtext">Terapkan filter masa pajak lalu lanjutkan otomatis hingga halaman terakhir.</span>
+                            </div>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="downloadMode" value="single" checked>
+                            <span class="radio-custom"></span>
+                            <div class="radio-content">
+                                <span class="radio-text">Download Satu Halaman</span>
+                                <span class="radio-subtext">Gunakan filter yang sedang aktif di halaman Coretax tanpa mengubah pilihan masa pajak.</span>
+                            </div>
                         </label>
                     </div>
+                    <div id="modeInfo" class="mode-info">Download Satu Halaman mengunduh halaman yang sedang tampil tanpa mengganti filter.</div>
                 </div>
             </div>
 
