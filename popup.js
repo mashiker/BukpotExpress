@@ -461,12 +461,19 @@ function setupTutorialToggle() {
 // Promotional cards setup functionality
 function setupPromotionalCards() {
     const efakturCard = document.getElementById('efaktur-card');
+    const perplexityCard = document.getElementById('perplexity-card');
     const coffeeCard = document.getElementById('coffee-card');
 
     // Add click event listeners for promotional cards
     if (efakturCard) {
         efakturCard.addEventListener('click', function() {
             chrome.tabs.create({ url: 'https://chromewebstore.google.com/detail/e-faktur-automation/hjimkdiphhenkofkbbicaejhflmoicpg' });
+        });
+    }
+
+    if (perplexityCard) {
+        perplexityCard.addEventListener('click', function() {
+            chrome.tabs.create({ url: 'https://pplx.ai/archisight' });
         });
     }
 

@@ -341,22 +341,22 @@ function showTutorialModal() {
     `;
 
     modalContent.innerHTML = `
-        <h2 style="color: #005A9C; margin-top: 0; text-align: center; font-size: 24px; margin-bottom: 20px;">
+        <h2 style="color: #F25F5C; margin-top: 0; text-align: center; font-size: 24px; margin-bottom: 20px;">
             📖 Cara Penggunaan Bukpot Express
         </h2>
 
         <div style="text-align: left; line-height: 1.6; color: #2c3e50;">
-            <h3 style="color: #005A9C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">🎯 Langkah 1: Persiapan</h3>
+            <h3 style="color: #F25F5C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">🎯 Langkah 1: Persiapan</h3>
             <p style="margin: 0 0 15px 0; font-size: 14px;">
                 Pastikan Anda sudah login ke <strong>Coretax DJP</strong> dan buka halaman <strong>"Bukti Potong" (BPPU atau BP series)</strong>, pada bagian <strong>NITKU/Identity Number: Please Select ID Place of Business Activity Sub Unit Organization</strong>
             </p>
 
-            <h3 style="color: #005A9C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">📅 Langkah 2: Pilih Masa Pajak</h3>
+            <h3 style="color: #F25F5C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">📅 Langkah 2: Pilih Masa Pajak</h3>
             <p style="margin: 0 0 15px 0; font-size: 14px;">
                 Pilih <strong>bulan</strong> dan <strong>tahun</strong> masa pajak yang ingin diunduh bukti potongnya.
             </p>
 
-            <h3 style="color: #005A9C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">⬇️ Langkah 3: Mulai Download</h3>
+            <h3 style="color: #F25F5C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">⬇️ Langkah 3: Mulai Download</h3>
             <p style="margin: 0 0 15px 0; font-size: 14px;">
                 Klik tombol <strong>"Unduh Semua Bukti Potong"</strong>. Ekstensi akan:
             </p>
@@ -367,13 +367,13 @@ function showTutorialModal() {
                 <li>Jika ada banyak halaman, akan lanjut ke halaman berikutnya</li>
             </ul>
 
-            <h3 style="color: #005A9C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">⏱️ Langkah 4: Tunggu Proses Selesai</h3>
+            <h3 style="color: #F25F5C; font-size: 18px; margin-top: 20px; margin-bottom: 10px;">⏱️ Langkah 4: Tunggu Proses Selesai</h3>
             <p style="margin: 0 0 15px 0; font-size: 14px;">
                 Download akan berjalan otomatis dengan jeda 1-3 detik antar file untuk menghindari error. Tunggu hingga muncul notifikasi selesai.
             </p>
 
-            <div style="background-color: #f0f8ff; padding: 15px; border-radius: 8px; border-left: 4px solid #005A9C; margin: 20px 0;">
-                <h4 style="color: #005A9C; margin: 0 0 10px 0; font-size: 16px;">💡 Tips Penting:</h4>
+            <div style="background-color: #ffecee; padding: 15px; border-radius: 8px; border-left: 4px solid #F25F5C; margin: 20px 0;">
+                <h4 style="color: #F25F5C; margin: 0 0 10px 0; font-size: 16px;">💡 Tips Penting:</h4>
                 <ul style="margin: 0; font-size: 13px; padding-left: 20px;">
                     <li>Pastikan koneksi internet stabil</li>
                     <li>Jangan menutup browser selama proses berlangsung</li>
@@ -393,7 +393,7 @@ function showTutorialModal() {
         </div>
 
         <button id="closeTutorialBtn" style="
-            background-color: #005A9C;
+            background-color: #F25F5C;
             color: white;
             border: none;
             padding: 12px 24px;

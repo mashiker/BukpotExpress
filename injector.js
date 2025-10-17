@@ -32,12 +32,12 @@ function injectModalStyles() {
         .modal-header span { font-weight: 600; color: #7f8c8d; font-size: 14px; }
         .ct-modal-content p { color: #34495e; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
         .ct-modal-content .details { font-size: 14px; color: #7f8c8d; margin-top: 8px; margin-bottom: 20px; }
-        .ct-modal-content button { background-color: #005A9C; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; margin-top: 16px; transition: background-color 0.2s; }
-        .ct-modal-content button:hover { background-color: #004170; }
+        .ct-modal-content button { background-color: #F25F5C; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; margin-top: 16px; transition: background-color 0.2s; }
+        .ct-modal-content button:hover { background-color: #D94A47; }
 
         /* Progress bar styling */
         .progress-container { width: 100%; height: 4px; background-color: #e0e0e0; border-radius: 2px; margin: 12px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background-color: #005A9C; border-radius: 2px; transition: width 0.3s ease; }
+        .progress-bar { height: 100%; background-color: #F25F5C; border-radius: 2px; transition: width 0.3s ease; }
     `;
     document.head.appendChild(style);
 }

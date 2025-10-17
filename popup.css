@@ -1,7 +1,7 @@
 /* Light Theme (Default) */
 :root {
-  --primary-color: #005A9C;
-  --primary-hover: #004170;
+  --primary-color: #F25F5C;
+  --primary-hover: #D94A47;
   --background-color: #ffffff;
   --card-background: #ffffff;
   --light-gray: #f4f7f9;
@@ -10,20 +10,20 @@
   --light-text: #7f8c8d;
   --border-color: #e0e0e0;
   --shadow: 0 2px 8px rgba(0,0,0,0.1);
-  --header-bg: linear-gradient(135deg, #005A9C 0%, #0074cc 100%);
-  --tutorial-bg: #f8f9fa;
+  --header-bg: linear-gradient(135deg, #0B1D3A 0%, #F25F5C 100%);
+  --tutorial-bg: #fff5f5;
   --input-bg: #ffffff;
   --input-border: #ddd;
   --button-text: #ffffff;
-  --mode-bg: #f8f9fa;
-  --promo-bg: #f8f9fa;
-  --footer-bg: #f8f9fa;
+  --mode-bg: #fff6f6;
+  --promo-bg: #fff6f6;
+  --footer-bg: #fff6f6;
 }
 
 /* Dark Theme */
 [data-theme="dark"] {
-  --primary-color: #4a9eff;
-  --primary-hover: #2d8cf0;
+  --primary-color: #FF8A80;
+  --primary-hover: #FF6F61;
   --background-color: #1a1a1a;
   --card-background: #242424;
   --light-gray: #2d2d2d;
@@ -32,14 +32,14 @@
   --light-text: #a0a0a0;
   --border-color: #404040;
   --shadow: 0 2px 8px rgba(0,0,0,0.3);
-  --header-bg: linear-gradient(135deg, #2d8cf0 0%, #4a9eff 100%);
-  --tutorial-bg: #2d2d2d;
+  --header-bg: linear-gradient(135deg, #361522 0%, #FF8A80 100%);
+  --tutorial-bg: #2a1f25;
   --input-bg: #2d2d2d;
   --input-border: #404040;
   --button-text: #ffffff;
-  --mode-bg: #2d2d2d;
-  --promo-bg: #2d2d2d;
-  --footer-bg: #2d2d2d;
+  --mode-bg: #2a1f25;
+  --promo-bg: #2a1f25;
+  --footer-bg: #2a1f25;
 }
 
 body {
@@ -749,7 +749,7 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--primary-color), #004170);
+  background: linear-gradient(135deg, #0B1D3A, var(--primary-color));
   color: white;
   border-radius: 10px;
   flex-shrink: 0;
@@ -758,6 +758,28 @@ select:focus {
 .promo-content {
   flex: 1;
   min-width: 0;
+}
+
+.promo-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff6a00, #ff2d55);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 15px rgba(255, 64, 129, 0.35);
+  animation: promoBadgePulse 1.6s ease-in-out infinite;
+}
+
+.promo-badge::after {
+  content: '⏳';
+  margin-left: 6px;
+  font-size: 12px;
 }
 
 .promo-title {
@@ -785,6 +807,17 @@ select:focus {
 .promo-link:hover {
   color: var(--primary-hover);
   text-decoration: underline;
+}
+
+@keyframes promoBadgePulse {
+  from {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(255, 64, 129, 0.35);
+  }
+  to {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 64, 129, 0.45);
+  }
 }
 
 /* Support Community Section */
