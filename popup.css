@@ -734,6 +734,7 @@ select:focus {
   border-radius: 12px;
   transition: all 0.3s ease;
   cursor: pointer;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, sans-serif;
 }
 
 .promo-card:hover {
