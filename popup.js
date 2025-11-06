@@ -473,7 +473,14 @@ function setupPromotionalCards() {
 
     if (perplexityCard) {
         perplexityCard.addEventListener('click', function() {
-            chrome.tabs.create({ url: 'https://pplx.ai/archisight' });
+            chrome.tabs.create({ url: 'https://pplx.ai/ginadyanur40958' });
+        });
+    }
+
+    const batchRenameCard = document.getElementById('batch-rename-card');
+    if (batchRenameCard) {
+        batchRenameCard.addEventListener('click', function() {
+            chrome.tabs.create({ url: 'https://alatpajak.my.id/gantinamabatchpdf.html' });
         });
     }
 
