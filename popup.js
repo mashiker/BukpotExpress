@@ -461,7 +461,7 @@ function setupTutorialToggle() {
 // Promotional cards setup functionality
 function setupPromotionalCards() {
     const efakturCard = document.getElementById('efaktur-card');
-    const perplexityCard = document.getElementById('perplexity-card');
+
     const coffeeCard = document.getElementById('coffee-card');
 
     // Add click event listeners for promotional cards
@@ -471,11 +471,7 @@ function setupPromotionalCards() {
         });
     }
 
-    if (perplexityCard) {
-        perplexityCard.addEventListener('click', function() {
-            chrome.tabs.create({ url: 'https://pplx.ai/ginadyanur40958' });
-        });
-    }
+
 
     const batchRenameCard = document.getElementById('batch-rename-card');
     if (batchRenameCard) {
