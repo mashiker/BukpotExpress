@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="card">
         <div class="header">
@@ -26,37 +28,38 @@
         <!-- Main UI Section -->
         <div id="main-section" class="container">
             <!-- Cara Penggunaan Section -->
-          <div class="tutorial-section">
-              <div class="tutorial-header" id="tutorialToggle">
-                  <span class="tutorial-title">📖 Cara Penggunaan</span>
-                  <span class="toggle-icon" id="toggleIcon">▼</span>
-              </div>
-              <div class="tutorial-content" id="tutorialContent">
-                  <div class="tutorial-steps">
-                      <div class="step">
-                          <h4>🎯 Langkah 1: Persiapan</h4>
-                          <p>Login ke Coretax DJP dan buka halaman "Bukti Potong" (BPPU atau BP series)</p>
-                      </div>
-                      <div class="step">
-                          <h4>📅 Langkah 2: Pilih Masa Pajak</h4>
-                          <p>Pilih bulan dan tahun yang diinginkan</p>
-                      </div>
-                      <div class="step">
-                          <h4>⬇️ Langkah 3: Mulai Download</h4>
-                          <p>Klik tombol "Filter & Download"</p>
-                      </div>
-                      <div class="step">
-                          <h4>⏱️ Langkah 4: Tunggu Proses</h4>
-                          <p>Download otomatis dengan jeda antar file</p>
-                      </div>
-                  </div>
-              </div>
-          </div>
+            <div class="tutorial-section">
+                <div class="tutorial-header" id="tutorialToggle">
+                    <span class="tutorial-title">📖 Cara Penggunaan</span>
+                    <span class="toggle-icon" id="toggleIcon">▼</span>
+                </div>
+                <div class="tutorial-content" id="tutorialContent">
+                    <div class="tutorial-steps">
+                        <div class="step">
+                            <h4>🎯 Langkah 1: Persiapan</h4>
+                            <p>Login ke Coretax DJP dan buka halaman "Bukti Potong" (BPPU atau BP series)</p>
+                        </div>
+                        <div class="step">
+                            <h4>📅 Langkah 2: Pilih Masa Pajak</h4>
+                            <p>Pilih bulan dan tahun yang diinginkan</p>
+                        </div>
+                        <div class="step">
+                            <h4>⬇️ Langkah 3: Mulai Download</h4>
+                            <p>Klik tombol "Filter & Download"</p>
+                        </div>
+                        <div class="step">
+                            <h4>⏱️ Langkah 4: Tunggu Proses</h4>
+                            <p>Download otomatis dengan jeda antar file</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Tax Period Filter Section -->
             <div class="filter-section">
                 <h3>Filter Masa Pajak</h3>
-                <p id="filterHelper" class="filter-helper">Pilih bulan dan tahun masa pajak sebelum memulai download.</p>
+                <p id="filterHelper" class="filter-helper">Pilih bulan dan tahun masa pajak sebelum memulai download.
+                </p>
                 <div class="filter-controls">
                     <select id="bulanSelect">
                         <option value="">Pilih Bulan</option>
@@ -90,7 +93,8 @@
                             <span class="radio-custom"></span>
                             <div class="radio-content">
                                 <span class="radio-text">Download Semua Halaman</span>
-                                <span class="radio-subtext">Terapkan filter masa pajak lalu lanjutkan otomatis hingga halaman terakhir.</span>
+                                <span class="radio-subtext">Terapkan filter masa pajak lalu lanjutkan otomatis hingga
+                                    halaman terakhir.</span>
                             </div>
                         </label>
                         <label class="radio-label">
@@ -98,11 +102,13 @@
                             <span class="radio-custom"></span>
                             <div class="radio-content">
                                 <span class="radio-text">Download Satu Halaman</span>
-                                <span class="radio-subtext">Gunakan filter yang sedang aktif di halaman Coretax tanpa mengubah pilihan masa pajak.</span>
+                                <span class="radio-subtext">Gunakan filter yang sedang aktif di halaman Coretax tanpa
+                                    mengubah pilihan masa pajak.</span>
                             </div>
                         </label>
                     </div>
-                    <div id="modeInfo" class="mode-info">Download Satu Halaman mengunduh halaman yang sedang tampil tanpa mengganti filter.</div>
+                    <div id="modeInfo" class="mode-info">Download Satu Halaman mengunduh halaman yang sedang tampil
+                        tanpa mengganti filter.</div>
                 </div>
             </div>
 
@@ -111,7 +117,8 @@
                 <button id="filterBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
                         <path d="M12 15.25a.75.75 0 01-.75-.75V4.75a.75.75 0 011.5 0V14.5a.75.75 0 01-.75-.75z" />
-                        <path d="M18.25 14a.75.75 0 00-.53 1.28l-5 5a.75.75 0 00-1.06 0l-5-5a.75.75 0 00-1.06 1.06l5 5a2.25 2.25 0 003.18 0l5-5a.75.75 0 00-.53-1.34z" />
+                        <path
+                            d="M18.25 14a.75.75 0 00-.53 1.28l-5 5a.75.75 0 00-1.06 0l-5-5a.75.75 0 00-1.06 1.06l5 5a2.25 2.25 0 003.18 0l5-5a.75.75 0 00-.53-1.34z" />
                     </svg>
                     <span>Filter & Download</span>
                 </button>
@@ -127,7 +134,8 @@
             <div class="alternative-stop-section">
                 <button id="hardForceStopBtn" class="alternative-stop-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                     </svg>
                     <span>Force Close Browser</span>
                 </button>
@@ -143,11 +151,14 @@
                     <div class="tip-item">
                         <h4>⏰ Waktu Terbaik Penggunaan</h4>
                         <div class="tip-steps">
-                            <p><strong>Dianjurkan untuk menggunakan BukpotExpress saat Coretax sedang lancar:</strong></p>
+                            <p><strong>Dianjurkan untuk menggunakan BukpotExpress saat Coretax sedang lancar:</strong>
+                            </p>
                             <ul>
                                 <li><strong>Hindari jam sibuk:</strong> Menjelang batas waktu pelaporan</li>
-                                <li><strong>Stabilkan koneksi:</strong> Pastikan internet stabil sebelum memulai download</li>
-                                <li><strong>Refresh halaman:</strong> Refresh halaman Coretax sebelum mulai untuk memastikan data terbaru</li>
+                                <li><strong>Stabilkan koneksi:</strong> Pastikan internet stabil sebelum memulai
+                                    download</li>
+                                <li><strong>Refresh halaman:</strong> Refresh halaman Coretax sebelum mulai untuk
+                                    memastikan data terbaru</li>
                             </ul>
                         </div>
                     </div>
@@ -170,8 +181,10 @@
                         <div class="tip-steps">
                             <p><strong>Jika download sedang berjalan dan ingin dihentikan:</strong></p>
                             <ol>
-                                <li><strong>Cara 1:</strong> Klik tombol <strong>STOP Download</strong> (normal stop)</li>
-                                <li><strong>Cara 2:</strong> Klik tombol <strong>Force Close Browser</strong> (alternative stop)</li>
+                                <li><strong>Cara 1:</strong> Klik tombol <strong>STOP Download</strong> (normal stop)
+                                </li>
+                                <li><strong>Cara 2:</strong> Klik tombol <strong>Force Close Browser</strong>
+                                    (alternative stop)</li>
                                 <li><strong>Cara 3:</strong> Tutup browser Chrome secara manual</li>
                             </ol>
 
@@ -182,18 +195,6 @@
                                 <p>• Anda bisa membuka kembali browser dan melanjutkan</p>
                                 <p>• Gunakan jika tombol STOP tidak berfungsi</p>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="tip-item">
-                        <h4>🔧 Solusi Masalah Umum</h4>
-                        <div class="tip-steps">
-                            <ul>
-                                <li><strong>Extension tidak merespon:</strong> Reload ekstensi secara manual</li>
-                                <li><strong>Download macet:</strong> Stop lalu mulai kembali</li>
-                                <li><strong>Halaman error:</strong> Refresh halaman Coretax dan coba lagi</li>
-                                <li><strong>Permission denied:</strong> Reload ekstensi dan refresh halaman</li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -215,22 +216,26 @@
         <!-- Promotional Cards -->
         <div class="promo-cards">
             <div class="promo-card" id="efaktur-card">
-                <div class="promo-icon">🚀</div>
+                <img src="images/logoefautomation128.jpg" alt="E-faktur Automation" class="promo-icon">
                 <div class="promo-content">
-                    <span class="promo-badge">PROMO</span>
-                    <h3 class="promo-title">Cape Kreditkan Pajak Masukan?</h3>
-                    <p class="promo-description">Otomatisasikan dengan <a href="https://chromewebstore.google.com/detail/e-faktur-automation/hjimkdiphhenkofkbbicaejhflmoicpg" class="promo-link">E-faktur Automation</a></p>
-                    <div class="promo-highlight">
-                        <p class="discount-text"><strong>Diskon 25% untuk paket 6 & 12 bulan!</strong></p>
-                        <p class="promo-code">Kode: <span class="code-text">PROMO25ALATPAJAK</span></p>
-                    </div>
+                    <h3 class="promo-title">E-faktur Automation</h3>
+                    <p class="promo-description">Kreditkan Pajak Masukan puluhan faktur di Coretax cuma sekali klik</p>
+                </div>
+            </div>
+            <div class="promo-card" id="BukpotRekap">
+                <img src="images/logobukpotrekap.png" alt="BukpotRekap" class="promo-icon">
+                <div class="promo-content">
+                    <h3 class="promo-title">BukpotRekap</h3>
+                    <p class="promo-description">Ekstrak banyak PDF Bukpot Coretax (Unifikasi & PPh 21) ke Excel.
+                        gaperlu rekap manual lagi</p>
                 </div>
             </div>
             <div class="promo-card" id="batch-rename-card">
                 <div class="promo-icon">📄</div>
                 <div class="promo-content">
                     <h3 class="promo-title">Batch PDF Rename Tool</h3>
-                    <p class="promo-description">Alat untuk mengubah nama file PDF secara batch — <strong>tingkatkan produktivitas</strong> Anda dengan tools ini!</p>
+                    <p class="promo-description">Alat untuk mengubah nama file PDF secara batch — <strong>tingkatkan
+                            produktivitas</strong> Anda dengan tools ini!</p>
                 </div>
             </div>
 
@@ -238,7 +243,8 @@
                 <div class="promo-icon">☕</div>
                 <div class="promo-content">
                     <h3 class="promo-title">Dukung Developer</h3>
-                    <p class="promo-description">Dukung pengembangan dengan <a href="https://trakteer.id/alatpajakid/tip" class="promo-link">Buy Me Coffee</a></p>
+                    <p class="promo-description">Dukung pengembangan dengan <a
+                            href="https://trakteer.id/alatpajakid/tip" class="promo-link">Buy Me Coffee</a></p>
                 </div>
             </div>
         </div>
@@ -247,7 +253,8 @@
         <div class="support-community">
             <div class="community-message">
                 <div class="community-icon">💚</div>
-                <p class="community-text">Didukung oleh <strong><a href="https://alatpajak.id/" target="_blank" class="promo-link">alatpajak.id</a></strong></p>
+                <p class="community-text">Didukung oleh <strong><a href="https://alatpajak.id/" target="_blank"
+                            class="promo-link">alatpajak.id</a></strong></p>
                 <p class="community-subtext">🤝 Ekstensi ini tersedia gratis untuk komunitas pajak Indonesia</p>
             </div>
         </div>
@@ -262,5 +269,5 @@
     <!-- App Scripts -->
     <script src="popup.js"></script>
 </body>
-</html>
 
+</html>
