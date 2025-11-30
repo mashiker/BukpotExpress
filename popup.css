@@ -756,6 +756,11 @@ select:focus {
   flex-shrink: 0;
 }
 
+img.promo-icon {
+  background: none;
+  object-fit: contain;
+}
+
 .promo-content {
   flex: 1;
   min-width: 0;
