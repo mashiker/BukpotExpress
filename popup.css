@@ -9,7 +9,7 @@
   --dark-text: #2c3e50;
   --light-text: #7f8c8d;
   --border-color: #e0e0e0;
-  --shadow: 0 2px 8px rgba(0,0,0,0.1);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   --header-bg: linear-gradient(135deg, #0B1D3A 0%, #F25F5C 100%);
   --tutorial-bg: #fff5f5;
   --input-bg: #ffffff;
@@ -31,7 +31,7 @@
   --dark-text: #e0e0e0;
   --light-text: #a0a0a0;
   --border-color: #404040;
-  --shadow: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   --header-bg: linear-gradient(135deg, #361522 0%, #FF8A80 100%);
   --tutorial-bg: #2a1f25;
   --input-bg: #2d2d2d;
@@ -66,7 +66,6 @@ body {
   overflow: visible;
 }
 
-/* Tutorial Section */
 .tutorial-section {
   width: 100%;
   margin-bottom: 20px;
@@ -75,6 +74,149 @@ body {
   border-radius: 8px;
   overflow: hidden;
   transition: all 0.3s ease;
+}
+
+/* E-Faktur Automation Ad Banner */
+.ad-banner {
+  display: block;
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #0B1D3A 0%, #1a3a5c 50%, #F25F5C 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  border-radius: 12px;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(242, 95, 92, 0.3);
+}
+
+.ad-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+.ad-banner:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(242, 95, 92, 0.5);
+}
+
+@keyframes gradientShift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
+
+.ad-badge {
+  position: absolute;
+  top: -2px;
+  right: 12px;
+  background: linear-gradient(135deg, #ff6a00, #ff2d55);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 0 0 8px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: badgePulse 1.5s ease-in-out infinite;
+  box-shadow: 0 2px 8px rgba(255, 45, 85, 0.4);
+}
+
+@keyframes badgePulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.ad-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.ad-icon {
+  font-size: 28px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.ad-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.ad-headline {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.ad-subtext {
+  display: block;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.3;
+}
+
+.ad-arrow {
+  font-size: 20px;
+  color: white;
+  font-weight: bold;
+  animation: arrowBounce 1s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
 }
 
 .tutorial-header {
@@ -232,11 +374,18 @@ body {
 }
 
 /* Filter Section */
-.filter-section, .download-mode-section, .download-action-section, .extension-controls-section, .status-section {
+.filter-section,
+.download-mode-section,
+.download-action-section,
+.extension-controls-section,
+.status-section {
   margin-bottom: 24px;
 }
 
-.filter-section h3, .download-mode-section h3, .extension-controls-section h3, .status-section h3 {
+.filter-section h3,
+.download-mode-section h3,
+.extension-controls-section h3,
+.status-section h3 {
   margin: 0 0 12px 0;
   font-size: 16px;
   font-weight: 600;
@@ -329,8 +478,10 @@ select:focus {
   transition: all 0.2s ease-in-out;
   box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
   position: relative;
-  z-index: 10001; /* Higher than loading overlay */
-  pointer-events: auto; /* Ensure button is clickable */
+  z-index: 10001;
+  /* Higher than loading overlay */
+  pointer-events: auto;
+  /* Ensure button is clickable */
 }
 
 #stopBtn:hover:not(:disabled) {
@@ -471,7 +622,8 @@ select:focus {
   line-height: 1.4;
 }
 
-.tip-steps ol, .tip-steps ul {
+.tip-steps ol,
+.tip-steps ul {
   margin: 8px 0;
   padding-left: 20px;
 }
@@ -572,7 +724,8 @@ select:focus {
   z-index: 9999;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
-  pointer-events: none; /* Allow clicks to pass through to stop button */
+  pointer-events: none;
+  /* Allow clicks to pass through to stop button */
 }
 
 .spinner {
@@ -592,7 +745,9 @@ select:focus {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Download Mode Section */
@@ -641,12 +796,12 @@ select:focus {
   flex-shrink: 0;
 }
 
-.radio-label input[type="radio"]:checked + .radio-custom {
+.radio-label input[type="radio"]:checked+.radio-custom {
   border-color: var(--primary-color);
   background-color: var(--primary-color);
 }
 
-.radio-label input[type="radio"]:checked + .radio-custom::after {
+.radio-label input[type="radio"]:checked+.radio-custom::after {
   content: '';
   width: 6px;
   height: 6px;
@@ -664,7 +819,7 @@ select:focus {
   color: var(--dark-text);
 }
 
-.radio-label input[type="radio"]:checked ~ .radio-content .radio-text {
+.radio-label input[type="radio"]:checked~.radio-content .radio-text {
   color: var(--primary-color);
   font-weight: 600;
 }
@@ -863,6 +1018,7 @@ img.promo-icon {
     transform: translateY(0);
     box-shadow: 0 4px 15px rgba(255, 64, 129, 0.35);
   }
+
   to {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(255, 64, 129, 0.45);
