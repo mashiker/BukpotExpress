@@ -14,118 +14,171 @@
         window.__BPE_MULTI_PAGE_LOADED__ = true;
     }
 
-let totalPagesDownloaded = 0;
-let totalFilesDownloaded = 0;
-let currentPageInfo = { current: 1, total: 1 };
-let isDownloadStopped = false;
-let stopAfterCurrentPage = false; // Finish current page, then stop
-let maxPagesToDownload = 10; // Safety limit: max 10 pages
-let downloadedFileIds = new Set(); // Track downloaded files to avoid duplicates
+    let totalPagesDownloaded = 0;
+    let totalFilesDownloaded = 0;
+    let currentPageInfo = { current: 1, total: 1 };
+    let isDownloadStopped = false;
+    let stopAfterCurrentPage = false; // Finish current page, then stop
+    let maxPagesToDownload = 10; // Safety limit: max 10 pages
+    let downloadedFileIds = new Set(); // Track downloaded files to avoid duplicates
 
-const displayModalSafe = (title, message, details = '', showButton = true) => {
-    if (typeof displayModal === 'function') {
-        displayModal(title, message, details, showButton);
-    } else {
-        console.log(`Multi-page downloader modal: ${title} - ${message} (${details})`);
+    const displayModalSafe = (title, message, details = '', showButton = true) => {
+        if (typeof displayModal === 'function') {
+            displayModal(title, message, details, showButton);
+        } else {
+            console.log(`Multi-page downloader modal: ${title} - ${message} (${details})`);
+        }
+    };
+
+    const closeModalSafe = () => {
+        if (typeof closeModal === 'function') {
+            closeModal();
+        } else {
+            const modal = document.querySelector('.ct-modal-overlay');
+            if (modal) {
+                modal.remove();
+            }
+        }
+    };
+
+    function resetModuleState() {
+        totalPagesDownloaded = 1;
+        totalFilesDownloaded = 0;
+        currentPageInfo = { current: 1, total: 1 };
+        isDownloadStopped = false;
+        stopAfterCurrentPage = false;
+        downloadedFileIds.clear();
     }
-};
 
-const closeModalSafe = () => {
-    if (typeof closeModal === 'function') {
-        closeModal();
-    } else {
-        const modal = document.querySelector('.ct-modal-overlay');
-        if (modal) {
-            modal.remove();
+
+    async function startMultiPageDownload() {
+        console.log('Multi-page downloader: === STARTING MULTI-PAGE DOWNLOAD ===');
+
+        // Clear any prior stop request persisted by background
+        try { chrome.storage?.local?.set({ stopRequested: false }); } catch (e) { }
+
+        // Make sure all internal flags are reset before starting
+        stopAfterCurrentPage = false;
+        isDownloadStopped = false;
+
+        resetModuleState();
+
+        try {
+            // Start downloading from current page
+            await downloadCurrentPage();
+
+            // This will be reached when all pages are completed
+            console.log('Multi-page downloader: All pages processed successfully');
+            return {
+                success: true,
+                totalPages: totalPagesDownloaded,
+                totalFiles: totalFilesDownloaded
+            };
+        } catch (error) {
+            console.error('Multi-page downloader: Error in startMultiPageDownload:', error);
+            throw error;
         }
     }
-};
 
-function resetModuleState() {
-    totalPagesDownloaded = 1;
-    totalFilesDownloaded = 0;
-    currentPageInfo = { current: 1, total: 1 };
-    isDownloadStopped = false;
-    stopAfterCurrentPage = false;
-    downloadedFileIds.clear();
-}
+    async function startBPPUAutomation() {
+        console.log('BPPU Automation: === STARTING ===');
+        resetModuleState();
 
+        try {
+            // 1. Refresh Grid
+            console.log('BPPU Automation: Clicking refresh button...');
+            const refreshBtn = document.querySelector('button[icon="pi pi-refresh"]');
+            if (refreshBtn) {
+                refreshBtn.click();
+                await new Promise(r => setTimeout(r, 2000)); // Wait for refresh
+            } else {
+                console.warn('BPPU Automation: Refresh button not found');
+            }
 
-async function startMultiPageDownload() {
-    console.log('Multi-page downloader: === STARTING MULTI-PAGE DOWNLOAD ===');
+            // 2. Filter "Jenis Dokumen"
+            console.log('BPPU Automation: Applying filter...');
+            // The 4th column filter is usually for "Jenis Dokumen" based on the HTML structure provided
+            // We need to find the correct input.
+            // Based on user provided HTML: <th ... name="DocumentTypeConfigurationNameGridColumn3">
+            // It's the 4th column (index 3).
+            const filterInputs = document.querySelectorAll('th p-columnfilterformelement input');
 
-    // Clear any prior stop request persisted by background
-    try { chrome.storage?.local?.set({ stopRequested: false }); } catch (e) {}
+            // Strategy: Try to find the input under the correct header if possible, or fallback to index
+            // The HTML structure shows headers then filters in separate rows but aligned. 
+            // Index 3 seems correct for "Jenis Dokumen" (0-based: Number, Date, Title, Type)
 
-    // Make sure all internal flags are reset before starting
-    stopAfterCurrentPage = false;
-    isDownloadStopped = false;
+            let targetInput = null;
+            if (filterInputs.length > 3) {
+                targetInput = filterInputs[3];
+            }
 
-    resetModuleState();
+            if (targetInput) {
+                targetInput.value = "Bukti Potong PPh Unifikasi (BPPU)";
+                targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+                // Trigger filter - usually Enter key or just input event + delay
+                targetInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', bubbles: true }));
 
-    try {
-        // Start downloading from current page
-        await downloadCurrentPage();
+                console.log('BPPU Automation: Filter applied, waiting for table reload...');
+                await waitForPageLoad();
+                await new Promise(r => setTimeout(r, 2000)); // Extra wait for safety
+            } else {
+                console.error('BPPU Automation: Could not find "Jenis Dokumen" filter input');
+                throw new Error('Filter input for Jenis Dokumen not found');
+            }
 
-        // This will be reached when all pages are completed
-        console.log('Multi-page downloader: All pages processed successfully');
-        return {
-            success: true,
-            totalPages: totalPagesDownloaded,
-            totalFiles: totalFilesDownloaded
-        };
-    } catch (error) {
-        console.error('Multi-page downloader: Error in startMultiPageDownload:', error);
-        throw error;
+            // 3. Start Multi-page Download
+            console.log('BPPU Automation: Starting download loop...');
+            return await startMultiPageDownload();
+
+        } catch (error) {
+            console.error('BPPU Automation: Error:', error);
+            throw error;
+        }
     }
-}
 
-async function downloadCurrentPage() {
-    // Check if download was stopped before processing
-    if (isDownloadStopped) {
-        console.log('Multi-page downloader: Download stopped, cancelling current page processing');
-        completeMultiPageDownload();
-        return;
-    }
-
-    console.log(`\n📄 === PROCESSING PAGE ${totalPagesDownloaded} ===`);
-    console.log(`📍 Current URL: ${window.location.href}`);
-
-    try {
-        // Show progress modal
-        displayModalSafe('Multi-Page Download',
-            `Downloading Page ${totalPagesDownloaded}`,
-            `Total files so far: ${totalFilesDownloaded}`,
-            false);
-
-        // Send page processing update to maintain UI state
-        chrome.runtime.sendMessage({
-            type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-            status: `📥 Mengunduh halaman ${totalPagesDownloaded} dari beberapa halaman...`
-        }).catch(error => {
-            console.log('Multi-page downloader: Could not send page update:', error.message);
-        });
-
-        // Wait for page to load completely
-        console.log('⏳ Waiting for page to load...');
-        await waitForPageLoad();
-        console.log('✅ Page loaded successfully');
-
-        // Check if download was stopped after page load
+    async function downloadCurrentPage() {
+        // Check if download was stopped before processing
         if (isDownloadStopped) {
-            console.log('Multi-page downloader: Download stopped after page load');
+            console.log('Multi-page downloader: Download stopped, cancelling current page processing');
             completeMultiPageDownload();
             return;
         }
 
-        // Check for download buttons
-        const downloadButtons = document.querySelectorAll('#DownloadButton');
-        console.log(`🔢 Found ${downloadButtons.length} download buttons on page ${totalPagesDownloaded}`);
+        console.log(`\n📄 === PROCESSING PAGE ${totalPagesDownloaded} ===`);
+        console.log(`📍 Current URL: ${window.location.href}`);
 
-        if (downloadButtons.length === 0) {
-            console.log('⚠️ No download buttons found on this page');
-        } else {
-            // Collect and download files on current page
+        try {
+            // Show progress modal
+            displayModalSafe('Multi-Page Download',
+                `Downloading Page ${totalPagesDownloaded}`,
+                `Total files so far: ${totalFilesDownloaded}`,
+                false);
+
+            // Send page processing update to maintain UI state
+            chrome.runtime.sendMessage({
+                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                status: `📥 Mengunduh halaman ${totalPagesDownloaded} dari beberapa halaman...`
+            }).catch(error => {
+                console.log('Multi-page downloader: Could not send page update:', error.message);
+            });
+
+            // Wait for page to load completely
+            console.log('⏳ Waiting for page to load...');
+            await waitForPageLoad();
+            console.log('✅ Page loaded successfully');
+
+            // Check if download was stopped after page load
+            if (isDownloadStopped) {
+                console.log('Multi-page downloader: Download stopped after page load');
+                completeMultiPageDownload();
+                return;
+            }
+
+            // Check for download buttons - DELEGATE TO downloadFilesOnCurrentPage for robust detection
+            // const downloadButtons = document.querySelectorAll('#DownloadButton');
+            // console.log(`🔢 Found ${downloadButtons.length} download buttons on page ${totalPagesDownloaded}`);
+
+            // Just proceed to download, the function will handle detection and returning 0 if none found
             const downloadedCount = await downloadFilesOnCurrentPage();
             totalFilesDownloaded += downloadedCount;
 
@@ -139,544 +192,580 @@ async function downloadCurrentPage() {
                 }).catch(error => {
                     console.log('Multi-page downloader: Could not send page completion update:', error.message);
                 });
-            }
-        }
-
-        // Check if stop is requested after finishing this page
-        if (isDownloadStopped || stopAfterCurrentPage) {
-            console.log('Multi-page downloader: Stop requested after current page, not navigating further');
-            completeMultiPageDownload();
-            return;
-        }
-
-        if (stopAfterCurrentPage) {
-            console.log('Multi-page downloader: Boundary stop active, skipping next page navigation');
-            completeMultiPageDownload();
-            return;
-        }
-        const hasNextPage = await checkAndNavigateToNextSimple();
-        if (hasNextPage && !isDownloadStopped && !stopAfterCurrentPage) {
-            totalPagesDownloaded++;
-            setTimeout(() => {
-                if (!isDownloadStopped && !stopAfterCurrentPage) {
-                    downloadCurrentPage();
-                } else {
-                    completeMultiPageDownload();
-                }
-            }, 3000);
-        } else {
-            completeMultiPageDownload();
-        }
-
-    } catch (error) {
-        console.error('Multi-page downloader: Error downloading current page:', error);
-        displayModalSafe('Multi-Page Download Error',
-            `Error on page ${totalPagesDownloaded}`,
-            `Error: ${error.message}`,
-            true);
-
-        // Still try to continue or finish
-        setTimeout(() => {
-            completeMultiPageDownload();
-        }, 3000);
-    }
-}
-
-// SIMPLIFIED PAGE-BASED NAVIGATION SYSTEM
-async function checkAndNavigateToNextSimple() {
-    console.log('\n🔍 === SIMPLIFIED PAGE-BASED NAVIGATION ===');
-
-    // STEP 1: Get current page number before clicking
-    console.log('📋 STEP 1: Detecting current page number...');
-    const currentPageNumber = getCurrentPageNumber();
-    if (stopAfterCurrentPage) {
-        console.log('Multi-page downloader: Boundary stop active - not navigating to next page');
-        return false;
-    }
-
-    console.log(`📍 Current page number detected: ${currentPageNumber}`);
-
-    if (currentPageNumber === null) {
-        console.log('❌ Could not detect current page number - stopping navigation');
-        return false;
-    }
-
-    // STEP 2: Find and click next page button
-    console.log('\n🎯 STEP 2: Finding next page button...');
-    const nextButton = findNextPageButton();
-
-    if (!nextButton) {
-        console.log('❌ No next page button found - this appears to be the last page');
-        return false;
-    }
-
-    console.log(`✅ Found next page button: ${nextButton.tagName} - "${nextButton.textContent}"`);
-
-    // STEP 3: Click next button
-    console.log('\n🚀 STEP 3: Clicking next page button...');
-    const currentUrl = window.location.href;
-    console.log(`📄 URL before click: ${currentUrl}`);
-
-    nextButton.click();
-    console.log('✅ Next button clicked successfully');
-
-    // STEP 4: Wait for navigation and page change
-    console.log('\n⏳ STEP 4: Waiting for page navigation...');
-
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            console.log('🔍 Checking if page has changed...');
-
-            const newPageNumber = getCurrentPageNumber();
-            console.log(`📍 New page number detected: ${newPageNumber}`);
-
-            // STEP 5: Confirm page has changed
-            if (newPageNumber !== null && newPageNumber > currentPageNumber) {
-                console.log(`✅ SUCCESS: Page changed from ${currentPageNumber} to ${newPageNumber}`);
-                console.log('🔄 Ready to download from new page');
-                resolve(true);
             } else {
-                console.log(`❌ Page change failed or no change detected`);
-                console.log(`   Expected: page > ${currentPageNumber}, Got: ${newPageNumber}`);
-                console.log('This appears to be the last page');
-                resolve(false);
+                console.log(`⚠️ No files downloaded from page ${totalPagesDownloaded}.`);
             }
-        }, 3000); // Wait 3 seconds for navigation
-    });
-}
 
-// Helper function to get current page number
-function getCurrentPageNumber() {
-    console.log('🔍 Detecting page number from .p-paginator-pages...');
+            /* 
+            if (downloadButtons.length === 0) {
+                console.log('⚠️ No download buttons found on this page');
+            } else {
+                // Collect and download files on current page
+                const downloadedCount = await downloadFilesOnCurrentPage();
+                totalFilesDownloaded += downloadedCount;
 
-    // Look for the highlighted page button in paginator (your specific example)
-    const highlightedPage = document.querySelector('.p-paginator-page.p-highlight');
-    if (highlightedPage) {
-        const pageNumber = parseInt(highlightedPage.textContent.trim());
-        console.log(`📋 Found highlighted page button: ${pageNumber}`);
-        console.log(`   Button HTML: ${highlightedPage.outerHTML.substring(0, 100)}...`);
-        return pageNumber;
-    }
+                console.log(`✅ Downloaded ${downloadedCount} files from page ${totalPagesDownloaded}`);
 
-    // Alternative: look for current page indicator
-    const currentPageElement = document.querySelector('.p-paginator-current');
-    if (currentPageElement) {
-        const text = currentPageElement.textContent;
-        const match = text.match(/(\d+)/);
-        if (match) {
-            const pageNumber = parseInt(match[1]);
-            console.log(`📋 Found current page from indicator: ${pageNumber}`);
-            return pageNumber;
+                // Send completion status for this page (but not overall completion)
+                if (downloadedCount > 0) {
+                    chrome.runtime.sendMessage({
+                        type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                        status: `✅ Halaman ${totalPagesDownloaded} selesai (${downloadedCount} file). Memeriksa halaman berikutnya...`
+                    }).catch(error => {
+                        console.log('Multi-page downloader: Could not send page completion update:', error.message);
+                    });
+                }
+            } 
+            */
+
+            // Check if stop is requested after finishing this page
+            if (isDownloadStopped || stopAfterCurrentPage) {
+                console.log('Multi-page downloader: Stop requested after current page, not navigating further');
+                completeMultiPageDownload();
+                return;
+            }
+
+            if (stopAfterCurrentPage) {
+                console.log('Multi-page downloader: Boundary stop active, skipping next page navigation');
+                completeMultiPageDownload();
+                return;
+            }
+            const hasNextPage = await checkAndNavigateToNextSimple();
+            if (hasNextPage && !isDownloadStopped && !stopAfterCurrentPage) {
+                totalPagesDownloaded++;
+                setTimeout(() => {
+                    if (!isDownloadStopped && !stopAfterCurrentPage) {
+                        downloadCurrentPage();
+                    } else {
+                        completeMultiPageDownload();
+                    }
+                }, 3000);
+            } else {
+                completeMultiPageDownload();
+            }
+
+        } catch (error) {
+            console.error('Multi-page downloader: Error downloading current page:', error);
+            displayModalSafe('Multi-Page Download Error',
+                `Error on page ${totalPagesDownloaded}`,
+                `Error: ${error.message}`,
+                true);
+
+            // Still try to continue or finish
+            setTimeout(() => {
+                completeMultiPageDownload();
+            }, 3000);
         }
     }
 
-    // Alternative: search for page numbers in paginator
-    const pageButtons = document.querySelectorAll('.p-paginator-page');
-    console.log(`🔍 Found ${pageButtons.length} page buttons`);
+    // SIMPLIFIED PAGE-BASED NAVIGATION SYSTEM
+    async function checkAndNavigateToNextSimple() {
+        console.log('\n🔍 === SIMPLIFIED PAGE-BASED NAVIGATION ===');
 
-    for (let button of pageButtons) {
-        if (button.classList.contains('p-highlight')) {
-            const pageNumber = parseInt(button.textContent.trim());
-            console.log(`📋 Found highlighted page button (alternative): ${pageNumber}`);
+        // STEP 1: Get current page number before clicking
+        console.log('📋 STEP 1: Detecting current page number...');
+        const currentPageNumber = getCurrentPageNumber();
+        if (stopAfterCurrentPage) {
+            console.log('Multi-page downloader: Boundary stop active - not navigating to next page');
+            return false;
+        }
+
+        console.log(`📍 Current page number detected: ${currentPageNumber}`);
+
+        if (currentPageNumber === null) {
+            console.log('❌ Could not detect current page number - stopping navigation');
+            return false;
+        }
+
+        // STEP 2: Find and click next page button
+        console.log('\n🎯 STEP 2: Finding next page button...');
+        const nextButton = findNextPageButton();
+
+        if (!nextButton) {
+            console.log('❌ No next page button found - this appears to be the last page');
+            return false;
+        }
+
+        console.log(`✅ Found next page button: ${nextButton.tagName} - "${nextButton.textContent}"`);
+
+        // STEP 3: Click next button
+        console.log('\n🚀 STEP 3: Clicking next page button...');
+        const currentUrl = window.location.href;
+        console.log(`📄 URL before click: ${currentUrl}`);
+
+        nextButton.click();
+        console.log('✅ Next button clicked successfully');
+
+        // STEP 4: Wait for navigation and page change
+        console.log('\n⏳ STEP 4: Waiting for page navigation...');
+
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                console.log('🔍 Checking if page has changed...');
+
+                const newPageNumber = getCurrentPageNumber();
+                console.log(`📍 New page number detected: ${newPageNumber}`);
+
+                // STEP 5: Confirm page has changed
+                if (newPageNumber !== null && newPageNumber > currentPageNumber) {
+                    console.log(`✅ SUCCESS: Page changed from ${currentPageNumber} to ${newPageNumber}`);
+                    console.log('🔄 Ready to download from new page');
+                    resolve(true);
+                } else {
+                    console.log(`❌ Page change failed or no change detected`);
+                    console.log(`   Expected: page > ${currentPageNumber}, Got: ${newPageNumber}`);
+                    console.log('This appears to be the last page');
+                    resolve(false);
+                }
+            }, 3000); // Wait 3 seconds for navigation
+        });
+    }
+
+    // Helper function to get current page number
+    function getCurrentPageNumber() {
+        console.log('🔍 Detecting page number from .p-paginator-pages...');
+
+        // Look for the highlighted page button in paginator (your specific example)
+        const highlightedPage = document.querySelector('.p-paginator-page.p-highlight');
+        if (highlightedPage) {
+            const pageNumber = parseInt(highlightedPage.textContent.trim());
+            console.log(`📋 Found highlighted page button: ${pageNumber}`);
+            console.log(`   Button HTML: ${highlightedPage.outerHTML.substring(0, 100)}...`);
             return pageNumber;
         }
+
+        // Alternative: look for current page indicator
+        const currentPageElement = document.querySelector('.p-paginator-current');
+        if (currentPageElement) {
+            const text = currentPageElement.textContent;
+            const match = text.match(/(\d+)/);
+            if (match) {
+                const pageNumber = parseInt(match[1]);
+                console.log(`📋 Found current page from indicator: ${pageNumber}`);
+                return pageNumber;
+            }
+        }
+
+        // Alternative: search for page numbers in paginator
+        const pageButtons = document.querySelectorAll('.p-paginator-page');
+        console.log(`🔍 Found ${pageButtons.length} page buttons`);
+
+        for (let button of pageButtons) {
+            if (button.classList.contains('p-highlight')) {
+                const pageNumber = parseInt(button.textContent.trim());
+                console.log(`📋 Found highlighted page button (alternative): ${pageNumber}`);
+                return pageNumber;
+            }
+        }
+
+        console.log('❌ Could not determine current page number');
+        console.log('🔍 Debug: Available paginator elements:');
+        const paginatorContainers = document.querySelectorAll('.p-paginator');
+        paginatorContainers.forEach((container, index) => {
+            console.log(`   Paginator ${index + 1}: ${container.innerHTML.substring(0, 200)}...`);
+        });
+
+        return null;
     }
 
-    console.log('❌ Could not determine current page number');
-    console.log('🔍 Debug: Available paginator elements:');
-    const paginatorContainers = document.querySelectorAll('.p-paginator');
-    paginatorContainers.forEach((container, index) => {
-        console.log(`   Paginator ${index + 1}: ${container.innerHTML.substring(0, 200)}...`);
-    });
+    // Helper function to find next page button
+    function findNextPageButton() {
+        console.log('🔍 Searching for next page button...');
 
-    return null;
-}
+        // Try the standard next button selector first
+        let nextButton = document.querySelector('.p-paginator-next:not(.p-disabled)');
+        if (nextButton) {
+            console.log('✅ Found standard next button: .p-paginator-next');
+            return nextButton;
+        }
 
-// Helper function to find next page button
-function findNextPageButton() {
-    console.log('🔍 Searching for next page button...');
+        // Try without disabled filter first to see what's available
+        nextButton = document.querySelector('.p-paginator-next');
+        if (nextButton) {
+            console.log('🔍 Found .p-paginator-next (checking if disabled)');
+            if (nextButton.classList.contains('p-disabled')) {
+                console.log('❌ Next button is disabled - this is the last page');
+                return null;
+            } else {
+                console.log('✅ Found enabled next button: .p-paginator-next');
+                return nextButton;
+            }
+        }
 
-    // Try the standard next button selector first
-    let nextButton = document.querySelector('.p-paginator-next:not(.p-disabled)');
-    if (nextButton) {
-        console.log('✅ Found standard next button: .p-paginator-next');
-        return nextButton;
+        // Try alternative selectors
+        const selectors = [
+            'button.p-paginator-next',
+            '[aria-label="Next"]',
+            '[aria-label="Next Page"]',
+            '.pi-angle-right',
+            '.pi-chevron-right'
+        ];
+
+        for (let selector of selectors) {
+            nextButton = document.querySelector(selector);
+            if (nextButton && !nextButton.classList.contains('p-disabled')) {
+                console.log(`✅ Found next button with selector: ${selector}`);
+                return nextButton;
+            }
+        }
+
+        console.log('❌ No next page button found');
+        return null;
     }
 
-    // Try without disabled filter first to see what's available
-    nextButton = document.querySelector('.p-paginator-next');
-    if (nextButton) {
-        console.log('🔍 Found .p-paginator-next (checking if disabled)');
-        if (nextButton.classList.contains('p-disabled')) {
-            console.log('❌ Next button is disabled - this is the last page');
-            return null;
+    // Function to stop the download process
+    function stopDownload(boundary = true) {
+        console.log('Multi-page downloader: === STOP DOWNLOAD REQUESTED ===');
+        if (boundary) {
+            stopAfterCurrentPage = true; // finish current page, then stop
+            try {
+                chrome.runtime.sendMessage({
+                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                    status: `Stop diminta - berhenti setelah halaman ${totalPagesDownloaded}`
+                });
+            } catch (e) { }
         } else {
-            console.log('✅ Found enabled next button: .p-paginator-next');
-            return nextButton;
+            isDownloadStopped = true;
+            completeMultiPageDownload();
         }
     }
 
-    // Try alternative selectors
-    const selectors = [
-        'button.p-paginator-next',
-        '[aria-label="Next"]',
-        '[aria-label="Next Page"]',
-        '.pi-angle-right',
-        '.pi-chevron-right'
-    ];
+    async function waitForPageLoad() {
+        return new Promise((resolve) => {
+            let attempts = 0;
+            const maxAttempts = 60; // Increased to 60 (approx 6 seconds)
+            let stableCount = 0;
+            let lastButtonCount = 0;
 
-    for (let selector of selectors) {
-        nextButton = document.querySelector(selector);
-        if (nextButton && !nextButton.classList.contains('p-disabled')) {
-            console.log(`✅ Found next button with selector: ${selector}`);
-            return nextButton;
-        }
+            const checkPageReady = () => {
+                attempts++;
+
+                // Check if table is loaded and has data
+                const table = document.querySelector('table');
+                // Updated to be more inclusive
+                const downloadButtons = document.querySelectorAll('#DownloadButton, #ActionDownloadButton, button.ct-ovw-btn-mini-save, [id*="DownloadButton"]');
+                const tableRows = document.querySelectorAll('tbody tr');
+
+                // More comprehensive page readiness check
+                const hasTable = table && table.rows.length > 0;
+                const hasButtons = downloadButtons.length > 0;
+                const hasDataRows = tableRows.length > 0;
+
+                // Check for loading indicators
+                const loadingIndicators = document.querySelectorAll('.loading, .spinner, [class*="loading"], .p-datatable-loading-overlay, .p-datatable-loading-icon');
+                const hasLoadingElements = loadingIndicators.length > 0;
+
+                // Visualization of state
+                if (attempts % 5 === 0) {
+                    console.log(`Multi-page downloader: Waiting... Rows: ${tableRows.length}, Buttons: ${downloadButtons.length}, Loading: ${hasLoadingElements}`);
+                }
+
+                // HEURISTIC: We expect roughly 1 button per data row. 
+                // If we have rows but 0 buttons, we definitely wait.
+                // If we have significantly fewer buttons than rows, we validly wait a bit longer to see if more render.
+                if (!hasLoadingElements && hasDataRows && hasButtons) {
+
+                    // Stability check: Wait until button count stops increasing
+                    if (downloadButtons.length === lastButtonCount) {
+                        stableCount++;
+                    } else {
+                        stableCount = 0;
+                        lastButtonCount = downloadButtons.length;
+                    }
+
+                    // If we have a stable count for a few checks, OR we hit the "standard" 10 items, proceed.
+                    // Also proceed if we're hitting max attempts but have at least something.
+                    if (stableCount >= 3 || downloadButtons.length >= tableRows.length || attempts >= maxAttempts) {
+                        console.log(`Multi-page downloader: Page ready. Rows: ${tableRows.length}, Buttons: ${downloadButtons.length}`);
+                        // Give one final small buffer for any attached event listeners
+                        setTimeout(resolve, 500);
+                        return;
+                    }
+                } else if (attempts >= maxAttempts) {
+                    console.log(`Multi-page downloader: Timeout waiting for page. Proceeding with what we have. Rows: ${tableRows.length}, Buttons: ${downloadButtons.length}`);
+                    resolve();
+                    return;
+                }
+
+                setTimeout(checkPageReady, 100);
+            };
+
+            checkPageReady();
+        });
     }
 
-    console.log('❌ No next page button found');
-    return null;
-}
+    async function downloadFilesOnCurrentPage() {
+        return new Promise(async (resolve) => {
+            console.log('=== COMPREHENSIVE DEBUG START ===');
+            console.log(`Current URL: ${window.location.href}`);
 
-// Function to stop the download process
-function stopDownload(boundary = true) {
-    console.log('Multi-page downloader: === STOP DOWNLOAD REQUESTED ===');
-    if (boundary) {
-        stopAfterCurrentPage = true; // finish current page, then stop
-        try {
-            chrome.runtime.sendMessage({
-                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                status: `Stop diminta - berhenti setelah halaman ${totalPagesDownloaded}`
-            });
-        } catch (e) {}
-    } else {
-        isDownloadStopped = true;
-        completeMultiPageDownload();
-    }
-}
+            // Helper to get fresh list of buttons
+            const getFreshButtons = () => {
+                const query = document.querySelectorAll('#DownloadButton, #ActionDownloadButton, button.ct-ovw-btn-mini-save, [id*="DownloadButton"]');
+                return Array.from(query).filter(btn => {
+                    const style = window.getComputedStyle(btn);
+                    const isVisible = style.display !== 'none' && style.visibility !== 'hidden' && btn.offsetParent !== null;
+                    const isDisabled = btn.disabled || btn.classList.contains('p-disabled') || btn.getAttribute('aria-disabled') === 'true';
 
-async function waitForPageLoad() {
-    return new Promise((resolve) => {
-        let attempts = 0;
-        const maxAttempts = 40; // Increased from 20
+                    // Check text content 'Unduh' as fallback if ID checks failed
+                    const text = (btn.textContent || '').trim().toLowerCase();
+                    const isDownloadBtn = text === 'unduh' || btn.id === 'ActionDownloadButton' || btn.id === 'DownloadButton' || btn.classList.contains('ct-ovw-btn-mini-save');
 
-        const checkPageReady = () => {
-            attempts++;
+                    return isVisible && !isDisabled && isDownloadBtn;
+                });
+            };
 
-            // Check if table is loaded and has data
-            const table = document.querySelector('table');
-            const downloadButtons = document.querySelectorAll('#DownloadButton');
-            const tableRows = document.querySelectorAll('tbody tr');
+            // Initial capture for counting and metadata
+            const initialButtons = getFreshButtons();
 
-            // More comprehensive page readiness check
-            const tableReady = table && table.rows.length > 1;
-            const buttonsReady = downloadButtons.length > 0;
-            const hasDataRows = tableRows.length > 1; // More than just header
+            console.log(`Multi-page downloader: Found ${initialButtons.length} buttons initially.`);
 
-            // Check for loading indicators that might still be present
-            const loadingIndicators = document.querySelectorAll('.loading, .spinner, [class*="loading"]');
-            const hasLoadingElements = loadingIndicators.length > 0;
-
-            if ((tableReady || buttonsReady) && hasDataRows && !hasLoadingElements) {
-                console.log(`Multi-page downloader: Page ready after ${attempts} attempts`);
-                console.log(`Multi-page downloader: Table rows: ${tableRows.length}, Download buttons: ${downloadButtons.length}`);
-                resolve();
+            if (initialButtons.length === 0) {
+                console.log('⚠️ No buttons found.');
+                // Send debug log to popup
+                try {
+                    chrome.runtime.sendMessage({
+                        type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                        status: `⚠️ Deteksi 0 tombol.`
+                    });
+                } catch (e) { }
+                resolve(0);
                 return;
             }
 
-            if (attempts >= maxAttempts) {
-                console.log(`Multi-page downloader: Page not fully ready after ${maxAttempts} attempts, proceeding anyway`);
-                console.log(`Multi-page downloader: Final state - Table rows: ${tableRows.length}, Download buttons: ${downloadButtons.length}`);
-                resolve();
-                return;
-            }
+            // Map metadata for logging
+            const buttonsMetadata = initialButtons.map((button, index) => {
+                const row = button.closest('tr');
+                let firstCellText = '';
 
-            setTimeout(checkPageReady, 500); // Check every 500ms
-        };
-
-        checkPageReady();
-    });
-}
-
-async function downloadFilesOnCurrentPage() {
-    return new Promise((resolve) => {
-        // First, collect downloadable items
-        const downloadButtons = document.querySelectorAll('#DownloadButton');
-        console.log(`Multi-page downloader: Found ${downloadButtons.length} download buttons on current page`);
-
-        if (downloadButtons.length === 0) {
-            resolve(0);
-            return;
-        }
-
-        // Get unique identifiers for each download button to avoid duplicates
-        const buttonsWithIds = Array.from(downloadButtons).map((button, index) => {
-            const row = button.closest('tr');
-            // Always scope the dedupe key by page to avoid cross-page collisions
-            let fileId = `page_${totalPagesDownloaded}_btn_${index}`; // Default per-page unique ID
-            let firstCellText = '';
-            let rowIndex = -1;
-
-            if (row) {
-                // Prefer a more stable identifier from the row if available,
-                // but keep page-scoping to prevent repeats across pages
-                const cells = row.querySelectorAll('td');
-                if (cells.length > 0) {
-                    firstCellText = (cells[0].textContent || '').trim();
-                    if (firstCellText) {
-                        fileId = `page_${totalPagesDownloaded}_file_${firstCellText}_${index}`;
+                if (row) {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        firstCellText = (cells[0].textContent || '').trim();
                     }
                 }
-                const rows = Array.from(document.querySelectorAll('tbody tr'));
-                rowIndex = rows.indexOf(row);
-            }
+                return { firstCellText };
+            });
 
-            return { fileId, firstCellText, rowIndex };
-        });
-
-        // Filter out already downloaded files
-        const newButtons = buttonsWithIds.filter(item => !downloadedFileIds.has(item.fileId));
-        console.log(`Multi-page downloader: ${newButtons.length} new files to download (excluding duplicates)`);
-
-        if (newButtons.length === 0) {
-            console.log('Multi-page downloader: No new files to download on this page');
-            resolve(0);
-            return;
-        }
-
-        let downloadedCount = 0;
-        let completedCount = 0;
-
-        // Click each download button with delay. Re-query elements on each click for robustness.
-        const baseDelay = 2500; // slightly increased for reliability
-        const maxRetries = 2;
-        const retryDelay = 1200;
-
-        newButtons.forEach(({ fileId, firstCellText, rowIndex }, index) => {
-            setTimeout(() => {
-                const itemLabel = firstCellText || `row_${rowIndex}`;
-
-                const finalize = () => {
-                    completedCount++;
-                    if (completedCount === newButtons.length) {
-                        console.log(`Multi-page downloader: Page download complete. Downloaded ${downloadedCount} files.`);
-                        resolve(downloadedCount);
-                    }
-                };
-
-                const attemptClick = (attempt) => {
-                    // Check stop on every attempt
-                    if (isDownloadStopped) {
-                        console.log(`Multi-page downloader: Download stopped, skipping '${itemLabel}'`);
-                        return finalize();
-                    }
-
-                    try {
-                        if (attempt === 0) {
-                            try {
-                                chrome.runtime.sendMessage({
-                                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                                    status: `Memulai unduh: ${itemLabel} (halaman ${totalPagesDownloaded}, item ${index + 1}/${newButtons.length})`
-                                });
-                            } catch (e) { /* noop */ }
-                        } else {
-                            try {
-                                chrome.runtime.sendMessage({
-                                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                                    status: `Retry ${attempt}/${maxRetries}: ${itemLabel} (halaman ${totalPagesDownloaded})`
-                                });
-                            } catch (e) { /* noop */ }
-                        }
-
-                        // Re-query target button
-                        let targetButton = null;
-
-                        // Strategy 1: by first cell text
-                        if (firstCellText) {
-                            const rows = Array.from(document.querySelectorAll('tbody tr'));
-                            const matchRow = rows.find(r => {
-                                const cell = r.querySelector('td');
-                                return cell && (cell.textContent || '').trim() === firstCellText;
-                            });
-                            if (matchRow) {
-                                targetButton = matchRow.querySelector('#DownloadButton');
-                            }
-                        }
-
-                        // Strategy 2: by row index
-                        if (!targetButton && rowIndex >= 0) {
-                            const rowsNow = Array.from(document.querySelectorAll('tbody tr'));
-                            const rowAtIndex = rowsNow[rowIndex];
-                            if (rowAtIndex) {
-                                targetButton = rowAtIndex.querySelector('#DownloadButton');
-                            }
-                        }
-
-                        // Strategy 3: nth button fallback
-                        if (!targetButton) {
-                            const allButtonsNow = Array.from(document.querySelectorAll('#DownloadButton'));
-                            targetButton = allButtonsNow[index] || null;
-                        }
-
-                        if (targetButton) {
-                            targetButton.click();
-                            downloadedCount++;
-                            downloadedFileIds.add(fileId);
-                            console.log(`Multi-page downloader: Download ${index + 1} clicked (attempt ${attempt}).`);
-                            try {
-                                chrome.runtime.sendMessage({
-                                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                                    status: `Berhasil klik unduh: ${itemLabel} (halaman ${totalPagesDownloaded})`
-                                });
-                            } catch (e) { /* noop */ }
-                            return finalize();
-                        }
-
-                        // Retry or give up
-                        if (attempt < maxRetries) {
-                            setTimeout(() => attemptClick(attempt + 1), retryDelay);
-                        } else {
-                            console.log(`Multi-page downloader: Gagal menemukan tombol untuk '${itemLabel}' setelah ${maxRetries + 1} percobaan.`);
-                            try {
-                                chrome.runtime.sendMessage({
-                                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                                    status: `Gagal menemukan tombol unduh: ${itemLabel} (halaman ${totalPagesDownloaded})`
-                                });
-                            } catch (e) { /* noop */ }
-                            return finalize();
-                        }
-                    } catch (error) {
-                        console.error(`Multi-page downloader: Error on '${itemLabel}' attempt ${attempt}:`, error);
-                        try {
-                            chrome.runtime.sendMessage({
-                                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                                status: `Error klik unduh '${itemLabel}' (halaman ${totalPagesDownloaded}): ${error.message}`
-                            });
-                        } catch (e) { /* noop */ }
-                        if (attempt < maxRetries) {
-                            setTimeout(() => attemptClick(attempt + 1), retryDelay);
-                        } else {
-                            return finalize();
-                        }
-                    }
-                };
-
-                attemptClick(0);
-            }, baseDelay * index);
-        });
-    });
-}
-
-function completeMultiPageDownload() {
-    const pagesCompleted = totalPagesDownloaded;
-    const filesDownloaded = totalFilesDownloaded;
-
-    console.log('Multi-page downloader: === MULTI-PAGE DOWNLOAD COMPLETE ===');
-    console.log(`Multi-page downloader: Total pages: ${pagesCompleted}, Total files: ${filesDownloaded}`);
-
-    // Show completion modal
-    const title = 'Multi-Page Download Complete!';
-    const message = `Downloaded ${filesDownloaded} file(s) from ${pagesCompleted} page(s)`;
-    const details = `Process completed successfully`;
-
-    displayModalSafe(title, message, details, true);
-
-    // Send completion message to background script to reset UI state
-    chrome.runtime.sendMessage({
-        type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
-        totalFiles: filesDownloaded,
-        totalPages: pagesCompleted
-    }).catch(error => {
-        console.log('Multi-page downloader: Could not send completion message:', error.message);
-    });
-
-    // Auto-close modal after 5 seconds (longer for multi-page)
-    setTimeout(() => {
-        closeModalSafe();
-    }, 5000);
-
-    console.log('Multi-page downloader: Completion message sent to background script');
-    resetModuleState();
-}
-
-// Chrome runtime message handler
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === 'startMultiPageDownload') {
-        console.log("Multi-page downloader: startMultiPageDownload received");
-
-        // Reset stop flag when starting new download
-        isDownloadStopped = false;
-        stopAfterCurrentPage = false;
-
-        // Send immediate response to prevent message port error
-        sendResponse({
-            success: true,
-            message: "Multi-page download started successfully"
-        });
-
-        // Start the download process asynchronously with proper error handling
-        (async () => {
+            // Send debug log to popup
             try {
-                console.log("Multi-page downloader: Starting async download process");
-                const result = await startMultiPageDownload();
-                console.log("Multi-page downloader: Process completed with result:", result);
+                chrome.runtime.sendMessage({
+                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                    status: `🔍 Deteksi: ${initialButtons.length} tombol.`
+                });
+            } catch (e) { }
 
-                // Send completion message to background script
-                chrome.runtime.sendMessage({
-                    type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
-                    totalFiles: result.totalFiles,
-                    totalPages: result.totalPages
-                }).catch(error => {
-                    console.log('Multi-page downloader: Could not send completion message:', error.message);
-                });
-            } catch (error) {
-                console.error("Multi-page downloader: Error in multi-page download:", error);
-                // Send error status update
-                chrome.runtime.sendMessage({
-                    type: 'UPDATE_STATUS',
-                    status: `Error: ${error.message}`,
-                    complete: true
-                }).catch(error => {
-                    console.log('Multi-page downloader: Could not send error status:', error.message);
-                });
+            let downloadCount = 0;
+            const maxButtons = initialButtons.length;
+
+            // Process sequentially with re-querying
+            for (let i = 0; i < maxButtons; i++) {
+
+                // Stop check
+                if (isDownloadStopped) {
+                    console.log('Download stopped by user request.');
+                    break;
+                }
+
+                // RE-QUERY BUTTON to avoid stale reference
+                const freshButtons = getFreshButtons();
+                // We use the index strictly. If the list size changed, we might be off, 
+                // but checking freshButtons[i] is safer than holding a stale reference.
+                const button = freshButtons[i];
+
+                if (!button) {
+                    console.warn(`⚠️ Button at index ${i} not found matching original count. List changed? Skipped.`);
+                    continue;
+                }
+
+                const meta = buttonsMetadata[i] || {};
+                const itemLabel = meta.firstCellText ? `Nomor Dokumen ${meta.firstCellText}` : `File #${i + 1}`;
+
+                try {
+                    console.log(`🖱️ Clicking button ${i + 1}/${maxButtons}: ${itemLabel}`);
+
+                    // 1. Scroll
+                    button.scrollIntoView({ block: 'center', inline: 'center' });
+
+                    // 2. Focus
+                    button.focus();
+
+                    // 3. Click (Angular-friendly)
+                    // Try naive click first, then complex if needed. 
+                    // Actually, for consistency, let's use the click() method first as it's most robust for native buttons.
+                    button.click();
+
+                    // If that doesn't work, one might need to dispatch events, but click() usually works if element is fresh.
+                    // We'll dispatch a mouse event just in case it listens for mousedown/up
+                    button.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+                    button.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+
+                    downloadCount++;
+
+                    // Report success
+                    try {
+                        chrome.runtime.sendMessage({
+                            type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                            status: `✅ Klik: ${itemLabel}`
+                        });
+                    } catch (e) { }
+
+                    console.log(`✅ Clicked: ${itemLabel}`);
+
+                    // HUMAN BEHAVIOR: Wait fast but safe
+                    // Random delay between 500ms and 1000ms
+                    const delayTime = 500 + Math.random() * 500;
+                    // console.log(`⏳ Waiting ${Math.round(delayTime)}ms...`);
+                    await new Promise(r => setTimeout(r, delayTime));
+
+                } catch (err) {
+                    console.error(`❌ Error clicking button ${i}:`, err);
+                }
             }
-        })();
 
-        return true; // Keep message channel open
-    } else if (message.action === 'stopDownload') {
-        console.log("Multi-page downloader: stopDownload received");
-        stopDownload(true);
-        sendResponse({
-            success: true,
-            message: "Multi-page download stopped successfully"
+            resolve(downloadCount);
         });
-        return true;
     }
-});
 
-// React immediately if background toggles stopRequested in storage
-try {
-    chrome.storage.onChanged.addListener((changes, areaName) => {
-        if (areaName === 'local' && changes.stopRequested) {
-            const val = changes.stopRequested.newValue;
-            if (val === true) {
-                console.log('Multi-page downloader: stopRequested flag detected from storage. Will stop after current page.');
-                stopDownload(true);
-            }
+    function completeMultiPageDownload() {
+        const pagesCompleted = totalPagesDownloaded;
+        const filesDownloaded = totalFilesDownloaded;
+
+        console.log('Multi-page downloader: === MULTI-PAGE DOWNLOAD COMPLETE ===');
+        console.log(`Multi-page downloader: Total pages: ${pagesCompleted}, Total files: ${filesDownloaded}`);
+
+        // Show completion modal
+        const title = 'Multi-Page Download Complete!';
+        const message = `Downloaded ${filesDownloaded} file(s) from ${pagesCompleted} page(s)`;
+        const details = `Process completed successfully`;
+
+        displayModalSafe(title, message, details, true);
+
+        // Send completion message to background script to reset UI state
+        chrome.runtime.sendMessage({
+            type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
+            totalFiles: filesDownloaded,
+            totalPages: pagesCompleted
+        }).catch(error => {
+            console.log('Multi-page downloader: Could not send completion message:', error.message);
+        });
+
+        // Auto-close modal after 5 seconds (longer for multi-page)
+        setTimeout(() => {
+            closeModalSafe();
+        }, 5000);
+
+        console.log('Multi-page downloader: Completion message sent to background script');
+        resetModuleState();
+    }
+
+    // Chrome runtime message handler
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.action === 'startMultiPageDownload') {
+            console.log("Multi-page downloader: startMultiPageDownload received");
+
+            // Reset stop flag when starting new download
+            isDownloadStopped = false;
+            stopAfterCurrentPage = false;
+
+            // Send immediate response to prevent message port error
+            sendResponse({
+                success: true,
+                message: "Multi-page download started successfully"
+            });
+
+            // Start the download process asynchronously with proper error handling
+            (async () => {
+                try {
+                    console.log("Multi-page downloader: Starting async download process");
+                    const result = await startMultiPageDownload();
+                    console.log("Multi-page downloader: Process completed with result:", result);
+
+                    // Send completion message to background script
+                    chrome.runtime.sendMessage({
+                        type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
+                        totalFiles: result.totalFiles,
+                        totalPages: result.totalPages
+                    }).catch(error => {
+                        console.log('Multi-page downloader: Could not send completion message:', error.message);
+                    });
+                } catch (error) {
+                    console.error("Multi-page downloader: Error in multi-page download:", error);
+                    // Send error status update
+                    chrome.runtime.sendMessage({
+                        type: 'UPDATE_STATUS',
+                        status: `Error: ${error.message}`,
+                        complete: true
+                    }).catch(error => {
+                        console.log('Multi-page downloader: Could not send error status:', error.message);
+                    });
+                }
+            })();
+
+            return true; // Keep message channel open
+        } else if (message.action === 'startBPPUAutomation') {
+            // NEW: startBPPUAutomation handler
+            console.log("Multi-page downloader: startBPPUAutomation received");
+
+            isDownloadStopped = false;
+            stopAfterCurrentPage = false;
+
+            sendResponse({ success: true, message: "BPPU Automation started" });
+
+            (async () => {
+                try {
+                    const result = await startBPPUAutomation();
+                    chrome.runtime.sendMessage({
+                        type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
+                        totalFiles: result.totalFiles,
+                        totalPages: result.totalPages
+                    });
+                } catch (error) {
+                    console.error("BPPU Automation Error:", error);
+                    chrome.runtime.sendMessage({
+                        type: 'UPDATE_STATUS',
+                        status: `Error: ${error.message}`,
+                        complete: true
+                    });
+                }
+            })();
+            return true;
+
+        } else if (message.action === 'stopDownload') {
+            console.log("Multi-page downloader: stopDownload received");
+            stopDownload(true);
+            sendResponse({
+                success: true,
+                message: "Multi-page download stopped successfully"
+            });
+            return true;
         }
     });
-} catch (e) {}
 
-// Auto-start if called directly
-if (typeof window !== 'undefined' && window.location) {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('multiPage') === 'true') {
-        console.log("Multi-page downloader: Auto-starting multi-page download");
-        startMultiPageDownload();
+    // React immediately if background toggles stopRequested in storage
+    try {
+        chrome.storage.onChanged.addListener((changes, areaName) => {
+            if (areaName === 'local' && changes.stopRequested) {
+                const val = changes.stopRequested.newValue;
+                if (val === true) {
+                    console.log('Multi-page downloader: stopRequested flag detected from storage. Will stop after current page.');
+                    stopDownload(true);
+                }
+            }
+        });
+    } catch (e) { }
+
+    // Auto-start if called directly
+    if (typeof window !== 'undefined' && window.location) {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('multiPage') === 'true') {
+            console.log("Multi-page downloader: Auto-starting multi-page download");
+            startMultiPageDownload();
+        }
     }
-}
 
-if (typeof window !== 'undefined') {
-    window.__BPE_MULTI_PAGE_RESET__ = resetModuleState;
-}
-resetModuleState();
+    if (typeof window !== 'undefined') {
+        window.__BPE_MULTI_PAGE_RESET__ = resetModuleState;
+    }
+    resetModuleState();
 })();

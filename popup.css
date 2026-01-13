@@ -425,7 +425,7 @@ select:focus {
   gap: 12px;
 }
 
-#filterBtn {
+#filterBtn, #downloadPrepaidBtn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -443,13 +443,23 @@ select:focus {
   box-shadow: 0 4px 15px rgba(0, 90, 156, 0.2);
 }
 
-#filterBtn:hover:not(:disabled) {
+#downloadPrepaidBtn {
+  background-color: #4CAF50 !important; /* Green color override */
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+}
+
+#filterBtn:hover:not(:disabled), #downloadPrepaidBtn:hover:not(:disabled) {
   background-color: var(--primary-hover);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 90, 156, 0.3);
 }
 
-#filterBtn .icon {
+#downloadPrepaidBtn:hover:not(:disabled) {
+  background-color: #45a049 !important;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+}
+
+#filterBtn .icon, #downloadPrepaidBtn .icon {
   width: 20px;
   height: 20px;
 }

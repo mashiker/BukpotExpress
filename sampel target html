@@ -1,0 +1,1888 @@
+<html lang="id-ID" dir="ltr"><head><meta charset="utf-8"><title>Registration Portal</title><base href="/registration-portal/id-ID/"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/x-icon" href="favicon.ico"><link rel="stylesheet" href="styles.4a74bb4f46bb13cf.css"><style>.picker_wrapper.no_alpha .picker_alpha {
+    display: none
+}
+
+.picker_wrapper.no_editor .picker_editor {
+    position: absolute;
+    z-index: -1;
+    opacity: 0
+}
+
+.picker_wrapper.no_cancel .picker_cancel {
+    display: none
+}
+
+.layout_default.picker_wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: stretch;
+    font-size: 10px;
+    width: 25em;
+    padding: .5em
+}
+
+.layout_default.picker_wrapper input,
+.layout_default.picker_wrapper button {
+    font-size: 1rem
+}
+
+.layout_default.picker_wrapper>* {
+    margin: .5em
+}
+
+.layout_default.picker_wrapper::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 0;
+    order: 1
+}
+
+.layout_default .picker_slider,
+.layout_default .picker_selector {
+    padding: 1em
+}
+
+.layout_default .picker_hue {
+    width: 100%
+}
+
+.layout_default .picker_sl {
+    flex: 1 1 auto
+}
+
+.layout_default .picker_sl::before {
+    content: "";
+    display: block;
+    padding-bottom: 100%
+}
+
+.layout_default .picker_editor {
+    order: 1;
+    width: 6.5rem
+}
+
+.layout_default .picker_editor input {
+    width: 100%;
+    height: 100%
+}
+
+.layout_default .picker_sample {
+    order: 1;
+    flex: 1 1 auto
+}
+
+.layout_default .picker_done,
+.layout_default .picker_cancel {
+    order: 1
+}
+
+.picker_wrapper {
+    box-sizing: border-box;
+    background: #f2f2f2;
+    box-shadow: 0 0 0 1px silver;
+    cursor: default;
+    font-family: sans-serif;
+    color: #444;
+    pointer-events: auto
+}
+
+.picker_wrapper:focus {
+    outline: none
+}
+
+.picker_wrapper button,
+.picker_wrapper input {
+    box-sizing: border-box;
+    border: none;
+    box-shadow: 0 0 0 1px silver;
+    outline: none
+}
+
+.picker_wrapper button:focus,
+.picker_wrapper button:active,
+.picker_wrapper input:focus,
+.picker_wrapper input:active {
+    box-shadow: 0 0 2px 1px #1e90ff
+}
+
+.picker_wrapper button {
+    padding: .4em .6em;
+    cursor: pointer;
+    background-color: #f5f5f5;
+    background-image: linear-gradient(0deg, gainsboro, transparent)
+}
+
+.picker_wrapper button:active {
+    background-image: linear-gradient(0deg, transparent, gainsboro)
+}
+
+.picker_wrapper button:hover {
+    background-color: #fff
+}
+
+.picker_selector {
+    position: absolute;
+    z-index: 1;
+    display: block;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    border: 2px solid #fff;
+    border-radius: 100%;
+    box-shadow: 0 0 3px 1px #67b9ff;
+    background: currentColor;
+    cursor: pointer
+}
+
+.picker_slider .picker_selector {
+    border-radius: 2px
+}
+
+.picker_hue {
+    position: relative;
+    background-image: linear-gradient(90deg, red, yellow, lime, cyan, blue, magenta, red);
+    box-shadow: 0 0 0 1px silver
+}
+
+.picker_sl {
+    position: relative;
+    box-shadow: 0 0 0 1px silver;
+    background-image: linear-gradient(180deg, white, rgba(255, 255, 255, 0) 50%), linear-gradient(0deg, black, rgba(0, 0, 0, 0) 50%), linear-gradient(90deg, #808080, rgba(128, 128, 128, 0))
+}
+
+.picker_alpha,
+.picker_sample {
+    position: relative;
+    background: linear-gradient(45deg, lightgrey 25%, transparent 25%, transparent 75%, lightgrey 75%) 0 0/2em 2em, linear-gradient(45deg, lightgrey 25%, white 25%, white 75%, lightgrey 75%) 1em 1em/2em 2em;
+    box-shadow: 0 0 0 1px silver
+}
+
+.picker_alpha .picker_selector,
+.picker_sample .picker_selector {
+    background: none
+}
+
+.picker_editor input {
+    font-family: monospace;
+    padding: .2em .4em
+}
+
+.picker_sample::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: currentColor
+}
+
+.picker_arrow {
+    position: absolute;
+    z-index: -1
+}
+
+.picker_wrapper.popup {
+    position: absolute;
+    z-index: 2;
+    margin: 1.5em
+}
+
+.picker_wrapper.popup,
+.picker_wrapper.popup .picker_arrow::before,
+.picker_wrapper.popup .picker_arrow::after {
+    background: #f2f2f2;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .4)
+}
+
+.picker_wrapper.popup .picker_arrow {
+    width: 3em;
+    height: 3em;
+    margin: 0
+}
+
+.picker_wrapper.popup .picker_arrow::before,
+.picker_wrapper.popup .picker_arrow::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -99
+}
+
+.picker_wrapper.popup .picker_arrow::before {
+    width: 100%;
+    height: 100%;
+    -webkit-transform: skew(45deg);
+    transform: skew(45deg);
+    -webkit-transform-origin: 0 100%;
+    transform-origin: 0 100%
+}
+
+.picker_wrapper.popup .picker_arrow::after {
+    width: 150%;
+    height: 150%;
+    box-shadow: none
+}
+
+.popup.popup_top {
+    bottom: 100%;
+    left: 0
+}
+
+.popup.popup_top .picker_arrow {
+    bottom: 0;
+    left: 0;
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg)
+}
+
+.popup.popup_bottom {
+    top: 100%;
+    left: 0
+}
+
+.popup.popup_bottom .picker_arrow {
+    top: 0;
+    left: 0;
+    -webkit-transform: rotate(90deg) scale(1, -1);
+    transform: rotate(90deg) scale(1, -1)
+}
+
+.popup.popup_left {
+    top: 0;
+    right: 100%
+}
+
+.popup.popup_left .picker_arrow {
+    top: 0;
+    right: 0;
+    -webkit-transform: scale(-1, 1);
+    transform: scale(-1, 1)
+}
+
+.popup.popup_right {
+    top: 0;
+    left: 100%
+}
+
+.popup.popup_right .picker_arrow {
+    top: 0;
+    left: 0
+}
+
+</style><style>a[_ngcontent-epw-c525]:hover {
+    text-decoration: none;
+    color: #474f6e !important
+}
+
+.icon-circle-container[_ngcontent-epw-c525] {
+    border-radius: 50%;
+    background-color: #fff;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    cursor: pointer;
+    padding-top: 1px;
+    transition: all .2s ease
+}
+
+.icon-circle-container[_ngcontent-epw-c525] a[_ngcontent-epw-c525] {
+    color: #313131
+}
+
+.facebook[_ngcontent-epw-c525]:hover {
+    background-color: #3b5a9a !important
+}
+
+.facebook[_ngcontent-epw-c525]:hover i[_ngcontent-epw-c525] {
+    color: #fff !important
+}
+
+.twitter[_ngcontent-epw-c525]:hover {
+    background-color: #171717 !important
+}
+
+.twitter[_ngcontent-epw-c525]:hover i[_ngcontent-epw-c525] {
+    color: #fff !important
+}
+
+.youtube[_ngcontent-epw-c525]:hover {
+    background-color: #c3191e !important
+}
+
+.youtube[_ngcontent-epw-c525]:hover i[_ngcontent-epw-c525] {
+    color: #fff !important
+}
+
+.instagram[_ngcontent-epw-c525]:hover {
+    background-image: linear-gradient(208deg, #515BD4, #8134AF, #DD2A7B, #FEDA77, #F58529)
+}
+
+.instagram[_ngcontent-epw-c525]:hover i[_ngcontent-epw-c525] {
+    color: #fff !important
+}
+
+.text-version[_ngcontent-epw-c525] {
+    font-size: 12px;
+    color: #e4e4e4
+}
+
+</style><style>.p-scrolltop {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.p-scrolltop-sticky {
+    position: sticky
+}
+
+.p-scrolltop-sticky.p-link {
+    margin-left: auto
+}
+
+</style><style>.p-toast {
+    position: fixed;
+    width: 25rem
+}
+
+.p-toast-message {
+    overflow: hidden
+}
+
+.p-toast-message-content {
+    display: flex;
+    align-items: flex-start
+}
+
+.p-toast-message-text {
+    flex: 1 1 auto
+}
+
+.p-toast-top-right {
+    top: 20px;
+    right: 20px
+}
+
+.p-toast-top-left {
+    top: 20px;
+    left: 20px
+}
+
+.p-toast-bottom-left {
+    bottom: 20px;
+    left: 20px
+}
+
+.p-toast-bottom-right {
+    bottom: 20px;
+    right: 20px
+}
+
+.p-toast-top-center {
+    top: 20px;
+    left: 50%;
+    transform: translate(-50%)
+}
+
+.p-toast-bottom-center {
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%)
+}
+
+.p-toast-center {
+    left: 50%;
+    top: 50%;
+    min-width: 20vw;
+    transform: translate(-50%, -50%)
+}
+
+.p-toast-icon-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative
+}
+
+.p-toast-icon-close.p-link {
+    cursor: pointer
+}
+
+</style><style>.navbar[_ngcontent-epw-c132] {
+    padding-bottom: 0;
+    padding-top: 0;
+    padding-right: 0
+}
+
+button.navbar-toggler[_ngcontent-epw-c132] {
+    margin-bottom: .5rem
+}
+
+.nav-item[_ngcontent-epw-c132] {
+    background-color: #212c5f;
+    font-weight: 600;
+    line-height: 2rem !important;
+    font-size: .9rem !important;
+    display: flex;
+    align-items: center;
+    text-wrap: nowrap
+}
+
+.nav-item.active[_ngcontent-epw-c132],
+.nav-item[_ngcontent-epw-c132]:hover {
+    background-color: #ffc91b;
+    display: flex !important;
+    align-items: center !important;
+    color: #000 !important;
+    transition: background-color .2s ease
+}
+
+.navbar-dark[_ngcontent-epw-c132] .navbar-nav[_ngcontent-epw-c132] .nav-link[_ngcontent-epw-c132]:hover,
+.navbar-dark[_ngcontent-epw-c132] .navbar-nav[_ngcontent-epw-c132] .nav-link[_ngcontent-epw-c132]:focus {
+    color: #000 !important
+}
+
+.navbar-dark[_ngcontent-epw-c132] .navbar-nav[_ngcontent-epw-c132] .active[_ngcontent-epw-c132]>.nav-link[_ngcontent-epw-c132] {
+    color: #000 !important
+}
+
+.navbar-expand-lg[_ngcontent-epw-c132] .navbar-nav[_ngcontent-epw-c132] .dropdown-menu[_ngcontent-epw-c132] {
+    padding: 0
+}
+
+@media (min-width: 320px) and (max-width: 992px) {
+    .navbar-light[_ngcontent-epw-c132] .navbar-nav[_ngcontent-epw-c132] .nav-link[_ngcontent-epw-c132] {
+        padding-left: 1rem;
+        color: #fff !important;
+        width: -webkit-fill-available
+    }
+
+    .dropdown-toggle[_ngcontent-epw-c132]:after {
+        float: right;
+        margin-right: 1rem;
+        margin-top: .9rem
+    }
+}
+
+.dropdown-menu[_ngcontent-epw-c132] li[_ngcontent-epw-c132] {
+    position: relative
+}
+
+.dropdown-menu[_ngcontent-epw-c132] .dropdown-submenu[_ngcontent-epw-c132] {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: -7px
+}
+
+.dropdown-menu[_ngcontent-epw-c132] .dropdown-submenu-left[_ngcontent-epw-c132] {
+    right: 100%;
+    left: auto
+}
+
+.dropdown-menu[_ngcontent-epw-c132]>li[_ngcontent-epw-c132]:hover>.dropdown-submenu[_ngcontent-epw-c132] {
+    display: block
+}
+
+.sub-menu[_ngcontent-epw-c132]>a[_ngcontent-epw-c132]:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #fff;
+    font-weight: 700;
+    margin-top: .7rem;
+    margin-right: -10px
+}
+
+.dropdown-submenu[_ngcontent-epw-c132] .dropdown-item[_ngcontent-epw-c132] {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: .25rem 1.5rem
+}
+
+.dropdown-item[_ngcontent-epw-c132]:hover,
+.dropdown-item[_ngcontent-epw-c132]:focus {
+    color: #fff;
+    text-decoration: none;
+    background-color: #ffc91b;
+    transition: background-color .2s ease
+}
+
+.dropdown-item[_ngcontent-epw-c132] {
+    border-bottom: none;
+    font-size: .9rem !important
+}
+
+.scrollmenu[_ngcontent-epw-c132] {
+    overflow-x: auto;
+    overflow-y: hidden !important;
+    background-color: #212c5f;
+    padding-left: .7rem
+}
+
+[_ngcontent-epw-c132]::-webkit-scrollbar {
+    height: 8px !important;
+    background-color: #212c5f
+}
+
+[_ngcontent-epw-c132]::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    background-color: #ffc91b
+}
+
+.wrapper[_ngcontent-epw-c132] {
+    position: relative;
+    display: block
+}
+
+.dropdown-menu[_ngcontent-epw-c132] {
+    position: absolute;
+    top: 84%;
+    z-index: 21;
+    display: none
+}
+
+.show[_ngcontent-epw-c132] {
+    display: block !important
+}
+
+</style><style>[_nghost-epw-c157] .custom-dropdown-languange {
+    height: 2rem
+}
+
+[_nghost-epw-c157] .custom-dropdown-languange.p-dropdown:not(.p-disabled):hover {
+    border-color: none !important
+}
+
+[_nghost-epw-c157] .custom-dropdown-languange.p-dropdown:not(.p-disabled).p-focus {
+    box-shadow: none !important;
+    border-color: none !important
+}
+
+[_nghost-epw-c157] .custom-dropdown-languange.p-dropdown .p-dropdown-label {
+    display: flex !important;
+    align-items: center !important
+}
+
+</style><style>coretax-notifications-info .p-button-label {
+    display: none
+}
+
+[_nghost-epw-c134] .custom-badge-notification {
+    font-size: 1.2rem !important;
+    color: #fff;
+    cursor: pointer;
+
+    span {
+        color: #ffffff !important;
+        width: 1.5rem;
+        font-size: 13px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #B8001F;
+        font-weight: bold;
+        padding-bottom: 2px;
+    }
+}
+
+[_nghost-epw-c134] .custom-badge-notification:hover {
+    color: #dbdbdb;
+    transition: color .3s ease;
+
+    span {
+        background-color: #a1001b;
+        transition: background-color .3s ease;
+        color: #dbdbdb;
+    }
+}
+
+[_nghost-epw-c134] .custom-badge-notification-2 {
+    font-size: 1.2rem !important;
+    color: #fff;
+    cursor: pointer;
+
+    span {
+        color: #ffffff !important;
+        width: 1.8rem;
+        font-size: 12px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #B8001F;
+        font-weight: bold;
+        padding-bottom: 2px;
+    }
+}
+
+[_nghost-epw-c134] .custom-badge-notification-2:hover {
+    color: #dbdbdb;
+    transition: color .3s ease;
+
+    span {
+        background-color: #a1001b;
+        transition: background-color .3s ease;
+        color: #dbdbdb;
+    }
+}
+
+[_nghost-epw-c134] .custom-badge-notification-empty {
+    font-size: 1.2rem !important;
+    color: #fff;
+    cursor: pointer;
+
+    span {
+        color: #ffffff !important;
+        width: 1rem;
+        font-size: 13px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #B8001F;
+        font-weight: bold;
+        padding-bottom: 2px;
+    }
+}
+
+[_nghost-epw-c134] .custom-badge-notification-empty:hover {
+    color: #dbdbdb;
+    transition: color .3s ease;
+
+    span {
+        background-color: #a1001b;
+        transition: background-color .3s ease;
+        color: #dbdbdb;
+    }
+}
+
+[_nghost-epw-c134] .custom-badge-notification-portal {
+    font-size: 1.2rem !important;
+    color: #212c5f;
+    cursor: pointer;
+
+    span {
+        color: #ffffff !important;
+        width: 1.5rem;
+        font-size: 13px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #B8001F;
+        font-weight: bold;
+        padding-bottom: 2px;
+    }
+}
+
+[_nghost-epw-c134] .custom-badge-notification-portal:hover {
+    color: #171f44;
+    transition: color .3s ease;
+
+    span {
+        background-color: #a1001b;
+        transition: background-color .3s ease;
+        color: #dbdbdb;
+    }
+}
+
+[_nghost-epw-c134] .custom-badge-notification-portal-2 {
+    font-size: 1.2rem !important;
+    color: #212c5f;
+    cursor: pointer;
+
+    span {
+        color: #ffffff !important;
+        width: 1.8rem;
+        font-size: 12px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #B8001F;
+        font-weight: bold;
+        padding-bottom: 2px;
+    }
+}
+
+[_nghost-epw-c134] .custom-badge-notification-portal-2:hover {
+    color: #171f44;
+    transition: color .3s ease;
+
+    span {
+        background-color: #a1001b;
+        transition: background-color .3s ease;
+        color: #dbdbdb;
+    }
+}
+
+[_nghost-epw-c134] .custom-badge-notification-portal-empty {
+    font-size: 1.2rem !important;
+    color: #212c5f;
+    cursor: pointer;
+
+    span {
+        color: #ffffff !important;
+        width: 1rem;
+        font-size: 13px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #B8001F;
+        font-weight: bold;
+        padding-bottom: 2px;
+    }
+}
+
+[_nghost-epw-c134] .custom-badge-notification-portal-empty:hover {
+    color: #171f44;
+    transition: color .3s ease;
+
+    span {
+        background-color: #a1001b;
+        transition: background-color .3s ease;
+        color: #dbdbdb;
+    }
+}
+
+[_nghost-epw-c134] .p-badge {
+    min-width: 2.5rem !important
+}
+
+</style><style>.p-dropdown {
+    display: inline-flex;
+    cursor: pointer;
+    position: relative;
+    -webkit-user-select: none;
+    user-select: none
+}
+
+.p-dropdown-clear-icon {
+    position: absolute;
+    top: 50%;
+    margin-top: -.5rem
+}
+
+.p-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0
+}
+
+.p-dropdown-label {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    flex: 1 1 auto;
+    width: 1%;
+    text-overflow: ellipsis;
+    cursor: pointer
+}
+
+.p-dropdown-label-empty {
+    overflow: hidden;
+    visibility: hidden
+}
+
+input.p-dropdown-label {
+    cursor: default
+}
+
+.p-dropdown-items-wrapper {
+    overflow: auto
+}
+
+.p-dropdown-item {
+    cursor: pointer;
+    font-weight: 400;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden
+}
+
+.p-dropdown-items {
+    margin: 0;
+    padding: 0;
+    list-style-type: none
+}
+
+.p-dropdown-filter {
+    width: 100%
+}
+
+.p-dropdown-filter-container {
+    position: relative
+}
+
+.p-dropdown-filter-icon {
+    position: absolute;
+    top: 50%;
+    margin-top: -.5rem
+}
+
+.p-fluid .p-dropdown {
+    display: flex
+}
+
+.p-fluid .p-dropdown .p-dropdown-label {
+    width: 1%
+}
+
+</style><style>.progress-spinner[_ngcontent-epw-c109] {
+    position: fixed;
+    z-index: 999;
+    height: 100px;
+    width: 100px;
+    overflow: show;
+    margin: auto;
+    inset: 0
+}
+
+.modal[_ngcontent-epw-c109] {
+    position: fixed;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+    background-color: #00000080;
+    z-index: 9999 !important;
+    cursor: auto
+}
+
+</style><style>.p-overlay {
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.p-overlay-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%
+}
+
+.p-overlay-content {
+    transform-origin: inherit
+}
+
+.p-overlay-modal>.p-overlay-content {
+    z-index: 1;
+    width: 90%
+}
+
+.p-overlay-top {
+    align-items: flex-start
+}
+
+.p-overlay-top-start {
+    align-items: flex-start;
+    justify-content: flex-start
+}
+
+.p-overlay-top-end {
+    align-items: flex-start;
+    justify-content: flex-end
+}
+
+.p-overlay-bottom {
+    align-items: flex-end
+}
+
+.p-overlay-bottom-start {
+    align-items: flex-end;
+    justify-content: flex-start
+}
+
+.p-overlay-bottom-end {
+    align-items: flex-end;
+    justify-content: flex-end
+}
+
+.p-overlay-left {
+    justify-content: flex-start
+}
+
+.p-overlay-left-start {
+    justify-content: flex-start;
+    align-items: flex-start
+}
+
+.p-overlay-left-end {
+    justify-content: flex-start;
+    align-items: flex-end
+}
+
+.p-overlay-right {
+    justify-content: flex-end
+}
+
+.p-overlay-right-start {
+    justify-content: flex-end;
+    align-items: flex-start
+}
+
+.p-overlay-right-end {
+    justify-content: flex-end;
+    align-items: flex-end
+}
+
+</style><style>.p-overlaypanel {
+    position: absolute;
+    margin-top: 10px;
+    top: 0;
+    left: 0
+}
+
+.p-overlaypanel-flipped {
+    margin-top: 0;
+    margin-bottom: 10px
+}
+
+.p-overlaypanel-close {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative
+}
+
+.p-overlaypanel:after,
+.p-overlaypanel:before {
+    bottom: 100%;
+    left: calc(var(--overlayArrowLeft, 0) + 1.25rem);
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none
+}
+
+.p-overlaypanel:after {
+    border-width: 8px;
+    margin-left: -8px
+}
+
+.p-overlaypanel:before {
+    border-width: 10px;
+    margin-left: -10px
+}
+
+.p-overlaypanel-shifted:after,
+.p-overlaypanel-shifted:before {
+    left: auto;
+    right: 1.25em;
+    margin-left: auto
+}
+
+.p-overlaypanel-flipped:after,
+.p-overlaypanel-flipped:before {
+    bottom: auto;
+    top: 100%
+}
+
+.p-overlaypanel.p-overlaypanel-flipped:after {
+    border-bottom-color: transparent
+}
+
+.p-overlaypanel.p-overlaypanel-flipped:before {
+    border-bottom-color: transparent
+}
+
+</style><style>[_nghost-epw-c161] .custom-header-help-portal {
+    font-size: 1.3rem !important;
+    color: #212c5f;
+    cursor: pointer
+}
+
+[_nghost-epw-c161] .custom-header-help-portal:hover {
+    color: #141b3a;
+    transition: color .3s ease
+}
+
+</style><style>.main-content-container[_ngcontent-epw-c188] {
+    padding: 0;
+    min-height: 88vh;
+    height: 100%
+}
+
+.main-content[_ngcontent-epw-c188] {
+    background: #fff;
+    padding: 1rem;
+    min-height: 83vh
+}
+
+</style><style>[_nghost-epw-c337] .p-fileupload .p-fileupload-buttonbar .p-button {
+    margin-right: .5rem;
+    height: 2rem
+}
+
+[_nghost-epw-c337] .p-fileupload .p-fileupload-buttonbar {
+    padding: .5rem
+}
+
+[_nghost-epw-c337] .p-inputtext {
+    padding: .25rem .5rem !important
+}
+
+[_nghost-epw-c337] .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+    padding: .25rem .5rem !important
+}
+
+</style><style>[_nghost-epw-c56] ::-webkit-scrollbar {
+    height: 10px !important
+}
+
+[_nghost-epw-c56] .button-column-width {
+    min-width: 35px
+}
+
+[_nghost-epw-c56] .checkbox-column-width {
+    min-width: 30px
+}
+
+[_nghost-epw-c56] .resizable-column-width {
+    min-width: 0px
+}
+
+[_nghost-epw-c56] .disabled-button {
+    opacity: .4;
+    cursor: not-allowed;
+    background-color: gray;
+    color: #000
+}
+
+[_nghost-epw-c56] th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+
+[_nghost-epw-c56] th {
+    word-break: break-all
+}
+
+[_nghost-epw-c56] td {
+    word-break: break-all
+}
+
+[_nghost-epw-c56] .p-datatable-resizable .p-datatable-tbody>tr>td {
+    white-space: normal;
+    word-break: normal
+}
+
+[_nghost-epw-c56] .p-datatable-responsiveness .p-datatable-tbody>tr>td .p-column-title {
+    display: none
+}
+
+[_nghost-epw-c56] .p-d-inline-blok {
+    width: 100%;
+    display: inline-block
+}
+
+[_nghost-epw-c56] ::-webkit-scrollbar-corner {
+    background: rgba(0, 0, 0, .5)
+}
+
+[_nghost-epw-c56] ::-webkit-scrollbar {
+    height: 5px
+}
+
+[_nghost-epw-c56] ::-webkit-scrollbar-thumb {
+    background-color: gray;
+    border-radius: 10px
+}
+
+[_nghost-epw-c56] ::-webkit-scrollbar-track {
+    background: #efefef
+}
+
+[_nghost-epw-c56] .p-datatable.p-datatable-sm .p-datatable-thead>tr>th {
+    padding: .4rem .5rem
+}
+
+[_nghost-epw-c56] .p-datatable.p-datatable-sm .p-datatable-tbody>tr>td {
+    padding: .35rem .5rem
+}
+
+[_nghost-epw-c56] .fixed-first-col .p-datatable colgroup>col:nth-child(1) {
+    min-width: 250px !important
+}
+
+[_nghost-epw-c56] .fixed-first-col .p-datatable .p-datatable-tbody>tr>td:nth-child(1) {
+    min-width: 250px !important
+}
+
+[_nghost-epw-c56] .fixed-first-col .p-datatable .p-datatable-thead>tr>th:nth-child(1) {
+    min-width: 250px !important
+}
+
+[_nghost-epw-c56] .p-inputtext {
+    padding: .1rem .65rem
+}
+
+[_nghost-epw-c56] .circle {
+    height: 2em;
+    width: 2em;
+    background-color: #777;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 auto
+}
+
+[_nghost-epw-c56] .narrowColumn {
+    max-width: 90px !important
+}
+
+[_nghost-epw-c56] .p-button.p-button-sm {
+    padding: .05rem .65625rem
+}
+
+[_nghost-epw-c56] .p-button.p-button-icon-only {
+    padding: .4rem 0
+}
+
+[_nghost-epw-c56] .p-paginator .p-dropdown .p-dropdown-label {
+    padding-right: 0;
+    padding-top: .35rem
+}
+
+.link-font-size[_ngcontent-epw-c56] {
+    font-size: 1rem !important
+}
+
+@media screen and (max-width: 40rem) {
+    [_nghost-epw-c56] .button-column-width {
+        width: 150vw
+    }
+
+    [_nghost-epw-c56] .checkbox-column-width {
+        width: 150vw
+    }
+
+    [_nghost-epw-c56] .resizable-column-width {
+        width: 150vw
+    }
+
+    [_nghost-epw-c56] .p-datatable.p-datatable-responsiveness .p-datatable-thead>tr>th,
+    [_nghost-epw-c56] .p-datatable.p-datatable-responsiveness .p-datatable-tfoot>tr>td {
+        display: none !important
+    }
+
+    [_nghost-epw-c56] .p-datatable.p-datatable-responsiveness .p-datatable-tbody>tr>td {
+        text-align: left;
+        display: block;
+        width: 100%;
+        float: left;
+        clear: left;
+        border: 0 none
+    }
+
+    [_nghost-epw-c56] .p-datatable.p-datatable-responsiveness .p-datatable-tbody>tr>td .p-column-title {
+        padding: .4rem;
+        min-width: 30%;
+        display: inline-block;
+        margin: -.4em 1em -.4em -.4rem;
+        font-weight: 700
+    }
+
+    [_nghost-epw-c56] .p-datatable.p-datatable-responsiveness .p-datatable-tbody>tr>td:last-child {
+        border-bottom: 1px solid var(--surface-d)
+    }
+}
+
+.custom-row-spacing[_ngcontent-epw-c56] {
+    background-color: #fff;
+    border: 1px solid #e9ecef
+}
+
+</style><style>.p-datatable {
+    position: relative
+}
+
+.p-datatable>.p-datatable-wrapper {
+    overflow: auto
+}
+
+.p-datatable-table {
+    border-spacing: 0px;
+    width: 100%
+}
+
+.p-datatable .p-sortable-column {
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none
+}
+
+.p-datatable .p-sortable-column .p-column-title,
+.p-datatable .p-sortable-column .p-sortable-column-icon,
+.p-datatable .p-sortable-column .p-sortable-column-badge {
+    vertical-align: middle
+}
+
+.p-datatable .p-sortable-column .p-sortable-column-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center
+}
+
+.p-datatable-hoverable-rows .p-selectable-row {
+    cursor: pointer
+}
+
+.p-datatable-scrollable>.p-datatable-wrapper {
+    position: relative
+}
+
+.p-datatable-scrollable-table>.p-datatable-thead {
+    position: sticky;
+    top: 0;
+    z-index: 1
+}
+
+.p-datatable-scrollable-table>.p-datatable-frozen-tbody {
+    position: sticky;
+    z-index: 1
+}
+
+.p-datatable-scrollable-table>.p-datatable-tfoot {
+    position: sticky;
+    bottom: 0;
+    z-index: 1
+}
+
+.p-datatable-scrollable .p-frozen-column {
+    position: sticky;
+    background: inherit
+}
+
+.p-datatable-scrollable th.p-frozen-column {
+    z-index: 1
+}
+
+.p-datatable-flex-scrollable {
+    display: flex;
+    flex-direction: column;
+    height: 100%
+}
+
+.p-datatable-flex-scrollable>.p-datatable-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%
+}
+
+.p-datatable-scrollable-table>.p-datatable-tbody>.p-rowgroup-header {
+    position: sticky;
+    z-index: 1
+}
+
+.p-datatable-resizable-table>.p-datatable-thead>tr>th,
+.p-datatable-resizable-table>.p-datatable-tfoot>tr>td,
+.p-datatable-resizable-table>.p-datatable-tbody>tr>td {
+    overflow: hidden;
+    white-space: nowrap
+}
+
+.p-datatable-resizable-table>.p-datatable-thead>tr>th.p-resizable-column:not(.p-frozen-column) {
+    background-clip: padding-box;
+    position: relative
+}
+
+.p-datatable-resizable-table-fit>.p-datatable-thead>tr>th.p-resizable-column:last-child .p-column-resizer {
+    display: none
+}
+
+.p-datatable .p-column-resizer {
+    display: block;
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    margin: 0;
+    width: .5rem;
+    height: 100%;
+    padding: 0;
+    cursor: col-resize;
+    border: 1px solid transparent
+}
+
+.p-datatable .p-column-resizer-helper {
+    width: 1px;
+    position: absolute;
+    z-index: 10;
+    display: none
+}
+
+.p-datatable .p-row-editor-init,
+.p-datatable .p-row-editor-save,
+.p-datatable .p-row-editor-cancel,
+.p-datatable .p-row-toggler {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative
+}
+
+.p-datatable-reorder-indicator-up,
+.p-datatable-reorder-indicator-down {
+    position: absolute
+}
+
+.p-datatable-reorderablerow-handle,
+[pReorderableColumn] {
+    cursor: move
+}
+
+.p-datatable .p-datatable-loading-overlay {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2
+}
+
+.p-column-filter-row {
+    display: flex;
+    align-items: center;
+    width: 100%
+}
+
+.p-column-filter-menu {
+    display: inline-flex
+}
+
+.p-column-filter-row p-columnfilterformelement {
+    flex: 1 1 auto;
+    width: 1%
+}
+
+.p-column-filter-menu-button,
+.p-column-filter-clear-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+    overflow: hidden;
+    position: relative
+}
+
+.p-column-filter-overlay {
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.p-column-filter-row-items {
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+
+.p-column-filter-row-item {
+    cursor: pointer
+}
+
+.p-column-filter-add-button,
+.p-column-filter-remove-button {
+    justify-content: center
+}
+
+.p-column-filter-add-button .p-button-label,
+.p-column-filter-remove-button .p-button-label {
+    flex-grow: 0
+}
+
+.p-column-filter-buttonbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between
+}
+
+.p-column-filter-buttonbar .p-button {
+    width: auto
+}
+
+.p-datatable-tbody>tr>td>.p-column-title {
+    display: none
+}
+
+.p-datatable-scroller-spacer {
+    display: flex
+}
+
+.p-datatable .p-scroller .p-scroller-loading {
+    transform: none !important;
+    min-height: 0;
+    position: sticky;
+    top: 0;
+    left: 0
+}
+
+</style><style>.p-paginator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap
+}
+
+.p-paginator-left-content {
+    margin-right: auto
+}
+
+.p-paginator-right-content {
+    margin-left: auto
+}
+
+.p-paginator-page,
+.p-paginator-next,
+.p-paginator-last,
+.p-paginator-first,
+.p-paginator-prev,
+.p-paginator-current {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    -webkit-user-select: none;
+    user-select: none;
+    overflow: hidden;
+    position: relative
+}
+
+.p-paginator-element:focus {
+    z-index: 1;
+    position: relative
+}
+
+</style><style>[_nghost-epw-c123] .p-inputtext {
+    padding: 0rem !important
+}
+
+[_nghost-epw-c123] .p-inputtext {
+    background-color: transparent !important
+}
+
+[_nghost-epw-c123] .p-inputtext:enabled:focus {
+    box-shadow: 0 0 0 .2rem #fff !important;
+    border-color: #fff !important
+}
+
+.input-date-container[_ngcontent-epw-c123] {
+    max-width: 260px
+}
+
+</style><style>.p-calendar {
+    position: relative;
+    display: inline-flex;
+    max-width: 100%
+}
+
+.p-calendar .p-inputtext {
+    flex: 1 1 auto;
+    width: 1%
+}
+
+.p-calendar-w-btn .p-inputtext {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0
+}
+
+.p-calendar-w-btn .p-datepicker-trigger {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0
+}
+
+.p-fluid .p-calendar {
+    display: flex
+}
+
+.p-fluid .p-calendar .p-inputtext {
+    width: 1%
+}
+
+.p-calendar .p-datepicker {
+    min-width: 100%
+}
+
+.p-datepicker {
+    width: auto;
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.p-datepicker-inline {
+    display: inline-block;
+    position: static;
+    overflow-x: auto
+}
+
+.p-datepicker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between
+}
+
+.p-datepicker-header .p-datepicker-title {
+    margin: 0 auto
+}
+
+.p-datepicker-prev,
+.p-datepicker-next {
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative
+}
+
+.p-datepicker-multiple-month .p-datepicker-group-container .p-datepicker-group {
+    flex: 1 1 auto
+}
+
+.p-datepicker-multiple-month .p-datepicker-group-container {
+    display: flex
+}
+
+.p-datepicker table {
+    width: 100%;
+    border-collapse: collapse
+}
+
+.p-datepicker td>span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative
+}
+
+.p-monthpicker-month {
+    width: 33.3%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative
+}
+
+.p-datepicker-buttonbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.p-timepicker {
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+.p-timepicker button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative
+}
+
+.p-timepicker>div {
+    display: flex;
+    align-items: center;
+    flex-direction: column
+}
+
+.p-datepicker-touch-ui,
+.p-calendar .p-datepicker-touch-ui {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 80vw;
+    transform: translate(-50%, -50%)
+}
+
+.p-yearpicker-year {
+    width: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative
+}
+
+.p-calendar-clear-icon {
+    position: absolute;
+    top: 50%;
+    margin-top: -.5rem;
+    cursor: pointer
+}
+
+.p-calendar-clearable {
+    position: relative
+}
+
+</style></head><body><regportal-root _nghost-epw-c526="" ng-version="14.1.0"><div _ngcontent-epw-c526="" class="content-portal ng-star-inserted"><ui-shared-header _ngcontent-epw-c526="" appname="Registration" _nghost-epw-c132="" class="ng-star-inserted"><div _ngcontent-epw-c132="" class="alert alert-primary text-center sticky-top ng-star-inserted" style="margin-bottom: 0px;">You are currently impersonating user: - ! ZHENSHI INDONESIA INDUSTRIAL PARK 0535298442063000 </div>< !----><nav _ngcontent-epw-c132="" class="navbar navbar-expand-lg pr-3 pl-2 bg-dark navbar-light"><a _ngcontent-epw-c132="" class="navbar-brand" href="https://coretaxdjp.pajak.go.id/home-portal/"><img _ngcontent-epw-c132="" src="./assets/djp/Logo Portal.png" alt="djp" height="40" class="filter pl-2 ng-star-inserted">< !---->< !----></a><button _ngcontent-epw-c132="" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"><span _ngcontent-epw-c132="" class="navbar-toggler-icon"></span></button>< !---->< !----><form _ngcontent-epw-c132="" novalidate="" class="my-2 my-lg-0 flex-grow-1 ng-untouched ng-pristine ng-valid ng-star-inserted"><div _ngcontent-epw-c132="" class="d-flex justify-content-end flex-grow-1 align-items-center"><button _ngcontent-epw-c132="" type="button" pbutton="" pripple="" icon="pi pi-copy" ptooltip="Copy Session" tooltipposition="top" arialabel="Copy Session" class="p-element p-ripple p-1 mr-2 p-button p-button-primary p-component p-button-icon-only ng-star-inserted"><span class="p-button-icon pi pi-copy" aria-hidden="true"></span><span class="p-ink"></span></button>< !----><span _ngcontent-epw-c132="" class="ng-star-inserted"><span _ngcontent-epw-c132="" arialabel="Version:">Versi:</span>&nbsp;
+< !----><span _ngcontent-epw-c132="" class="ng-star-inserted">1.1.2-build-2040</span>< !---->&nbsp;
+</span>< !----><ui-header-language-selection _ngcontent-epw-c132="" _nghost-epw-c157=""><p-dropdown _ngcontent-epw-c157="" id="header-select-language" styleclass="custom-dropdown-languange" class="p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-pristine ng-valid"><div class="custom-dropdown-languange p-dropdown p-component"><div class="p-hidden-accessible"><input type="text" readonly="" aria-haspopup="listbox" pautofocus="" role="combobox" class="p-element" aria-expanded="false"></div><span class="p-element p-dropdown-label p-inputtext ng-star-inserted" id="pr_id_24_label">id-ID< !---->< !---->< !----></span>< !---->< !---->< !---->< !----><div role="button" aria-label="dropdown trigger" aria-haspopup="listbox" class="p-dropdown-trigger"><span class="p-dropdown-trigger-icon pi pi-chevron-down"></span></div><p-overlay class="p-element ng-tns-c58-31 ng-star-inserted">< !----></p-overlay></div></p-dropdown><ui-progress-spinner _ngcontent-epw-c157="" _nghost-epw-c109="">< !----></ui-progress-spinner><p-confirmpopup _ngcontent-epw-c157=""></p-confirmpopup></ui-header-language-selection><ui-coretax-notifications-info _ngcontent-epw-c132="" _nghost-epw-c134="">< !----><div _ngcontent-epw-c134="" class="grid mt-2 ng-star-inserted">< !----><div _ngcontent-epw-c134="" class="col-2 pl-1"><i _ngcontent-epw-c134="" value="Baru" pbadge="" class="p-element fa-regular fa-bell custom-badge-notification-portal-empty p-overlay-badge ng-star-inserted" tabindex="0"><span id="pr_id_25_badge" class="p-badge p-component">Baru</span></i>< !---->< !----></div></div>< !----></ui-coretax-notifications-info><ui-header-help _ngcontent-epw-c132="" _nghost-epw-c161="" class="ng-star-inserted">< !----><div _ngcontent-epw-c161="" class="grid mt-2 ng-star-inserted"><div _ngcontent-epw-c161="" class="col-2 pl-1"><i _ngcontent-epw-c161="" class="fa-regular fa-circle-question custom-header-help-portal"></i></div></div>< !----></ui-header-help>< !----><ui-user-info _ngcontent-epw-c132="" _nghost-epw-c135="">< !---->< !----><span _ngcontent-epw-c135="" class="ng-star-inserted"><div _ngcontent-epw-c135="" class="d-flex flex-grow-1 flex-shrink-0 form-inline"><p-dropdown _ngcontent-epw-c135="" class="p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-pristine ng-valid"><div class="p-dropdown p-component"><div class="p-hidden-accessible"><input type="text" readonly="" aria-haspopup="listbox" pautofocus="" role="combobox" class="p-element" aria-expanded="false"></div><span class="p-element p-dropdown-label p-inputtext ng-star-inserted" id="pr_id_26_label">0535298442063000 ZHENSHI INDONESIA INDUSTRIAL PARK < !---->< !---->< !----></span>< !---->< !---->< !---->< !----><div role="button" aria-label="dropdown trigger" aria-haspopup="listbox" class="p-dropdown-trigger"><span class="p-dropdown-trigger-icon pi pi-chevron-down"></span></div><p-overlay class="p-element ng-tns-c58-33 ng-star-inserted">< !----></p-overlay></div></p-dropdown>&nbsp;
+<div _ngcontent-epw-c135="" class="d-flex align-items-center flex-row flex-shrink-0"><div _ngcontent-epw-c135="" class="card ng-star-inserted" style="border: none; background: transparent;"><div _ngcontent-epw-c135="" class="d-flex align-items-center px-2"><label _ngcontent-epw-c135="" style="color: #272727; font-weight: 400; font-size: 0.9rem;">Login terakhir:</label><span _ngcontent-epw-c135="" class="ml-2" style="color: #272727; font-weight: 500; font-size: 0.9rem;">16 Januari 2025 08:57:04</span></div></div>< !----><button _ngcontent-epw-c135="" pbutton="" icon="fa-solid fa-right-from-bracket" href="javascript:void(0)" class="p-element p-button-danger rounded-circle p-button p-component p-button-icon-only" style="height: 2rem; width: 2rem;"><span class="p-button-icon fa-solid fa-right-from-bracket" aria-hidden="true"></span></button></div></div></span>< !----><p-overlaypanel _ngcontent-epw-c135="" class="p-element ng-tns-c104-32 ng-star-inserted">< !----></p-overlaypanel></ui-user-info></div></form>< !----></nav><nav _ngcontent-epw-c132="" class="navbar navbar-expand-lg navbar-l0 navbar-pl0 wrapper bg-dark navbar-dark box-shadow-grey ng-star-inserted">< !----><ul _ngcontent-epw-c132="" class="navbar-nav mr-auto scrollmenu ng-star-inserted">< !----><li _ngcontent-epw-c132="" class="nav-item p-0 ng-star-inserted"><a _ngcontent-epw-c132="" parent-menu="" href="javascript:" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle" id="3" title="Portal Saya
+
+Portal untuk mengakses antara lain kotak dokumen,
+dan data profil wajib pajak."> Portal Saya </a><ul _ngcontent-epw-c132=" " class=" dropdown-menu" id=" ul-3" aria-labelledby=" 3"><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Dokumen Saya Akses dokumen yang dihasilkan oleh sistem dan dokumen yang pernah Anda unggah" href=" /registration-portal/id-ID/documents">Dokumen Saya</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Notifikasi Saya Lihat notifikasi yang disampaikan untuk Anda" href=" /registration-portal/id-ID/notifications/inbox">Notifikasi Saya</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Kasus Saya Daftar permohonan layanan perpajakan dan kasus lain yang terkait dengan Anda" href=" /case-management-portal/id-ID/case-list">Kasus Saya</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Kasus Berjalan Saya" href=" /case-management-portal/id-ID/my-due-cases">Kasus Berjalan Saya</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Profil Saya Lihat profli Anda,
+dan perbarui apabila ada informasi yang baru" href=" /registration-portal/id-ID/my-profile">Profil Saya</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Pengukuhan PKP Daftarkan usaha Anda untuk menjadi Pengusaha Kena Pajak" href=" /case-management-portal/id-ID/forms/online/vat-registration-form">Pengukuhan PKP</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Pendaftaran Objek Pajak PBB P5L Daftarkan objek pajak sektor perkebunan,
+perhutanan,
+pertambangan migas,
+pertambangan untuk pengusahaan panas bumi,
+pertambangan minerba,
+dan sektor lainnya (P5L)" href=" /case-management-portal/id-ID/forms/online/land-and-building-registration-form">Pendaftaran Objek Pajak PBB P5L</a><!----></li><!----><!----><!----><!----><li _ngcontent-epw-c132=" " class=" sub-menu ng-star-inserted"><a _ngcontent-epw-c132=" " tabindex=" -1" href=" javascript:" class=" dropdown-item" title=" Perubahan Data Perbarui data profil Anda seperti email,
+nomor telepon,
+alamat dan rekening bank.">Perubahan Data</a><ul _ngcontent-epw-c132=" " class=" dropdown-menu dropdown-submenu"><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Identitas Wajib Pajak" href=" /case-management-portal/id-ID/forms/online/taxpayer-identity-data-update-form" target=" _self"> Identitas Wajib Pajak</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Perubahan Alamat Utama" href=" /case-management-portal/id-ID/forms/online/main-address-change" target=" _self"> Perubahan Alamat Utama</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Perubahan Data Objek Pajak PBB P5L" href=" /case-management-portal/id-ID/forms/online/land-and-building-tax-update-form" target=" _self"> Perubahan Data Objek Pajak PBB P5L</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Perubahan Data Pemungut PPN PMSE dengan Kepdirjen" href=" /case-management-portal/id-ID/forms/online/pmse-data-update-case" target=" _self"> Perubahan Data Pemungut PPN PMSE dengan Kepdirjen</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" sub-menu ng-star-inserted"><a _ngcontent-epw-c132=" " tabindex=" -1" href=" javascript:" class=" dropdown-item" title=" Perubahan Status">Perubahan Status</a><ul _ngcontent-epw-c132=" " class=" dropdown-menu dropdown-submenu"><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Penetapan Wajib Pajak Nonaktif" href=" /case-management-portal/id-ID/forms/online/taxpayer-status-inactivation" target=" _self"> Penetapan Wajib Pajak Nonaktif</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Pengaktifan Kembali Wajib Pajak Nonaktif" href=" /case-management-portal/id-ID/forms/online/taxpayer-status-reactivation" target=" _self"> Pengaktifan Kembali Wajib Pajak Nonaktif</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Penunjukan Pemungut PMSE Dalam Negeri" href=" /case-management-portal/id-ID/forms/online/domestic-pmse-appointment-form" target=" _self"> Penunjukan Pemungut PMSE Dalam Negeri</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Penetapan Pemungut Bea Meterai" href=" /case-management-portal/id-ID/forms/online/stamp-and-duty-registration-case" target=" _self"> Penetapan Pemungut Bea Meterai</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Pencabutan Pemungut Bea Meterai" href=" /case-management-portal/id-ID/forms/online/stamp-and-duty-revocation" target=" _self"> Pencabutan Pemungut Bea Meterai</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Penunjukan Pemotong atau Pemungut PPh/PPN" href=" /case-management-portal/id-ID/forms/online/income-or-vat-withholder-or-collector-appointment" target=" _self"> Penunjukan Pemotong atau Pemungut PPh/PPN</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Pencabutan Pemotong atau Pemungut PPh/PPN" href=" /case-management-portal/id-ID/forms/online/income-or-vat-withholder-or-collector-revocation" target=" _self"> Pencabutan Pemotong atau Pemungut PPh/PPN</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Pencabutan Pemungut PPN PMSE" href=" /case-management-portal/id-ID/forms/online/domestic-pmse-revocation-form" target=" _self"> Pencabutan Pemungut PPN PMSE</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Lembaga Keuangan Pelapor - Penetapan Pendaftaran lembaga keuangan yang diwajibkan menyampaikan rekening keuangan yang wajib dilaporkan" href=" /case-management-portal/id-ID/forms/online/financial-information-reporter-appointment" target=" _self"> Lembaga Keuangan Pelapor - Penetapan</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Lembaga Keuangan Pelapor - Pencabutan Perubahan status lembaga keuangan menjadi lembaga keuangan nonpelapor" href=" /case-management-portal/id-ID/forms/online/financial-information-reporter-revocation" target=" _self"> Lembaga Keuangan Pelapor - Pencabutan</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Lembaga Keuangan Pelapor - Perubahan Data Perubahan detil profil lembaga keuangan pelapor" href=" /case-management-portal/id-ID/forms/online/financial-information-reporter-update" target=" _self"> Lembaga Keuangan Pelapor - Perubahan Data </a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Penghapusan &amp;
+Pencabutan" href=" /case-management-portal/id-ID/forms/online/de-registration">Penghapusan &amp; Pencabutan</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><!----><!----><li _ngcontent-epw-c132=" " class=" nav-item p-0 ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link ng-star-inserted" href=" /e-invoice-portal/id-ID/e-invoice-dashboard" title=" e-Faktur Gunakan menu ini untuk membuat Faktur Pajak">e-Faktur</a><!----></li><!----><!----><li _ngcontent-epw-c132=" " class=" nav-item p-0 ng-star-inserted"><a _ngcontent-epw-c132=" " parent-menu=" " href=" javascript:" role=" button" data-toggle=" dropdown" aria-haspopup=" true" aria-expanded=" false" class=" nav-link dropdown-toggle" id=" 33" title=" eBupot Buat Bukti Pemotongan/Pemungutan untuk SPT Masa PPh Unifikasi dan SPT Masa PPh Pasal 21 dan/atau Pasal 26"> eBupot </a><ul _ngcontent-epw-c132=" " class=" dropdown-menu" id=" ul-33" aria-labelledby=" 33"><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Buat Bukti Pemotongan/Pemungutan Unifikasi Standar" href=" /withholding-slips-portal/id-ID/ebupotbpu">BPPU</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Gunakan menu ini untuk memotong/memungut PPh dari Wajib Pajak Non Residen" href=" /withholding-slips-portal/id-ID/ebupotbpnr">BPNR</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Gunakan menu ini apabila Anda memiliki kewajiban pembayaran pajak yang harus disetor sendiri melalui SPT Masa PPh Unifikasi" href=" /withholding-slips-portal/id-ID/ebupotsp">Penyetoran Sendiri</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Gunakan menu ini apabila Anda memiliki kewajiban untuk melakukan pemotongan/pemungutan PPh dari banyak penerima penghasilan dan membayarnya secara kumulatif tanpa menyampaikan detail pemotongan/pemungutan PPh." href=" /withholding-slips-portal/id-ID/ebupotcy">Pemotongan Secara Digunggung</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" BP 21 - Bukti Pemotongan Selain Pegawai Tetap Gunakan menu ini untuk pemotongan PPh Pasal 21 Final dan Tidak Final untuk selain Pegawai Tetap" href=" /withholding-slips-portal/id-ID/ebupotbp21">BP 21 - Bukti Pemotongan Selain Pegawai Tetap</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" BP 26 - Bukti Pemotongan Wajib Pajak Luar Negeri Gunakan menu ini untuk Pegawai/Pemberi Jasa/Peserta Kegiatan/Penerima Pensiun Berkala Sebagai Wajib Pajak Luar Negeri yang dipotong PPh Pasal 26" href=" /withholding-slips-portal/id-ID/ebupotbp26">BP 26 - Bukti Pemotongan Wajib Pajak Luar Negeri</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" BP A1 - Bukti Pemotongan A1 Masa Pajak Terakhir Gunakan menu untuk pemotongan PPh Pasal 21 bagi Pegawai Tetap atau Penerima Pensiun atau Tunjangan Hari Tua/Jaminan Hari Tua berkala untuk Masa Pajak Desember atau Masa Pajak terakhir" href=" /withholding-slips-portal/id-ID/ebupotbpa1">BP A1 - Bukti Pemotongan A1 Masa Pajak Terakhir </a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" BP A2 - Bukti Pemotongan A2 Masa Pajak Terakhir Gunakan menu ini untuk pemotongan PPh Pasal 21 Bagi PNS atau Anggota TNI atau Anggota Polri atau Pejabat Negara atau Pensiunannya untuk Masa Pajak Desember atau Masa Pajak terakhir" href=" /withholding-slips-portal/id-ID/ebupotbpa2">BP A2 - Bukti Pemotongan A2 Masa Pajak Terakhir </a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Bukti Pemotongan Bulanan Pegawai Tetap Gunakan menu ini untuk pemotongan bulanan bagi Pegawai Tetap atau Pemerima Pensiun atau Tunjangan Hari Tua/Jaminan Hari Tua Berkala termasuk Bagi PNS atau Anggota TNI atau Anggota Polri atau Pejabat Negara atau Pensiunannya,
+menggunakan Tarif Efektif." href=" /withholding-slips-portal/id-ID/ebupotmp">Bukti Pemotongan Bulanan Pegawai Tetap</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Gunakan menu ini apabila Anda memiliki kewajiban untuk menyampaikan pemotongan/pemungutan PPh yang menggunakan dokumen yang dipersamakan dengan Bukti Pemotongan/Pemungutan PPh" href=" /withholding-slips-portal/id-ID/documentupload">Unggah Dokumen yang Dipersamakan dengan Bukti Pemotongan/Pemungutan</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" nav-item p-0 ng-star-inserted"><a _ngcontent-epw-c132=" " parent-menu=" " href=" javascript:" role=" button" data-toggle=" dropdown" aria-haspopup=" true" aria-expanded=" false" class=" nav-link dropdown-toggle" id=" 1" title=" Surat Pemberitahuan (SPT) Laporkan SPT Anda di sini"> Surat Pemberitahuan (SPT) </a><ul _ngcontent-epw-c132=" " class=" dropdown-menu" id=" ul-1" aria-labelledby=" 1"><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Surat Pemberitahuan (SPT)" href=" /returnsheets-portal/id-ID/not-submitted-returnsheets">Surat Pemberitahuan (SPT)</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Pencatatan" href=" /returnsheets-portal/id-ID/simple-record-bookkeeping">Pencatatan</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Dasbor Kompensasi" href=" /returnsheets-portal/id-ID/carry-forward-dashboard">Dasbor Kompensasi</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Pengungkapan Ketidakbenaran SPT" href=" /returnsheets-portal/id-ID/not-submitted-disclosure">Pengungkapan Ketidakbenaran SPT</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" nav-item p-0 ng-star-inserted"><a _ngcontent-epw-c132=" " parent-menu=" " href=" javascript:" role=" button" data-toggle=" dropdown" aria-haspopup=" true" aria-expanded=" false" class=" nav-link dropdown-toggle" id=" 1068" title=" Bantuan"> Bantuan </a><ul _ngcontent-epw-c132=" " class=" dropdown-menu" id=" ul-1068" aria-labelledby=" 1068"><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Panduan Pengguna" href=" /third-party-portal/id-ID/user-manual">Panduan Pengguna</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" nav-item p-0 ng-star-inserted"><a _ngcontent-epw-c132=" " parent-menu=" " href=" javascript:" role=" button" data-toggle=" dropdown" aria-haspopup=" true" aria-expanded=" false" class=" nav-link dropdown-toggle" id=" 82" title=" Pembayaran"> Pembayaran </a><ul _ngcontent-epw-c132=" " class=" dropdown-menu" id=" ul-82" aria-labelledby=" 82"><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Permohonan Pemindahbukuan Sampaikan permohonan pemindahbukuan" href=" /payment-portal/id-ID/balance-transfer-request/not-submitted">Permohonan Pemindahbukuan</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Layanan Mandiri Kode Billing Buat kode billing untuk pembayaran tertentu" href=" /payment-portal/id-ID/self-billing">Layanan Mandiri Kode Billing</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Pembuatan Kode Billing atas Tagihan Pajak Buat kode billing untuk tagihan pajak yang telah dibukukan dan disajikan pada buku besar wajib pajak" href=" /payment-portal/id-ID/tax-arrears">Pembuatan Kode Billing atas Tagihan Pajak</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Daftar Kode Billing Belum Dibayar Daftar kode billing yang masih dalam masa aktif tetapi belum dibayar" href=" /payment-portal/id-ID/active-dashboard-billing-code">Daftar Kode Billing Belum Dibayar</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Formulir Restitusi Pajak" href=" /payment-portal/id-ID/refund-transfer-review-request">Formulir Restitusi Pajak</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Permohonan Pemberian Imbalan Bunga Sampaikan permohonan pemberian imbalan bunga" href=" /payment-portal/id-ID/interest-compensation-request/not-submitted">Permohonan Pemberian Imbalan Bunga</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Tax Borne by Government Water Company Request(ID)" href=" /payment-portal/id-ID/tax-borne-by-government-water-company-request/not-submitted">Permohonan PPh DTP atas Penghasilan PDAM</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><!----><!----><li _ngcontent-epw-c132=" " class=" nav-item p-0 ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link ng-star-inserted" href=" /accounting-portal/id-ID/balancesheet-light" title=" Buku Besar Ringkasan hak dan kewajiban perpajakan Anda">Buku Besar </a><!----></li><!----><!----><li _ngcontent-epw-c132=" " class=" nav-item p-0 ng-star-inserted"><a _ngcontent-epw-c132=" " parent-menu=" " href=" javascript:" role=" button" data-toggle=" dropdown" aria-haspopup=" true" aria-expanded=" false" class=" nav-link dropdown-toggle" id=" 300" title=" Layanan Wajib Pajak"> Layanan Wajib Pajak </a><ul _ngcontent-epw-c132=" " class=" dropdown-menu" id=" ul-300" aria-labelledby=" 300"><!----><li _ngcontent-epw-c132=" " class=" sub-menu ng-star-inserted"><a _ngcontent-epw-c132=" " tabindex=" -1" href=" javascript:" class=" dropdown-item" title=" Layanan Administrasi">Layanan Administrasi</a><ul _ngcontent-epw-c132=" " class=" dropdown-menu dropdown-submenu"><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Buat Permohonan Layanan Administrasi" href=" /taxpayer-services-portal/id-ID/create-administrative-service-request" target=" _self"> Buat Permohonan Layanan Administrasi</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Permohonan Belum Disampaikan" href=" /taxpayer-services-portal/id-ID/service-request-notsubmitted" target=" _self"> Permohonan Belum Disampaikan</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Permohonan Dalam Proses" href=" /taxpayer-services-portal/id-ID/service-request-inprogress" target=" _self"> Permohonan Dalam Proses</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Permohonan Telah Selesai" href=" /taxpayer-services-portal/id-ID/service-request-processed" target=" _self"> Permohonan Telah Selesai</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Daftar Fasilitas Saya" href=" /taxpayer-services-portal/id-ID/facility-register" target=" _self"> Daftar Fasilitas Saya</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" sub-menu ng-star-inserted"><a _ngcontent-epw-c132=" " tabindex=" -1" href=" javascript:" class=" dropdown-item" title=" Pertanyaan Umum">Layanan Permintaan Informasi Perpajakan</a><ul _ngcontent-epw-c132=" " class=" dropdown-menu dropdown-submenu"><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Daftar Pertanyaan Umum" href=" /taxpayer-services-portal/id-ID/gi-register" target=" _self"> Daftar Permintaan Informasi Perpajakan</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" sub-menu ng-star-inserted"><a _ngcontent-epw-c132=" " tabindex=" -1" href=" javascript:" class=" dropdown-item" title=" Layanan Pengaduan,
+Saran,
+dan Apresiasi Layanan pengaduan terkait pelayanan/tindak pidana di bidang perpajakan/kode etik dan disiplin pegawai termasuk saran/apresiasi">Layanan Pengaduan, Saran, dan Apresiasi</a><ul _ngcontent-epw-c132=" " class=" dropdown-menu dropdown-submenu"><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Input Pengaduan,
+Saran,
+dan Apresiasi" href=" /taxpayer-services-portal/id-ID/create-csa" target=" _self"> Buat Pengaduan, Saran, dan Apresiasi</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Daftar Pengaduan,
+Saran,
+dan Apresiasi" href=" /taxpayer-services-portal/id-ID/csa-register" target=" _self"> Daftar Pengaduan, Saran, dan Apresiasi</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" sub-menu ng-star-inserted"><a _ngcontent-epw-c132=" " tabindex=" -1" href=" javascript:" class=" dropdown-item" title=" Layanan Edukasi Perpajakan">Layanan Edukasi Perpajakan</a><ul _ngcontent-epw-c132=" " class=" dropdown-menu dropdown-submenu"><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Kegiatan Kelas Pendidikan" href=" /taxpayer-services-portal/id-ID/education-class-activities/activity-confirmation" target=" _self"> Jadwal Kegiatan Edukasi</a><!----></li><!----><!----><!----><!----><li _ngcontent-epw-c132=" " class=" sub-menu ng-star-inserted"><a _ngcontent-epw-c132=" " tabindex=" -1" href=" javascript:;
+" class=" dropdown-item" title=" Materi Edukasi">Materi Edukasi</a><ul _ngcontent-epw-c132=" " class=" dropdown-menu dropdown-submenu"><li _ngcontent-epw-c132=" " class=" dropdown-item ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link ng-star-inserted" title=" Materi Edukasi Umum" href=" /taxpayer-services-portal/id-ID/general-education-material" target=" _self">Materi Edukasi Umum</a><!----></li><li _ngcontent-epw-c132=" " class=" dropdown-item ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link ng-star-inserted" title=" Materi Edukasi Khusus" href=" /taxpayer-services-portal/id-ID/specific-education-material" target=" _self">Materi Edukasi Khusus</a><!----></li><li _ngcontent-epw-c132=" " class=" dropdown-item ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link ng-star-inserted" title=" Materi e-learning" href=" /taxpayer-services-portal/id-ID/e-learning-material" target=" _self">Materi e-learning</a><!----></li><!----></ul></li><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Penyampaian Permohonan Edukasi" href=" /taxpayer-services-portal/id-ID/create-ep" target=" _self"> Penyampaian Permohonan Edukasi</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" nav-link dropdown-item ng-star-inserted" title=" Daftar Permohonan Edukasi" href=" /taxpayer-services-portal/id-ID/ep-register" target=" _self"> Daftar Permohonan Edukasi</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Riwayat Edukasi" href=" /taxpayer-services-portal/id-ID/education-service-history">Riwayat Edukasi</a><!----></li><!----><!----><!----><li _ngcontent-epw-c132=" " class=" ng-star-inserted"><!----><!----><a _ngcontent-epw-c132=" " routerlinkactive=" active" class=" dropdown-item ng-star-inserted" title=" Pengetahuan Dasar Perpajakan" href=" https: //pajak.go.id/index-belajar-pajak">Pengetahuan Dasar Perpajakan</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><!----><li _ngcontent-epw-c132="" class="nav-item p-0 ng-star-inserted"><a _ngcontent-epw-c132="" parent-menu="" href="javascript:" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle" id="4" title="Manajemen Akses"> Manajemen Akses </a><ul _ngcontent-epw-c132="" class="dropdown-menu" id="ul-4" aria-labelledby="4"><li _ngcontent-epw-c132="" class="ng-star-inserted"><!----><!----><a _ngcontent-epw-c132="" routerlinkactive="active" class="dropdown-item ng-star-inserted" title="Ubah Kata Sandi
+
+Ubah kata sandi yang Anda gunakan untuk mengakses Coretax" href=" /user-management-portal/id-ID/user/password-change">Ubah Kata Sandi</a><!----></li><!----><!----><!----><!----></ul></li><!----><!----><!----><!----><!----><!----></ul><!----></nav><!----></ui-shared-header><!----><router-outlet _ngcontent-epw-c526=" "></router-outlet><ui-coretax-one-column-layout _nghost-epw-c188=" " class=" ng-star-inserted"><div _ngcontent-epw-c188=" " class=" container-fluid"><div _ngcontent-epw-c188=" " class=" row main-content-container"><div _ngcontent-epw-c188=" " class=" col-md-12 main-content"><router-outlet _ngcontent-epw-c188=" "></router-outlet><dcmshr-documents _nghost-epw-c337=" " class=" ng-star-inserted"><div _ngcontent-epw-c337=" " class=" grid ct-custom-container"><div _ngcontent-epw-c337=" " class=" col-12 mt-3 p-0"><div _ngcontent-epw-c337=" " class=" grid ct-center-label"><div _ngcontent-epw-c337=" " class=" col-2"><i _ngcontent-epw-c337=" " class=" fa-regular fa-file-lines ct-title mr-2 ng-star-inserted"></i><!----><!----><span _ngcontent-epw-c337=" " arialabel=" Dokumen" class=" ct-title ng-star-inserted">Dokumen</span><!----></div><div _ngcontent-epw-c337=" " class=" col-6" style=" display: flex;
+align-items: center;
+"><span _ngcontent-epw-c337=" ">Please refresh the grid (</span>&nbsp; <button _ngcontent-epw-c337=" " ng-reflect-icon=" pi pi-refresh" class=" p-element p-ripple ct-ovw-btn-mini-cancel p-button p-component p-button-icon-only" style=" pointer-events: none !important;
+"><span _ngcontent-epw-c337=" " class=" p-button-icon pi pi-refresh"></span></button>&nbsp;<span _ngcontent-epw-c337=" ">) if cannot found your document</span></div><div _ngcontent-epw-c337=" " class=" col-4 text-right"><!----><button _ngcontent-epw-c337=" " pbutton=" " label=" Unggah Dokumen" icon=" fa-solid fa-upload" arialabel=" Unggah Dokumen" class=" p-element ct-ovw-btn-save p-button p-component ng-star-inserted"><span class=" p-button-icon p-button-icon-left fa-solid fa-upload" aria-hidden=" true"></span><span class=" p-button-label">Unggah Dokumen</span></button><!----><!----></div><!----></div><div _ngcontent-epw-c337=" " class=" ct-border-line py-2 mb-4"></div></div><div _ngcontent-epw-c337=" " class=" col-12"><!----><ui-grid _ngcontent-epw-c337=" " _nghost-epw-c56=" " class=" ng-star-inserted"><p-table _ngcontent-epw-c56=" " selectionmode=" single" styleclass=" scaled-datatable p-datatable-sm p-datatable-gridlines p-datatable-striped p-datatable-responsiveness" statestorage=" local" paginatordropdownappendto=" body" columnresizemode=" expand" class=" p-element ct-ovw-custom-table ng-star-inserted" id=" table-el"><div class=" scaled-datatable p-datatable-sm p-datatable-gridlines p-datatable-striped p-datatable-responsiveness p-datatable p-component p-datatable-hoverable-rows p-datatable-scrollable" id=" pr_id_4"><!----><div class=" p-datatable-header ng-star-inserted"><div _ngcontent-epw-c56=" " class=" p-d-inline-blok ng-star-inserted"><span _ngcontent-epw-c56=" " class=" float-left ng-star-inserted"><button _ngcontent-epw-c56=" " type=" button" pbutton=" " pripple=" " icon=" pi pi-refresh" tooltipposition=" bottom" ptooltip=" Refresh" class=" p-element p-ripple ct-ovw-btn-mini-cancel mr-2 p-button p-component p-button-icon-only ng-star-inserted"><span class=" p-button-icon pi pi-refresh" aria-hidden=" true"></span><span class=" p-ink" style=" height: 38px;
+width: 38px;
+top: -1.20834px;
+left: 12.6667px;
+"></span></button><!----><button _ngcontent-epw-c56=" " type=" button" pbutton=" " pripple=" " icon=" pi pi-file" tooltipposition=" bottom" ptooltip=" Ekspor ke CSV" class=" p-element p-ripple ct-ovw-btn-mini-gray mr-2 p-button p-component p-button-icon-only"><span class=" p-button-icon pi pi-file" aria-hidden=" true"></span><span class=" p-ink"></span></button><button _ngcontent-epw-c56=" " type=" button" pbutton=" " pripple=" " icon=" pi pi-file-excel" tooltipposition=" bottom" ptooltip=" Ekspor ke Excel" class=" p-element p-ripple ct-ovw-btn-mini-green mr-2 p-button p-component p-button-icon-only"><span class=" p-button-icon pi pi-file-excel" aria-hidden=" true"></span><span class=" p-ink"></span></button><button _ngcontent-epw-c56=" " type=" button" pbutton=" " pripple=" " icon=" pi pi-file-pdf" tooltipposition=" bottom" ptooltip=" Ekspor ke PDF" class=" p-element p-ripple ct-ovw-btn-mini-delete mr-2 p-button p-component p-button-icon-only"><span class=" p-button-icon pi pi-file-pdf" aria-hidden=" true"></span><span class=" p-ink"></span></button><button _ngcontent-epw-c56=" " type=" button" pbutton=" " pripple=" " icon=" pi pi-filter-slash" tooltipposition=" bottom" ptooltip=" Setel Ulang Filter" class=" p-element p-ripple ct-ovw-btn-mini-cancel mr-2 p-button p-component p-button-icon-only ng-star-inserted"><span class=" p-button-icon pi pi-filter-slash" aria-hidden=" true"></span><span class=" p-ink"></span></button><!----><!----></span><!----><!----></div><!----></div><!----><!----><div class=" p-datatable-wrapper" style=" max-height: 100%;
+"><!----><table role=" table" id=" pr_id_4-table" class=" p-datatable-table p-datatable-scrollable-table p-datatable-resizable-table ng-star-inserted"><colgroup _ngcontent-epw-c56=" " class=" ng-star-inserted"><col _ngcontent-epw-c56=" " class=" resizable-column-width ng-star-inserted"><!----><!----><!----><!----><!----><!----><col _ngcontent-epw-c56=" " class=" resizable-column-width ng-star-inserted"><!----><!----><!----><!----><!----><!----><col _ngcontent-epw-c56=" " class=" resizable-column-width ng-star-inserted"><!----><!----><!----><!----><!----><!----><col _ngcontent-epw-c56=" " class=" resizable-column-width ng-star-inserted"><!----><!----><!----><!----><!----><!----><col _ngcontent-epw-c56=" " class=" resizable-column-width ng-star-inserted"><!----><!----><!----><!----><!----><!----><col _ngcontent-epw-c56=" " class=" resizable-column-width ng-star-inserted"><!----><!----><!----><!----><!----><!----><col _ngcontent-epw-c56=" " class=" resizable-column-width ng-star-inserted"><!----><!----><!----><!----><!----><!----><col _ngcontent-epw-c56=" " class=" button-column-width ng-star-inserted"><!----><!----><!----><!----><!----></colgroup><!----><thead class=" p-datatable-thead"><tr _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><!----><th _ngcontent-epw-c56=" " presizablecolumn=" " class=" p-element type-undefined undefined p-resizable-column ng-star-inserted" name=" LetterNumberGridColumn0" style=" min-width: 15em !important;
+"><span _ngcontent-epw-c56=" ">Nomor Dokumen</span><span class=" p-column-resizer"></span></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " presizablecolumn=" " class=" p-element type-date undefined p-resizable-column ng-star-inserted" name=" DocumentDateGridColumn1" style=" min-width: 15em !important;
+"><span _ngcontent-epw-c56=" ">Tanggal Dokumen</span><span class=" p-column-resizer"></span></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " presizablecolumn=" " class=" p-element type-undefined undefined p-resizable-column ng-star-inserted" name=" DocumentTitleGridColumn2" style=" min-width: 15em !important;
+"><span _ngcontent-epw-c56=" ">Judul Dokumen</span><span class=" p-column-resizer"></span></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " presizablecolumn=" " class=" p-element type-undefined undefined p-resizable-column ng-star-inserted" name=" DocumentTypeConfigurationNameGridColumn3" style=" min-width: 15em !important;
+"><span _ngcontent-epw-c56=" ">Jenis Dokumen</span><span class=" p-column-resizer"></span></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " presizablecolumn=" " class=" p-element type-undefined undefined p-resizable-column ng-star-inserted" name=" CaseNumberGridColumn4" style=" min-width: 15em !important;
+"><span _ngcontent-epw-c56=" ">Nomor Kasus</span><span class=" p-column-resizer"></span></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " presizablecolumn=" " class=" p-element type-date undefined p-resizable-column ng-star-inserted" name=" CreationDatetimeGridColumn5" style=" min-width: 15em !important;
+"><span _ngcontent-epw-c56=" ">Tanggal Pembuatan</span><span class=" p-column-resizer"></span></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " presizablecolumn=" " class=" p-element type-undefined undefined p-resizable-column ng-star-inserted" name=" CreationUserGridColumn6" style=" min-width: 15em !important;
+"><span _ngcontent-epw-c56=" ">Pengguna Pembuatan</span><span class=" p-column-resizer"></span></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " presizablecolumn=" " class=" p-element type-button undefined p-resizable-column ng-star-inserted" name="[object Object]GridColumn7"><span _ngcontent-epw-c56=" ">Aksi</span><span class=" p-column-resizer"></span></th><!----><!----><!----><!----><!----></tr><!----><tr _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><th _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><p-columnfilter _ngcontent-epw-c56=" " type=" text" class=" p-element ng-tns-c84-6 ng-star-inserted" id=" filterLetterNumber"><div class=" p-column-filter ng-tns-c84-6 p-column-filter-row"><p-columnfilterformelement class=" p-element p-fluid ng-tns-c84-6 ng-star-inserted"><input type=" text" pinputtext=" " class=" p-inputtext p-component p-element ng-star-inserted"><!----><!----><!----><!----><!----><!----><!----></p-columnfilterformelement><!----><button type=" button" aria-haspopup=" true" class=" p-column-filter-menu-button p-link ng-tns-c84-6 ng-star-inserted"><span class=" pi pi-filter-icon pi-filter ng-tns-c84-6"></span></button><!----><button type=" button" class=" p-column-filter-clear-button p-link ng-tns-c84-6 p-hidden-space ng-star-inserted"><span class=" pi pi-filter-slash ng-tns-c84-6"></span></button><!----><!----></div></p-columnfilter><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><!----><!----><!----><!----><!----><p-columnfilter _ngcontent-epw-c56=" " matchmode=" between" class=" p-element ng-tns-c84-7 ng-star-inserted"><div class=" p-column-filter ng-tns-c84-7 p-column-filter-row"><p-columnfilterformelement class=" p-element p-fluid ng-tns-c84-7 ng-star-inserted"><ui-input-date _ngcontent-epw-c56=" " _nghost-epw-c123=" " class=" ng-star-inserted"><!----><div _ngcontent-epw-c123=" " class=" input-date-container p-inputgroup ng-star-inserted"><p-calendar _ngcontent-epw-c123=" " appendto=" body" class=" p-element p-inputwrapper ng-tns-c67-8 ng-untouched ng-pristine ng-valid ng-star-inserted" id=" filterDocumentDate"><span class=" ng-tns-c67-8 form-control form-control-sm p-calendar"><input type=" text" autocomplete=" off" class=" ng-tns-c67-8 p-inputtext p-component ng-star-inserted" readonly=" " placeholder=" " id=" DocumentDate" style=" min-width: 267px;
+"><!----><!----><!----><!----></span></p-calendar><button _ngcontent-epw-c123=" " type=" button" pbutton=" " pripple=" " icon=" pi pi-calendar" arialabel=" " class=" p-element p-ripple p-button-warn border-0 rounded-0 p-button p-component p-button-icon-only ng-star-inserted" style=" width: 2rem;
+height: 2rem;
+z-index: 20;
+"><span class=" p-button-icon pi pi-calendar" aria-hidden=" true"></span><span class=" p-ink"></span></button><!----><button _ngcontent-epw-c123=" " type=" button" pbutton=" " pripple=" " icon=" pi pi-filter-slash" ptooltip=" Clear" tooltipposition=" bottom" class=" p-element p-ripple p-button-danger border-0 p-button p-component p-button-icon-only ng-star-inserted" style=" width: 2rem;
+height: 2rem;
+z-index: 20;
+" disabled=" "><span class=" p-button-icon pi pi-filter-slash" aria-hidden=" true"></span><span class=" p-ink"></span></button><!----></div><!----></ui-input-date><!----><!----><!----><!----></p-columnfilterformelement><!----><!----><!----><!----></div></p-columnfilter><!----><!----><!----><!----><!----><!----><!----><!----></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><p-columnfilter _ngcontent-epw-c56=" " type=" text" class=" p-element ng-tns-c84-9 ng-star-inserted" id=" filterDocumentTitle"><div class=" p-column-filter ng-tns-c84-9 p-column-filter-row"><p-columnfilterformelement class=" p-element p-fluid ng-tns-c84-9 ng-star-inserted"><input type=" text" pinputtext=" " class=" p-inputtext p-component p-element ng-star-inserted"><!----><!----><!----><!----><!----><!----><!----></p-columnfilterformelement><!----><button type=" button" aria-haspopup=" true" class=" p-column-filter-menu-button p-link ng-tns-c84-9 ng-star-inserted"><span class=" pi pi-filter-icon pi-filter ng-tns-c84-9"></span></button><!----><button type=" button" class=" p-column-filter-clear-button p-link ng-tns-c84-9 p-hidden-space ng-star-inserted"><span class=" pi pi-filter-slash ng-tns-c84-9"></span></button><!----><!----></div></p-columnfilter><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><p-columnfilter _ngcontent-epw-c56=" " type=" text" class=" p-element ng-tns-c84-10 ng-star-inserted" id=" filterDocumentTypeConfigurationName"><div class=" p-column-filter ng-tns-c84-10 p-column-filter-row"><p-columnfilterformelement class=" p-element p-fluid ng-tns-c84-10 ng-star-inserted"><input type=" text" pinputtext=" " class=" p-inputtext p-component p-element ng-star-inserted"><!----><!----><!----><!----><!----><!----><!----></p-columnfilterformelement><!----><button type=" button" aria-haspopup=" true" class=" p-column-filter-menu-button p-link ng-tns-c84-10 ng-star-inserted"><span class=" pi pi-filter-icon pi-filter ng-tns-c84-10"></span></button><!----><button type=" button" class=" p-column-filter-clear-button p-link ng-tns-c84-10 p-hidden-space ng-star-inserted"><span class=" pi pi-filter-slash ng-tns-c84-10"></span></button><!----><!----></div></p-columnfilter><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><p-columnfilter _ngcontent-epw-c56=" " type=" text" class=" p-element ng-tns-c84-11 ng-star-inserted" id=" filterCaseNumber"><div class=" p-column-filter ng-tns-c84-11 p-column-filter-row"><p-columnfilterformelement class=" p-element p-fluid ng-tns-c84-11 ng-star-inserted"><input type=" text" pinputtext=" " class=" p-inputtext p-component p-element ng-star-inserted"><!----><!----><!----><!----><!----><!----><!----></p-columnfilterformelement><!----><button type=" button" aria-haspopup=" true" class=" p-column-filter-menu-button p-link ng-tns-c84-11 ng-star-inserted"><span class=" pi pi-filter-icon pi-filter ng-tns-c84-11"></span></button><!----><button type=" button" class=" p-column-filter-clear-button p-link ng-tns-c84-11 p-hidden-space ng-star-inserted"><span class=" pi pi-filter-slash ng-tns-c84-11"></span></button><!----><!----></div></p-columnfilter><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><!----><!----><!----><!----><!----><p-columnfilter _ngcontent-epw-c56=" " matchmode=" between" class=" p-element ng-tns-c84-12 ng-star-inserted"><div class=" p-column-filter ng-tns-c84-12 p-column-filter-row"><p-columnfilterformelement class=" p-element p-fluid ng-tns-c84-12 ng-star-inserted"><ui-input-date _ngcontent-epw-c56=" " _nghost-epw-c123=" " class=" ng-star-inserted"><!----><div _ngcontent-epw-c123=" " class=" input-date-container p-inputgroup ng-star-inserted"><p-calendar _ngcontent-epw-c123=" " appendto=" body" class=" p-element p-inputwrapper ng-tns-c67-13 ng-untouched ng-pristine ng-valid ng-star-inserted" id=" filterCreationDatetime"><span class=" ng-tns-c67-13 form-control form-control-sm p-calendar"><input type=" text" autocomplete=" off" class=" ng-tns-c67-13 p-inputtext p-component ng-star-inserted" readonly=" " placeholder=" " id=" CreationDatetime" style=" min-width: 267px;
+"><!----><!----><!----><!----></span></p-calendar><button _ngcontent-epw-c123=" " type=" button" pbutton=" " pripple=" " icon=" pi pi-calendar" arialabel=" " class=" p-element p-ripple p-button-warn border-0 rounded-0 p-button p-component p-button-icon-only ng-star-inserted" style=" width: 2rem;
+height: 2rem;
+z-index: 20;
+"><span class=" p-button-icon pi pi-calendar" aria-hidden=" true"></span><span class=" p-ink"></span></button><!----><button _ngcontent-epw-c123=" " type=" button" pbutton=" " pripple=" " icon=" pi pi-filter-slash" ptooltip=" Clear" tooltipposition=" bottom" class=" p-element p-ripple p-button-danger border-0 p-button p-component p-button-icon-only ng-star-inserted" style=" width: 2rem;
+height: 2rem;
+z-index: 20;
+" disabled=" "><span class=" p-button-icon pi pi-filter-slash" aria-hidden=" true"></span><span class=" p-ink"></span></button><!----></div><!----></ui-input-date><!----><!----><!----><!----></p-columnfilterformelement><!----><!----><!----><!----></div></p-columnfilter><!----><!----><!----><!----><!----><!----><!----><!----></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><p-columnfilter _ngcontent-epw-c56=" " type=" text" class=" p-element ng-tns-c84-14 ng-star-inserted" id=" filterCreationUser"><div class=" p-column-filter ng-tns-c84-14 p-column-filter-row"><p-columnfilterformelement class=" p-element p-fluid ng-tns-c84-14 ng-star-inserted"><input type=" text" pinputtext=" " class=" p-inputtext p-component p-element ng-star-inserted"><!----><!----><!----><!----><!----><!----><!----></p-columnfilterformelement><!----><button type=" button" aria-haspopup=" true" class=" p-column-filter-menu-button p-link ng-tns-c84-14 ng-star-inserted"><span class=" pi pi-filter-icon pi-filter ng-tns-c84-14"></span></button><!----><button type=" button" class=" p-column-filter-clear-button p-link ng-tns-c84-14 p-hidden-space ng-star-inserted"><span class=" pi pi-filter-slash ng-tns-c84-14"></span></button><!----><!----></div></p-columnfilter><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></th><!----><!----><!----><!----><!----><th _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><!----><!----></th><!----><!----><!----><!----><!----></tr><!----><!----></thead><!----><tbody class=" p-element p-datatable-tbody"><!----><tr _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" font-weight: bold;
+"><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Dokumen</span> S-00224/SKT-WP-CT/KPP.0412/2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Dokumen</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Judul Dokumen</span> Surat Keterangan Terdaftar <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Jenis Dokumen</span> Surat Keterangan Terdaftar <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Kasus</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Pembuatan</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Pengguna Pembuatan</span> - <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 130px;
+"><!----><!----><!----><!----><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Aksi</span><!----><button _ngcontent-epw-c56=" " type=" button" class=" ct-ovw-btn-mini-save mr-2 mt-1 ng-star-inserted" id=" ActionDownloadButton"> Unduh </button><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----></tr><!----><!----><!----><!----><!----><!----><tr _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" font-weight: bold;
+"><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Dokumen</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Dokumen</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Judul Dokumen</span> Kartu NPWP Printer <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Jenis Dokumen</span> Kartu NPWP Printer <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Kasus</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Pembuatan</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Pengguna Pembuatan</span> - <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 130px;
+"><!----><!----><!----><!----><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Aksi</span><!----><button _ngcontent-epw-c56=" " type=" button" class=" ct-ovw-btn-mini-save mr-2 mt-1 ng-star-inserted" id=" ActionDownloadButton"> Unduh </button><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----></tr><!----><!----><!----><!----><!----><!----><tr _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" font-weight: bold;
+"><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Dokumen</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Dokumen</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Judul Dokumen</span> Kartu NPWP <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Jenis Dokumen</span> Kartu NPWP <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Kasus</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Pembuatan</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Pengguna Pembuatan</span> - <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 130px;
+"><!----><!----><!----><!----><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Aksi</span><!----><button _ngcontent-epw-c56=" " type=" button" class=" ct-ovw-btn-mini-save mr-2 mt-1 ng-star-inserted" id=" ActionDownloadButton"> Unduh </button><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----></tr><!----><!----><!----><!----><!----><!----><tr _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" font-weight: bold;
+"><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Dokumen</span> 041622965246749 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Dokumen</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Judul Dokumen</span> BILLING_CODE <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Jenis Dokumen</span> Cetakan Kode Billing <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Kasus</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Pembuatan</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Pengguna Pembuatan</span> - <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 130px;
+"><!----><!----><!----><!----><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Aksi</span><!----><button _ngcontent-epw-c56=" " type=" button" class=" ct-ovw-btn-mini-save mr-2 mt-1 ng-star-inserted" id=" ActionDownloadButton"> Unduh </button><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----></tr><!----><!----><!----><!----><!----><!----><tr _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" font-weight: bold;
+"><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Dokumen</span> 041610778663606 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Dokumen</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Judul Dokumen</span> BILLING_CODE <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Jenis Dokumen</span> Cetakan Kode Billing <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Kasus</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Pembuatan</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Pengguna Pembuatan</span> - <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 130px;
+"><!----><!----><!----><!----><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Aksi</span><!----><button _ngcontent-epw-c56=" " type=" button" class=" ct-ovw-btn-mini-save mr-2 mt-1 ng-star-inserted" id=" ActionDownloadButton"> Unduh </button><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----></tr><!----><!----><!----><!----><!----><!----><tr _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Dokumen</span> 25089C5XD <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Dokumen</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Judul Dokumen</span> Bukti Potong PPh Unifikasi (BPPU) <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Jenis Dokumen</span> Bukti Potong PPh Unifikasi (BPPU) <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Kasus</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Pembuatan</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Pengguna Pembuatan</span> 0656165008833000 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 130px;
+"><!----><!----><!----><!----><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Aksi</span><!----><button _ngcontent-epw-c56=" " type=" button" class=" ct-ovw-btn-mini-save mr-2 mt-1 ng-star-inserted" id=" ActionDownloadButton"> Unduh </button><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----></tr><!----><!----><!----><!----><!----><!----><tr _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Dokumen</span> 25089C5WQ <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Dokumen</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Judul Dokumen</span> Bukti Potong PPh Unifikasi (BPPU) <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Jenis Dokumen</span> Bukti Potong PPh Unifikasi (BPPU) <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Kasus</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Pembuatan</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Pengguna Pembuatan</span> 0656165008833000 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 130px;
+"><!----><!----><!----><!----><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Aksi</span><!----><button _ngcontent-epw-c56=" " type=" button" class=" ct-ovw-btn-mini-save mr-2 mt-1 ng-star-inserted" id=" ActionDownloadButton"> Unduh </button><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----></tr><!----><!----><!----><!----><!----><!----><tr _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Dokumen</span> 25089C5VE <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Dokumen</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Judul Dokumen</span> Bukti Potong PPh Unifikasi (BPPU) <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Jenis Dokumen</span> Bukti Potong PPh Unifikasi (BPPU) <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Kasus</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Pembuatan</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Pengguna Pembuatan</span> 0656165008833000 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 130px;
+"><!----><!----><!----><!----><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Aksi</span><!----><button _ngcontent-epw-c56=" " type=" button" class=" ct-ovw-btn-mini-save mr-2 mt-1 ng-star-inserted" id=" ActionDownloadButton"> Unduh </button><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----></tr><!----><!----><!----><!----><!----><!----><tr _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Dokumen</span> 25089C5VW <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Dokumen</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Judul Dokumen</span> Bukti Potong PPh Unifikasi (BPPU) <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Jenis Dokumen</span> Bukti Potong PPh Unifikasi (BPPU) <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Kasus</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Pembuatan</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Pengguna Pembuatan</span> 0656165008833000 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 130px;
+"><!----><!----><!----><!----><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Aksi</span><!----><button _ngcontent-epw-c56=" " type=" button" class=" ct-ovw-btn-mini-save mr-2 mt-1 ng-star-inserted" id=" ActionDownloadButton"> Unduh </button><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----></tr><!----><!----><!----><!----><!----><!----><tr _ngcontent-epw-c56=" " class=" ng-star-inserted"><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Dokumen</span> 25089C5TJ <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Dokumen</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Judul Dokumen</span> Bukti Potong PPh Unifikasi (BPPU) <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Jenis Dokumen</span> Bukti Potong PPh Unifikasi (BPPU) <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Nomor Kasus</span>  <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Tanggal Pembuatan</span> 13-01-2026 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 255px;
+"><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Pengguna Pembuatan</span> 0656165008833000 <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----><td _ngcontent-epw-c56=" " class=" ng-star-inserted" style=" text-align: left;
+min-width: 130px;
+"><!----><!----><!----><!----><!----><!----><!----><!----><!----><span _ngcontent-epw-c56=" " class=" p-column-title ng-star-inserted">Aksi</span><!----><button _ngcontent-epw-c56=" " type=" button" class=" ct-ovw-btn-mini-save mr-2 mt-1 ng-star-inserted" id=" ActionDownloadButton"> Unduh </button><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></td><!----><!----><!----><!----><!----></tr><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></tbody><!----><!----></table><!----><!----><!----><!----></div><p-paginator styleclass=" p-paginator-bottom" class=" p-element ng-star-inserted"><div class=" p-paginator-bottom p-paginator p-component ng-star-inserted"><!----><!----><!----><button type=" button" pripple=" " class=" p-ripple p-element p-paginator-prev p-paginator-element p-link p-disabled" disabled=" "><span class=" p-paginator-icon pi pi-angle-left"></span><span class=" p-ink"></span></button><span class=" p-paginator-pages ng-star-inserted"><button type=" button" pripple=" " class=" p-ripple p-element p-paginator-page p-paginator-element p-link p-highlight ng-star-inserted"> 1 <span class=" p-ink"></span></button><!----></span><!----><!----><button type=" button" pripple=" " class=" p-ripple p-element p-paginator-next p-paginator-element p-link"><span class=" p-paginator-icon pi pi-angle-right"></span><span class=" p-ink"></span></button><!----><!----><p-dropdown styleclass=" p-paginator-rpp-options" class=" p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-pristine ng-star-inserted ng-valid"><div class=" p-paginator-rpp-options p-dropdown p-component"><div class=" p-hidden-accessible"><input type=" text" readonly=" " aria-haspopup=" listbox" pautofocus=" " role=" combobox" class=" p-element" aria-expanded=" false"></div><span class=" p-element p-dropdown-label p-inputtext ng-star-inserted" id=" pr_id_7_label">10<!----><!----><!----></span><!----><!----><!----><!----><div role=" button" aria-label=" dropdown trigger" aria-haspopup=" listbox" class=" p-dropdown-trigger"><span class=" p-dropdown-trigger-icon pi pi-chevron-down"></span></div><p-overlay class=" p-element ng-tns-c58-15 ng-star-inserted"><!----></p-overlay></div></p-dropdown><!----><!----></div><!----></p-paginator><!----><!----><div class=" p-column-resizer-helper ng-star-inserted" style=" display: none;
+"></div><!----><!----><!----></div></p-table><!----><p-overlaypanel _ngcontent-epw-c56=" " class=" p-element ng-tns-c104-5 ng-star-inserted"><!----></p-overlaypanel><!----></ui-grid><!----></div></div><!----><!----><!----><ui-progress-spinner _ngcontent-epw-c337=" " _nghost-epw-c109=" "><!----></ui-progress-spinner></dcmshr-documents><!----></div></div></div></ui-coretax-one-column-layout><!----><ui-shared-toast-notification _ngcontent-epw-c526=" " _nghost-epw-c189=" "><p-toast _ngcontent-epw-c189=" " class=" p-element ct-ovw-custom-toast-notification ng-tns-c45-1 ng-star-inserted"><div class=" ng-tns-c45-1 p-toast p-component p-toast-top-center" style=" white-space: pre-line;
+"><!----></div></p-toast></ui-shared-toast-notification></div><!----><ui-shared-footer _ngcontent-epw-c526=" " _nghost-epw-c525=" "><!----><footer _ngcontent-epw-c525=" " class=" grid ng-star-inserted" style=" background-color: #212c5f;
+height: 10.5rem;
+"><div _ngcontent-epw-c525=" " class=" col-12 p-0 pb-1"><div _ngcontent-epw-c525=" " class=" grid d-flex align-items-center"><div _ngcontent-epw-c525=" " class=" col-4 offset-8 d-flex p-0"><div _ngcontent-epw-c525=" " style=" height: 1rem;
+width: -webkit-fill-available;
+background-color: #ffc917;
+"></div><div _ngcontent-epw-c525=" " style=" height: 1rem;
+width: -webkit-fill-available;
+background-color: #fbea11;
+"></div></div></div></div><div _ngcontent-epw-c525=" " class=" col-12 pt-2"><div _ngcontent-epw-c525=" " class=" grid d-flex align-items-center"><div _ngcontent-epw-c525=" " class=" col-7"><div _ngcontent-epw-c525=" " class=" grid"><div _ngcontent-epw-c525=" " class=" col-12 p-0 d-flex align-items-start justify-content-start"><img _ngcontent-epw-c525=" " src=" ./assets/djp/logo-footer-portal.png" alt=" coretax" style=" width: 19rem;
+"></div><div _ngcontent-epw-c525=" " class=" col-12 pr-0 pl-0 pt-2 d-flex flex-column"><span _ngcontent-epw-c525=" " class=" mb-0" style=" font-size: 12px;
+color: #f1f1f1;
+">Jalan Gatot Subroto, Kav. 40-42, Jakarta 12190 </span><span _ngcontent-epw-c525=" " style=" font-size: 12px;
+color: #f1f1f1;
+">Telp: (+62) 21 - 525 0208</span></div><div _ngcontent-epw-c525=" " class=" col-12 pr-0 pl-0 pt-3 d-flex"><div _ngcontent-epw-c525=" " class=" icon-circle-container facebook"><a _ngcontent-epw-c525=" " href=" https: //www.facebook.com/DitjenPajakRI/" target="_blank"><i _ngcontent-epw-c525="" class="fa-brands fa-facebook-f"></i></a></div><div _ngcontent-epw-c525="" class="icon-circle-container twitter ml-1"><a _ngcontent-epw-c525="" href="https://www.twitter.com/DitjenPajakRI" target="_blank"><i _ngcontent-epw-c525="" class="fa-brands fa-x-twitter"></i></a></div><div _ngcontent-epw-c525="" class="icon-circle-container youtube mx-1"><a _ngcontent-epw-c525="" href="https://www.youtube.com/user/DitjenPajakRI" target="_blank"><i _ngcontent-epw-c525="" class="fa-brands fa-youtube"></i></a></div><div _ngcontent-epw-c525="" class="icon-circle-container instagram"><a _ngcontent-epw-c525="" href="https://www.instagram.com/ditjenpajakri/?hl=id" target="_blank"><i _ngcontent-epw-c525="" class="fa-brands fa-instagram"></i></a></div></div></div></div><div _ngcontent-epw-c525="" class="col-5 text-right"><div _ngcontent-epw-c525="" class="grid"><div _ngcontent-epw-c525="" class="col-12 p-0 d-flex align-items-start justify-content-end"><span _ngcontent-epw-c525="" style="font-size: 11px; padding-left: 2px; color: #e9eaee;">Copyright © 2026 Direktorat Jenderal Pajak.</span></div><div _ngcontent-epw-c525="" class="col-12 pr-0 pl-0 pt-4"><img _ngcontent-epw-c525="" src="./assets/djp/kringpajak.png" alt="coretax" class="mr-2" style="width: 6rem;"><img _ngcontent-epw-c525="" src="./assets/djp/SitusPajak1x.png" alt="coretax" style="width: 6rem;"></div></div></div></div></div></footer><!----></ui-shared-footer><p-scrolltop _ngcontent-epw-c526="" class="p-element ng-tns-c175-0"><!----></p-scrolltop></regportal-root>
+<script nonce="" src="runtime.b927214037af058f.js" type="module"></script><script nonce="" src="polyfills.68dccf7ecf2738d4.js" type="module"></script><script nonce="" src="scripts.6f338034ad89f458.js" defer=""></script><script nonce="" src="vendor.236fa3f0e8a3fa82.js" type="module"></script><script nonce="" src="main.00b8c3edd6cb17bf.js" type="module"></script></body></html>

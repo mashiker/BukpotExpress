@@ -79,9 +79,10 @@ function validateTabState(tabId) {
 
             // Check if tab is still accessible and on the right domain
             const isValidTab = tab &&
-                              tab.url &&
-                              (tab.url.includes('coretax.pajak.go.id') ||
-                               tab.url.includes('.coretax.pajak.go.id'));
+                tab.url &&
+                (tab.url.includes('coretax.pajak.go.id') ||
+                    tab.url.includes('.coretax.pajak.go.id') ||
+                    tab.url.includes('coretaxdjp.pajak.go.id'));
 
             console.log(`BG: Tab validation - URL: ${tab.url ? tab.url.substring(0, 100) : 'N/A'}, Status: ${tab.status || 'N/A'}, Valid: ${isValidTab}`);
             resolve(isValidTab);
@@ -108,59 +109,59 @@ function injectScriptWithRetry(tabId, scriptFile, callback, retryCount = 0) {
             target: { tabId: tabId },
             files: [scriptFile]
         }, () => {
-        if (chrome.runtime.lastError) {
-            console.error(`BG: Error injecting ${scriptFile} (attempt ${retryCount + 1}):`, chrome.runtime.lastError);
+            if (chrome.runtime.lastError) {
+                console.error(`BG: Error injecting ${scriptFile} (attempt ${retryCount + 1}):`, chrome.runtime.lastError);
 
-            const errorMessage = chrome.runtime.lastError.message;
-            console.log(`BG: Error details: ${errorMessage}`);
+                const errorMessage = chrome.runtime.lastError.message;
+                console.log(`BG: Error details: ${errorMessage}`);
 
-            // Check if this is a permission error that might be recoverable
-            if (errorMessage.includes("permission") || errorMessage.includes("Cannot access") || errorMessage.includes("The tab was closed") || errorMessage.includes("Receives end of file") || errorMessage.includes("Cannot access a chrome:// URL")) {
+                // Check if this is a permission error that might be recoverable
+                if (errorMessage.includes("permission") || errorMessage.includes("Cannot access") || errorMessage.includes("The tab was closed") || errorMessage.includes("Receives end of file") || errorMessage.includes("Cannot access a chrome:// URL")) {
 
-                if (retryCount < maxRetries) {
-                    console.log(`BG: Retrying ${scriptFile} injection in ${retryDelays[retryCount]}ms...`);
-                    sendStatusUpdate(`🔄 Memulihkan izin otomatis... (${retryCount + 1}/${maxRetries})`);
+                    if (retryCount < maxRetries) {
+                        console.log(`BG: Retrying ${scriptFile} injection in ${retryDelays[retryCount]}ms...`);
+                        sendStatusUpdate(`🔄 Memulihkan izin otomatis... (${retryCount + 1}/${maxRetries})`);
 
-                    createTrackedTimeout(() => {
-                        injectScriptWithRetry(tabId, scriptFile, callback, retryCount + 1);
-                    }, retryDelays[retryCount]);
-                    return;
+                        createTrackedTimeout(() => {
+                            injectScriptWithRetry(tabId, scriptFile, callback, retryCount + 1);
+                        }, retryDelays[retryCount]);
+                        return;
+                    } else {
+                        // All retries failed, try a simpler approach - just wait and retry once
+                        console.log(`BG: All retries failed for ${scriptFile}, trying simpler recovery...`);
+                        sendStatusUpdate("🔄 Mencoba pendekatan alternatif...");
+
+                        // Simple wait and try one final time
+                        createTrackedTimeout(() => {
+                            console.log(`BG: Final attempt to inject ${scriptFile}`);
+                            chrome.scripting.executeScript({
+                                target: { tabId: tabId },
+                                files: [scriptFile]
+                            }, () => {
+                                if (chrome.runtime.lastError) {
+                                    console.error(`BG: Final injection attempt failed for ${scriptFile}:`, chrome.runtime.lastError);
+                                    sendStatusUpdate(`❌ Gagal menginjek ${scriptFile}. Error: ${chrome.runtime.lastError.message}`);
+                                    callback(false);
+                                } else {
+                                    console.log(`BG: Final injection successful for ${scriptFile}`);
+                                    callback(true);
+                                }
+                            });
+                        }, 2000); // Wait 2 seconds for final attempt
+                        return;
+                    }
                 } else {
-                    // All retries failed, try a simpler approach - just wait and retry once
-                    console.log(`BG: All retries failed for ${scriptFile}, trying simpler recovery...`);
-                    sendStatusUpdate("🔄 Mencoba pendekatan alternatif...");
-
-                    // Simple wait and try one final time
-                    createTrackedTimeout(() => {
-                        console.log(`BG: Final attempt to inject ${scriptFile}`);
-                        chrome.scripting.executeScript({
-                            target: { tabId: tabId },
-                            files: [scriptFile]
-                        }, () => {
-                            if (chrome.runtime.lastError) {
-                                console.error(`BG: Final injection attempt failed for ${scriptFile}:`, chrome.runtime.lastError);
-                                sendStatusUpdate(`❌ Gagal menginjek ${scriptFile}. Error: ${chrome.runtime.lastError.message}`);
-                                callback(false);
-                            } else {
-                                console.log(`BG: Final injection successful for ${scriptFile}`);
-                                callback(true);
-                            }
-                        });
-                    }, 2000); // Wait 2 seconds for final attempt
+                    // Non-permission error, don't retry
+                    console.error(`BG: Non-retryable error for ${scriptFile}:`, errorMessage);
+                    sendStatusUpdate(`❌ Error ${scriptFile}: ${errorMessage}`);
+                    callback(false);
                     return;
                 }
-            } else {
-                // Non-permission error, don't retry
-                console.error(`BG: Non-retryable error for ${scriptFile}:`, errorMessage);
-                sendStatusUpdate(`❌ Error ${scriptFile}: ${errorMessage}`);
-                callback(false);
-                return;
             }
-        }
 
-        // Success
-        console.log(`BG: Successfully injected ${scriptFile}`);
-        callback(true);
+            // Success
+            console.log(`BG: Successfully injected ${scriptFile}`);
+            callback(true);
         });
     });
 }
@@ -284,6 +285,40 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
             break;
 
+        case "START_BPPU_DOWNLOAD":
+            if (!isDownloading) {
+                clearPendingTimeouts();
+                isDownloading = true;
+                downloadTabId = tabId;
+
+                chrome.storage.local.set({ isDownloading: true, stopRequested: false });
+                sendStatusUpdate("Memulai otomatisasi Download Prepaid Bukpot...");
+
+                // Inject multi_page_downloader.js
+                injectScriptWithRetry(tabId, 'multi_page_downloader.js', (success) => {
+                    if (!success) {
+                        console.error("BG: Failed to inject multi_page_downloader.js");
+                        isDownloading = false;
+                        downloadTabId = null;
+                        sendStatusUpdate("❌ Gagal injeksi script. Refresh halaman.", true);
+                        return;
+                    }
+
+                    console.log("BG: Script injected for BPPU, sending start command");
+                    sendStatusUpdate("Script siap, menjalankan otomatisasi...");
+
+                    // Send start command
+                    chrome.tabs.sendMessage(tabId, {
+                        action: 'startBPPUAutomation'
+                    }, (response) => {
+                        if (chrome.runtime.lastError) {
+                            console.log("BG: Error sending startBPPUAutomation:", chrome.runtime.lastError.message);
+                        }
+                    });
+                });
+            }
+            break;
+
         case "STOP_DOWNLOAD":
             console.log("BG: Stop download requested for tab:", tabId);
             if (isDownloading && downloadTabId === tabId) {
@@ -316,7 +351,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                         frames.forEach(frame => {
                             chrome.tabs.sendMessage(tabId, {
                                 action: 'stopDownload'
-                            }, {frameId: frame.frameId}, (response) => {
+                            }, { frameId: frame.frameId }, (response) => {
                                 if (chrome.runtime.lastError) {
                                     console.log(`BG: Error sending stop to frame ${frame.frameId}:`, chrome.runtime.lastError.message);
                                 }

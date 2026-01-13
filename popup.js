@@ -244,6 +244,29 @@ function setupEventListeners() {
         });
     });
 
+    // Download Prepaid Bukpot Button
+    const downloadPrepaidBtn = document.getElementById('downloadPrepaidBtn');
+    if (downloadPrepaidBtn) {
+        downloadPrepaidBtn.addEventListener('click', () => {
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                if (tabs.length === 0) {
+                    updateAndSaveStatus('Tidak ada tab aktif ditemukan.');
+                    return;
+                }
+                
+                showLoading();
+                setDownloadButtonState(true);
+                chrome.storage.local.set({ isDownloading: true, stopRequested: false });
+                updateAndSaveStatus('Memulai proses Download Prepaid Bukpot...');
+
+                chrome.runtime.sendMessage({
+                    type: 'START_BPPU_DOWNLOAD',
+                    tabId: tabs[0].id
+                });
+            });
+        });
+    }
+
     // Stop button - stop download
     stopBtn.addEventListener('click', () => {
         console.log('Stop button clicked!');
