@@ -253,7 +253,7 @@ function setupEventListeners() {
                     updateAndSaveStatus('Tidak ada tab aktif ditemukan.');
                     return;
                 }
-                
+
                 showLoading();
                 setDownloadButtonState(true);
                 chrome.storage.local.set({ isDownloading: true, stopRequested: false });
@@ -438,7 +438,7 @@ function setupTutorialToggle() {
         toggleIcon.classList.add('collapsed');
         toggleIcon.textContent = '▶';
 
-        tutorialToggle.addEventListener('click', function() {
+        tutorialToggle.addEventListener('click', function () {
             isTutorialExpanded = !isTutorialExpanded;
 
             if (isTutorialExpanded) {
@@ -449,6 +449,33 @@ function setupTutorialToggle() {
                 tutorialContent.classList.add('collapsed');
                 toggleIcon.classList.add('collapsed');
                 toggleIcon.textContent = '▶';
+            }
+        });
+    }
+
+    // Prepaid Bukpot Tutorial toggle functionality
+    const prepaidTutorialToggle = document.getElementById('prepaidTutorialToggle');
+    const prepaidTutorialContent = document.getElementById('prepaidTutorialContent');
+    const prepaidToggleIcon = document.getElementById('prepaidToggleIcon');
+    let isPrepaidTutorialExpanded = false; // Start collapsed
+
+    if (prepaidTutorialToggle && prepaidTutorialContent && prepaidToggleIcon) {
+        // Set initial state to collapsed
+        prepaidTutorialContent.classList.add('collapsed');
+        prepaidToggleIcon.classList.add('collapsed');
+        prepaidToggleIcon.textContent = '▶';
+
+        prepaidTutorialToggle.addEventListener('click', function () {
+            isPrepaidTutorialExpanded = !isPrepaidTutorialExpanded;
+
+            if (isPrepaidTutorialExpanded) {
+                prepaidTutorialContent.classList.remove('collapsed');
+                prepaidToggleIcon.classList.remove('collapsed');
+                prepaidToggleIcon.textContent = '▼';
+            } else {
+                prepaidTutorialContent.classList.add('collapsed');
+                prepaidToggleIcon.classList.add('collapsed');
+                prepaidToggleIcon.textContent = '▶';
             }
         });
     }
@@ -465,7 +492,7 @@ function setupTutorialToggle() {
         tipsToggleIcon.classList.add('collapsed');
         tipsToggleIcon.textContent = '▶';
 
-        tipsToggle.addEventListener('click', function() {
+        tipsToggle.addEventListener('click', function () {
             isTipsExpanded = !isTipsExpanded;
 
             if (isTipsExpanded) {
@@ -489,14 +516,14 @@ function setupPromotionalCards() {
 
     // Add click event listeners for promotional cards
     if (efakturCard) {
-        efakturCard.addEventListener('click', function() {
+        efakturCard.addEventListener('click', function () {
             chrome.tabs.create({ url: 'https://chromewebstore.google.com/detail/e-faktur-automation/hjimkdiphhenkofkbbicaejhflmoicpg' });
         });
     }
 
     const bukpotRekapCard = document.getElementById('BukpotRekap');
     if (bukpotRekapCard) {
-        bukpotRekapCard.addEventListener('click', function() {
+        bukpotRekapCard.addEventListener('click', function () {
             chrome.tabs.create({ url: 'https://bukpotrekap.alatpajak.id/app' });
         });
     }
@@ -505,13 +532,13 @@ function setupPromotionalCards() {
 
     const batchRenameCard = document.getElementById('batch-rename-card');
     if (batchRenameCard) {
-        batchRenameCard.addEventListener('click', function() {
+        batchRenameCard.addEventListener('click', function () {
             chrome.tabs.create({ url: 'https://alatpajak.my.id/gantinamabatchpdf.html' });
         });
     }
 
     if (coffeeCard) {
-        coffeeCard.addEventListener('click', function() {
+        coffeeCard.addEventListener('click', function () {
             chrome.tabs.create({ url: 'https://trakteer.id/alatpajakid/tip' });
         });
     }
