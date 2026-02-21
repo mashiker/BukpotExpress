@@ -5,45 +5,45 @@
    ============================================ */
 
 /* ============================================
-   1. CSS VARIABLES - LIGHT THEME (DEFAULT)
+   1. CSS VARIABLES - LIGHT THEME (RAMADAN)
    ============================================ */
 :root {
-  /* Primary Colors */
-  --primary-color: #F25F5C;
-  --primary-hover: #D94A47;
-  --primary-light: rgba(242, 95, 92, 0.1);
-  
-  /* Background Colors */
+  /* Primary Colors - Emerald Green */
+  --primary-color: #059669;
+  --primary-hover: #047857;
+  --primary-light: rgba(5, 150, 105, 0.12);
+
+  /* Background Colors - Light with green tint */
   --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --bg-tertiary: #f0f2f5;
-  --bg-hover: rgba(242, 95, 92, 0.08);
-  
+  --bg-secondary: #f0fdf4;
+  --bg-tertiary: #dcfce7;
+  --bg-hover: rgba(5, 150, 105, 0.08);
+
   /* Text Colors */
-  --text-primary: #2c3e50;
-  --text-secondary: #6c757d;
-  --text-muted: #95a5a6;
+  --text-primary: #064e3b;
+  --text-secondary: #047857;
+  --text-muted: #10b981;
   --text-inverse: #ffffff;
-  
+
   /* Border & Divider */
-  --border-color: #e9ecef;
-  --divider-color: #dee2e6;
-  
+  --border-color: #a7f3d0;
+  --divider-color: #6ee7b7;
+
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
-  
-  /* Header Gradient */
-  --header-bg: linear-gradient(135deg, #0B1D3A 0%, #F25F5C 100%);
-  
+  --shadow-sm: 0 1px 3px rgba(6, 78, 59, 0.1);
+  --shadow-md: 0 2px 8px rgba(6, 78, 59, 0.15);
+  --shadow-lg: 0 4px 16px rgba(6, 78, 59, 0.2);
+
+  /* Header Gradient - Emerald to Gold */
+  --header-bg: linear-gradient(135deg, #064E3B 0%, #059669 50%, #F59E0B 100%);
+
   /* Success/Warning/Danger */
-  --success-color: #28a745;
-  --success-hover: #218838;
-  --warning-color: #ffc107;
+  --success-color: #059669;
+  --success-hover: #047857;
+  --warning-color: #f59e0b;
   --danger-color: #dc3545;
   --danger-hover: #c82333;
-  
+
   /* Transition */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.2s ease;
@@ -51,71 +51,37 @@
 }
 
 /* ============================================
-   2. CSS VARIABLES - DARK THEME
+   2. CSS VARIABLES - RAMADAN THEME (Dark Mode)
    ============================================ */
 [data-theme="dark"] {
-  /* Primary Colors */
-  --primary-color: #FF8A80;
-  --primary-hover: #FF6F61;
-  --primary-light: rgba(255, 138, 128, 0.15);
-  
-  /* Background Colors */
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #242424;
-  --bg-tertiary: #2d2d2d;
-  --bg-hover: rgba(255, 138, 128, 0.12);
-  
-  /* Text Colors */
-  --text-primary: #e0e0e0;
-  --text-secondary: #a0a0a0;
-  --text-muted: #707070;
-  --text-inverse: #1a1a1a;
-  
-  /* Border & Divider */
-  --border-color: #3a3a3a;
-  --divider-color: #404040;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.3);
-  
-  /* Header Gradient */
-  --header-bg: linear-gradient(135deg, #1a1a2e 0%, #FF8A80 100%);
-}
+  /* Primary Colors - Emerald Green & Gold */
+  --primary-color: #10B981;
+  --primary-hover: #059669;
+  --primary-light: rgba(16, 185, 129, 0.15);
 
-/* ============================================
-   2.5 CSS VARIABLES - RAMADAN THEME
-   ============================================ */
-[data-theme="ramadan"] {
-  /* Primary Colors */
-  --primary-color: #059669; /* Emerald Green */
-  --primary-hover: #047857; /* Darker Emerald */
-  --primary-light: rgba(5, 150, 105, 0.15); /* Light Emerald tint */
-  
-  /* Background Colors */
-  --bg-primary: #F8FAF9; /* Off-white with slight green tint */
-  --bg-secondary: #ECFDF5; /* Very light emerald */
-  --bg-tertiary: #D1FAE5; /* Light emerald */
-  --bg-hover: rgba(5, 150, 105, 0.08);
-  
+  /* Background Colors - Deep night sky with green tint */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --bg-hover: rgba(16, 185, 129, 0.1);
+
   /* Text Colors */
-  --text-primary: #064E3B; /* Very dark green almost black */
-  --text-secondary: #065F46; /* Dark green */
-  --text-muted: #10B981; /* Muted green */
-  --text-inverse: #FFFFFF;
-  
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #0f172a;
+
   /* Border & Divider */
-  --border-color: #A7F3D0;
-  --divider-color: #6EE7B7;
-  
+  --border-color: #475569;
+  --divider-color: #334155;
+
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(6, 78, 59, 0.1);
-  --shadow-md: 0 2px 8px rgba(6, 78, 59, 0.15);
-  --shadow-lg: 0 4px 16px rgba(6, 78, 59, 0.2);
-  
-  /* Header Gradient */
-  --header-bg: linear-gradient(135deg, #064E3B 0%, #059669 40%, #10B981 100%);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.5);
+
+  /* Header Gradient - Night sky with emerald */
+  --header-bg: linear-gradient(135deg, #064E3B 0%, #059669 50%, #F59E0B 100%);
 }
 
 /* ============================================
@@ -425,29 +391,29 @@ a:hover {
   transition: transform var(--transition-fast);
 }
 
-/* Unique colors for each tool icon */
+/* Unique colors for each tool icon - Ramadan Theme (Emerald & Gold) */
 .tool-icon-extract {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
   color: white;
 }
 
 .tool-icon-rename {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
   color: white;
 }
 
 .tool-icon-excel {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
   color: white;
 }
 
 .tool-icon-pdf {
-  background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+  background: linear-gradient(135deg, #059669 0%, #34d399 100%);
   color: white;
 }
 
 .tool-icon-calc {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
   color: white;
 }
 
@@ -1124,7 +1090,7 @@ a:hover {
   display: block;
   margin: 12px 16px;
   padding: 14px 16px;
-  background: linear-gradient(135deg, #0B1D3A 0%, #1a3a5c 50%, #F25F5C 100%);
+  background: linear-gradient(135deg, #064E3B 0%, #059669 50%, #F59E0B 100%);
   background-size: 200% 200%;
   animation: gradientShift 3s ease infinite;
   border-radius: 12px;
@@ -1133,7 +1099,7 @@ a:hover {
   overflow: hidden;
   cursor: pointer;
   transition: all var(--transition-normal);
-  box-shadow: 0 4px 15px rgba(242, 95, 92, 0.3);
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
 }
 
 .ad-banner::before {
@@ -1149,7 +1115,7 @@ a:hover {
 
 .ad-banner:hover {
   transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 6px 20px rgba(242, 95, 92, 0.4);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
 }
 
 @keyframes gradientShift {
@@ -1166,8 +1132,8 @@ a:hover {
   position: absolute;
   top: -2px;
   right: 12px;
-  background: linear-gradient(135deg, #ff6a00, #ff2d55);
-  color: white;
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  color: #064e3b;
   font-size: 9px;
   font-weight: 700;
   padding: 3px 8px;
@@ -1175,7 +1141,7 @@ a:hover {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   animation: badgePulse 1.5s ease-in-out infinite;
-  box-shadow: 0 2px 8px rgba(255, 45, 85, 0.4);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
 }
 
 @keyframes badgePulse {
@@ -1238,10 +1204,198 @@ a:hover {
 
 /* Dark theme adjustments for ad-banner */
 [data-theme="dark"] .ad-banner {
-  background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 50%, #FF8A80 100%);
-  box-shadow: 0 4px 15px rgba(255, 138, 128, 0.25);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
 [data-theme="dark"] .ad-banner:hover {
-  box-shadow: 0 6px 20px rgba(255, 138, 128, 0.35);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+/* ============================================
+   23. RAMADAN DECORATIONS
+   ============================================ */
+
+/* Ramadan Banner - Shows in both themes */
+.ramadan-banner {
+  display: none;
+  background: linear-gradient(135deg, #064E3B 0%, #059669 50%, #F59E0B 100%);
+  background-size: 200% 200%;
+  animation: ramadanGradient 4s ease infinite;
+  padding: 16px 20px;
+  margin: 12px 16px;
+  border-radius: 12px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+}
+
+[data-theme="dark"] .ramadan-banner,
+body:not([data-theme="dark"]) .ramadan-banner {
+  display: block;
+}
+
+@keyframes ramadanGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.ramadan-greeting {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.ramadan-subtext {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Lantern Decoration (Fanous) */
+.lantern {
+  position: absolute;
+  top: -20px;
+  width: 24px;
+  height: 40px;
+  animation: lanternSwing 3s ease-in-out infinite;
+}
+
+.lantern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, #F59E0B, transparent);
+}
+
+.lantern::after {
+  content: '🏮';
+  font-size: 24px;
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.lantern-left {
+  left: 20px;
+  animation-delay: 0s;
+}
+
+.lantern-right {
+  right: 20px;
+  animation-delay: 1.5s;
+}
+
+@keyframes lanternSwing {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* Crescent Moon & Stars */
+.ramadan-decoration {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 20px;
+  opacity: 0.8;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+[data-theme="dark"] .header {
+  position: relative;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* Star decorations - Dark mode only */
+.star {
+  position: absolute;
+  font-size: 12px;
+  color: #F59E0B;
+  animation: starTwinkle 1.5s ease-in-out infinite;
+}
+
+.star-1 {
+  top: 30px;
+  left: 40px;
+  animation-delay: 0s;
+}
+
+.star-2 {
+  top: 50px;
+  right: 60px;
+  animation-delay: 0.5s;
+}
+
+.star-3 {
+  bottom: 30px;
+  left: 60px;
+  animation-delay: 1s;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Ramadan menu icon glow - Both themes */
+.menu-icon {
+  background: rgba(5, 150, 105, 0.15);
+  box-shadow: 0 0 8px rgba(5, 150, 105, 0.2);
+}
+
+[data-theme="dark"] .menu-icon {
+  background: rgba(16, 185, 129, 0.2);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .tool-icon {
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+}
+
+/* Special Ramadan border glow for cards */
+.section {
+  border-bottom-color: rgba(5, 150, 105, 0.2);
+}
+
+[data-theme="dark"] .section {
+  border-bottom-color: rgba(16, 185, 129, 0.2);
+}
+
+[data-theme="dark"] .collapsible {
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+/* Gold accent on hover */
+.menu-item:hover,
+.tool-item:hover {
+  background-color: rgba(5, 150, 105, 0.05);
+}
+
+[data-theme="dark"] .menu-item:hover,
+[data-theme="dark"] .tool-item:hover {
+  background-color: rgba(245, 158, 11, 0.05);
+}
+
+[data-theme="dark"] .radio-option.selected {
+  border-color: #10B981;
+  background-color: rgba(16, 185, 129, 0.15);
+}
+
+[data-theme="dark"] .btn-primary {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .btn-primary:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
