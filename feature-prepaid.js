@@ -46,9 +46,6 @@ function applyTheme(theme) {
 
     if (theme === 'dark') {
         body.setAttribute('data-theme', 'dark');
-        if (themeIcon) themeIcon.innerHTML = '&#9770;'; // Crescent Star
-    } else if (theme === 'ramadan') {
-        body.setAttribute('data-theme', 'ramadan');
         if (themeIcon) themeIcon.innerHTML = '&#9728;'; // Sun
     } else {
         body.removeAttribute('data-theme');
@@ -60,16 +57,7 @@ function applyTheme(theme) {
 
 function toggleTheme() {
     const currentTheme = document.body.getAttribute('data-theme') || 'light';
-    let newTheme;
-
-    if (currentTheme === 'light') {
-        newTheme = 'dark';
-    } else if (currentTheme === 'dark') {
-        newTheme = 'ramadan';
-    } else {
-        newTheme = 'light';
-    }
-
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     applyTheme(newTheme);
 }
 

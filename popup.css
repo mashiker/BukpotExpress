@@ -1,49 +1,5 @@
-/* Light Theme (Default) */
+/* Light Theme (Default - Ramadan Theme) */
 :root {
-  --primary-color: #F25F5C;
-  --primary-hover: #D94A47;
-  --background-color: #ffffff;
-  --card-background: #ffffff;
-  --light-gray: #f4f7f9;
-  --section-bg: #ffffff;
-  --dark-text: #2c3e50;
-  --light-text: #7f8c8d;
-  --border-color: #e0e0e0;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --header-bg: linear-gradient(135deg, #0B1D3A 0%, #F25F5C 100%);
-  --tutorial-bg: #fff5f5;
-  --input-bg: #ffffff;
-  --input-border: #ddd;
-  --button-text: #ffffff;
-  --mode-bg: #fff6f6;
-  --promo-bg: #fff6f6;
-  --footer-bg: #fff6f6;
-}
-
-/* Dark Theme */
-[data-theme="dark"] {
-  --primary-color: #FF8A80;
-  --primary-hover: #FF6F61;
-  --background-color: #1a1a1a;
-  --card-background: #242424;
-  --light-gray: #2d2d2d;
-  --section-bg: #2d2d2d;
-  --dark-text: #e0e0e0;
-  --light-text: #a0a0a0;
-  --border-color: #404040;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --header-bg: linear-gradient(135deg, #361522 0%, #FF8A80 100%);
-  --tutorial-bg: #2a1f25;
-  --input-bg: #2d2d2d;
-  --input-border: #404040;
-  --button-text: #ffffff;
-  --mode-bg: #2a1f25;
-  --promo-bg: #2a1f25;
-  --footer-bg: #2a1f25;
-}
-
-/* Ramadan Theme */
-[data-theme="ramadan"] {
   --primary-color: #059669;
   /* Emerald Green */
   --primary-hover: #047857;
@@ -69,6 +25,30 @@
   --footer-bg: #ECFDF5;
 }
 
+/* Dark Theme */
+[data-theme="dark"] {
+  --primary-color: #FF8A80;
+  --primary-hover: #FF6F61;
+  --background-color: #1a1a1a;
+  --card-background: #242424;
+  --light-gray: #2d2d2d;
+  --section-bg: #2d2d2d;
+  --dark-text: #e0e0e0;
+  --light-text: #a0a0a0;
+  --border-color: #404040;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --header-bg: linear-gradient(135deg, #361522 0%, #FF8A80 100%);
+  --tutorial-bg: #2a1f25;
+  --input-bg: #2d2d2d;
+  --input-border: #404040;
+  --button-text: #ffffff;
+  --mode-bg: #2a1f25;
+  --promo-bg: #2a1f25;
+  --footer-bg: #2a1f25;
+}
+
+
+
 body {
   font-family: 'Poppins', 'Segoe UI', Tahoma, sans-serif;
   width: 100%;
@@ -79,8 +59,35 @@ body {
   background-color: var(--background-color);
   color: var(--dark-text);
   padding: 0;
-  overflow: visible;
+  overflow-x: hidden;
+  position: relative;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Default Theme Ornaments (Ramadan) */
+body:not([data-theme="dark"]) .main-container::before,
+body:not([data-theme="dark"]) .main-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 150px;
+  height: 200px;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.15;
+}
+
+body:not([data-theme="dark"]) .main-container::before {
+  left: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 200'%3E%3Cpath fill='%23059669' d='M50,0 L50,80 M20,80 L80,80 L70,120 L30,120 Z M30,120 L70,120 L80,160 L50,190 L20,160 Z' stroke='%23D4AF37' stroke-width='2'/%3E%3Ccircle cx='50' cy='140' r='10' fill='%23D4AF37'/%3E%3C/svg%3E");
+  background-position: top left;
+}
+
+body:not([data-theme="dark"]) .main-container::after {
+  right: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 200'%3E%3Cpath fill='%23059669' d='M50,0 L50,50 M30,50 L70,50 L60,90 L40,90 Z M40,90 L60,90 L70,130 L50,150 L30,130 Z' stroke='%23D4AF37' stroke-width='2'/%3E%3Ccircle cx='50' cy='110' r='8' fill='%23D4AF37'/%3E%3Cpath fill='%23D4AF37' d='M80,30 L90,40 L80,50 L70,40 Z'/%3E%3Cpath fill='%23D4AF37' d='M20,60 L25,65 L20,70 L15,65 Z'/%3E%3C/svg%3E");
+  background-position: top right;
 }
 
 .main-container {
@@ -90,7 +97,8 @@ body {
   padding: 24px;
   gap: 16px;
   min-height: 500px;
-  overflow: visible;
+  position: relative;
+  z-index: 1;
 }
 
 .tutorial-section {
