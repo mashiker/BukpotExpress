@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Prepaid Bukpot - Bukpot Express</title>
+    <link rel="stylesheet" href="shared.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button id="backBtn" class="back-btn" title="Kembali">&#8592;</button>
+                <h1 class="header-title">Prepaid Bukpot</h1>
+            </div>
+            <div class="header-right">
+                <button id="themeToggle" class="theme-toggle" title="Toggle theme">
+                    <span class="theme-icon">&#127769;</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Feature Description -->
+            <div class="feature-header">
+                <h2 class="feature-title">Download Prepaid Bukpot</h2>
+                <p class="feature-description">Download otomatis bukti potong dari halaman Dokumen Saya di CoreTax</p>
+            </div>
+
+            <!-- Feature Content -->
+            <div class="feature-content">
+                <!-- Tutorial Section -->
+                <div class="collapsible">
+                    <div class="collapsible-header" id="tutorialToggle">
+                        <span class="collapsible-title">&#128214; Cara Penggunaan</span>
+                        <span class="collapsible-icon collapsed" id="tutorialIcon">&#9660;</span>
+                    </div>
+                    <div class="collapsible-content collapsed" id="tutorialContent">
+                        <div class="tip-list">
+                            <div class="tip-item">
+                                <div class="tip-title">&#127919; Langkah 1: Persiapan</div>
+                                <div class="tip-content">
+                                    Login ke Coretax DJP dan buka halaman "Dokumen Saya"
+                                </div>
+                            </div>
+                            <div class="tip-item">
+                                <div class="tip-title">&#11015; Langkah 2: Mulai Download</div>
+                                <div class="tip-content">
+                                    Klik tombol "Mulai Download" di bawah
+                                </div>
+                            </div>
+                            <div class="tip-item">
+                                <div class="tip-title">&#9200; Langkah 3: Tunggu Proses</div>
+                                <div class="tip-content">
+                                    Download berjalan otomatis dengan jeda antar file
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Section -->
+                <div class="action-section">
+                    <button id="downloadPrepaidBtn" class="btn btn-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
+                            <path d="M12 16.5l4-4h-3v-9h-2v9h-3l4 4zm9-13h-6v1.99h6v14.03h-18v-14.03h6v-1.99h-6c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2v-14c0-1.1-.9-2-2-2z"/>
+                        </svg>
+                        <span>Mulai Download</span>
+                    </button>
+
+                    <button id="stopBtn" class="btn btn-danger hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
+                            <path d="M6 6h12v12H6V6z"/>
+                        </svg>
+                        <span>STOP Download</span>
+                    </button>
+                </div>
+
+                <!-- Info Box -->
+                <div class="info-box">
+                    <p class="info-text">
+                        Pastikan Anda berada di halaman "Dokumen Saya" pada portal CoreTax sebelum memulai download.
+                    </p>
+                </div>
+
+                <!-- Stop Section -->
+                <div class="stop-section">
+                    <button id="hardForceStopBtn" class="stop-btn-alt">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                        <span>Force Close Browser</span>
+                    </button>
+                </div>
+
+                <!-- Tips Section -->
+                <div class="collapsible mt-16">
+                    <div class="collapsible-header" id="tipsToggle">
+                        <span class="collapsible-title">&#128161; Tips Penting</span>
+                        <span class="collapsible-icon collapsed" id="tipsIcon">&#9660;</span>
+                    </div>
+                    <div class="collapsible-content collapsed" id="tipsContent">
+                        <div class="tip-list">
+                            <div class="tip-item">
+                                <div class="tip-title">&#9200; Waktu Terbaik</div>
+                                <div class="tip-content">
+                                    Gunakan saat Coretax sedang lancar. Hindari jam sibuk menjelang batas waktu pelaporan.
+                                </div>
+                            </div>
+                            <div class="tip-item">
+                                <div class="tip-title">&#128260; Reload Ekstensi</div>
+                                <div class="tip-content">
+                                    <p>Jika ekstensi tidak merespon:</p>
+                                    <ol>
+                                        <li>Buka chrome://extensions</li>
+                                        <li>Cari "Bukpot Express"</li>
+                                        <li>Klik tombol reload</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Section -->
+            <div class="status-section">
+                <div class="status-header">
+                    <span class="status-title">Status Log</span>
+                    <button id="clearLogBtn" class="clear-log-btn">Clear</button>
+                </div>
+                <div id="statusLog" class="status-log">Menunggu perintah...</div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">
+                <a href="https://trakteer.id/alatpajakid/tip" target="_blank" class="footer-link">Dukung Developer</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Processing...</div>
+    </div>
+
+    <!-- App Scripts -->
+    <script src="feature-prepaid.js"></script>
+</body>
+
+</html>

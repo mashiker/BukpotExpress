@@ -1,214 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bukpot Express</title>
-    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="shared.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <div class="main-container">
-        <!-- Header Section -->
-        <div class="sidebar-header">
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
             <div class="header-left">
-                <img src="images/icon48.png" alt="Logo">
-                <h2 class="header-title">Bukpot Express</h2>
+                <img src="images/icon48.png" alt="Logo" class="header-icon">
+                <h1 class="header-title">Bukpot Express</h1>
             </div>
             <div class="header-right">
                 <button id="themeToggle" class="theme-toggle" title="Toggle theme">
-                    <span class="theme-icon">🌙</span>
+                    <span class="theme-icon">&#127769;</span>
                 </button>
             </div>
-        </div>
+        </header>
 
-        <!-- E-Faktur Automation Ad Banner -->
-        <a href="https://chromewebstore.google.com/detail/e-faktur-automation/hjimkdiphhenkofkbbicaejhflmoicpg"
-            target="_blank" class="ad-banner" id="efaktur-ad-banner">
-            <div class="ad-badge">🔥 GRATIS</div>
-            <div class="ad-content">
-                <div class="ad-icon">⚡</div>
-                <div class="ad-text">
-                    <span class="ad-headline">Input Pajak Masukan 100x Lebih Cepat!</span>
-                    <span class="ad-subtext">Kreditkan puluhan faktur ke Coretax dalam hitungan detik → Klik
-                        disini!</span>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- E-Faktur Automation Promo Banner -->
+            <a href="https://chromewebstore.google.com/detail/e-faktur-automation/hjimkdiphhenkofkbbicaejhflmoicpg" target="_blank" class="ad-banner" id="efaktur-ad-banner">
+                <div class="ad-badge">GRATIS</div>
+                <div class="ad-content">
+                    <div class="ad-icon">&#9889;</div>
+                    <div class="ad-text">
+                        <span class="ad-headline">Input Pajak Masukan 100x Lebih Cepat!</span>
+                        <span class="ad-subtext">Kreditkan puluhan faktur ke Coretax dalam hitungan detik</span>
+                    </div>
+                    <div class="ad-arrow">&#8594;</div>
                 </div>
-                <div class="ad-arrow">→</div>
-            </div>
-        </a>
+            </a>
 
-        <!-- Cara Penggunaan Section -->
-        <div class="tutorial-section">
-            <div class="tutorial-header" id="tutorialToggle">
-                <span class="tutorial-title">📖 Cara Penggunaan</span>
-                <span class="toggle-icon" id="toggleIcon">▼</span>
-            </div>
-            <div class="tutorial-content" id="tutorialContent">
-                <div class="tutorial-steps">
-                    <div class="step">
-                        <h4>🎯 Langkah 1: Persiapan</h4>
-                        <p>Login ke Coretax DJP dan buka halaman "Bukti Potong" (BPPU atau BP series)</p>
-                    </div>
-                    <div class="step">
-                        <h4>📅 Langkah 2: Pilih Masa Pajak</h4>
-                        <p>Pilih bulan dan tahun yang diinginkan</p>
-                    </div>
-                    <div class="step">
-                        <h4>⬇️ Langkah 3: Mulai Download</h4>
-                        <p>Klik tombol "Unduh Semua Bukti Potong"</p>
-                    </div>
-                    <div class="step">
-                        <h4>⏱️ Langkah 4: Tunggu Proses</h4>
-                        <p>Download otomatis dengan jeda antar file</p>
-                    </div>
+            <!-- Main Features Menu -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">Fitur Utama</span>
                 </div>
-            </div>
-        </div>
-
-        <div class="view-toggle">
-            <button id="usePopupBtn" class="toggle-btn active">Popup</button>
-            <button id="useSidePanelBtn" class="toggle-btn">Side Panel</button>
-        </div>
-
-        <div class="filter-section">
-            <label class="filter-label">Pilih Masa Pajak</label>
-
-            <div class="dropdown-group">
-                <select id="monthSelect" class="dropdown">
-                    <option value="">Pilih Bulan</option>
-                    <option value="01">Januari</option>
-                    <option value="02">Februari</option>
-                    <option value="03">Maret</option>
-                    <option value="04">April</option>
-                    <option value="05">Mei</option>
-                    <option value="06">Juni</option>
-                    <option value="07">Juli</option>
-                    <option value="08">Agustus</option>
-                    <option value="09">September</option>
-                    <option value="10">Oktober</option>
-                    <option value="11">November</option>
-                    <option value="12">Desember</option>
-                </select>
-
-                <select id="yearSelect" class="dropdown">
-                    <option value="">Pilih Tahun</option>
-                </select>
-            </div>
-        </div>
-
-        <button id="applyDownloadBtn" disabled>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                <path d="M12 15.25a.75.75 0 01-.75-.75V4.75a.75.75 0 011.5 0V14.5a.75.75 0 01-.75-.75z" />
-                <path
-                    d="M18.25 14a.75.75 0 00-.53 1.28l-5 5a.75.75 0 00-1.06 0l-5-5a.75.75 0 00-1.06 1.06l5 5a2.25 2.25 0 003.18 0l5-5a.75.75 0 00-.53-1.34z" />
-            </svg>
-            <span>Unduh Semua Bukti Potong</span>
-        </button>
-
-        <div class="action-buttons">
-            <button id="tutorialBtn" class="secondary-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon">
-                    <path
-                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-                </svg>
-                <span>Cara Penggunaan</span>
-            </button>
-        </div>
-
-        <!-- Useful Tips Section -->
-        <div class="tips-section">
-            <div class="tips-header" id="tipsToggle">
-                <span class="tips-title">💡 Tips Penting</span>
-                <span class="toggle-icon" id="tipsToggleIcon">▼</span>
-            </div>
-            <div class="tips-content" id="tipsContent">
-                <div class="tip-item">
-                    <h4>🔄 Cara Reload Ekstensi Manual</h4>
-                    <div class="tip-steps">
-                        <p><strong>Jika ekstensi tidak merespon atau error:</strong></p>
-                        <ol>
-                            <li>Buka <strong>chrome://extensions</strong> di tab baru</li>
-                            <li>Cari "Bukpot Express" dalam daftar</li>
-                            <li><strong>Aktifkan/Nonaktifkan</strong> ekstensi dengan tombol On/Off</li>
-                            <li><strong>Aktifkan kembali</strong> dan kembali ke halaman Coretax</li>
-                        </ol>
-                    </div>
-                </div>
-
-                <div class="tip-item">
-                    <h4>⏹️ Cara Menghentikan Download</h4>
-                    <div class="tip-steps">
-                        <p><strong>Jika download sedang berjalan dan ingin dihentikan:</strong></p>
-                        <ol>
-                            <li><strong>Cara 1:</strong> Klik tombol <strong>STOP Download</strong> di sidebar ini</li>
-                            <li><strong>Cara 2 (Jika tombol STOP tidak berfungsi):</strong></li>
-                            <li>&nbsp;&nbsp;&nbsp;• <strong>Tutup browser Chrome</strong> sepenuhnya</li>
-                            <li>&nbsp;&nbsp;&nbsp;• Download akan otomatis terhenti</li>
-                            <li>&nbsp;&nbsp;&nbsp;• Buka kembali browser dan lanjutkan jika diperlukan</li>
-                        </ol>
-                        <div class="warning-note">
-                            <p>⚠️ <strong>Catatan:</strong> Menutup browser adalah cara terakhir untuk menghentikan
-                                proses yang tidak merespon tombol STOP.</p>
+                <div class="menu-list">
+                    <a href="feature-prepaid.html" class="menu-item" id="menu-prepaid">
+                        <div class="menu-icon">&#128196;</div>
+                        <div class="menu-content">
+                            <h3 class="menu-title">Download Prepaid Bukpot</h3>
+                            <p class="menu-subtitle">Download bukti potong dari Dokumen Saya</p>
                         </div>
-                    </div>
-                </div>
-
-                <div class="tip-item">
-                    <h4>🔧 Solusi Masalah Umum</h4>
-                    <div class="tip-steps">
-                        <ul>
-                            <li><strong>Extension tidak merespon:</strong> Reload ekstensi secara manual</li>
-                            <li><strong>Download macet:</strong> Stop lalu mulai kembali</li>
-                            <li><strong>Halaman error:</strong> Refresh halaman Coretax dan coba lagi</li>
-                            <li><strong>Permission denied:</strong> Reload ekstensi dan refresh halaman</li>
-                        </ul>
-                    </div>
+                        <span class="menu-arrow">&#8250;</span>
+                    </a>
+                    <a href="feature-bppu.html" class="menu-item" id="menu-bppu">
+                        <div class="menu-icon">&#128195;</div>
+                        <div class="menu-content">
+                            <h3 class="menu-title">Download BPPU, BPNR, BP 21, BP 26, Pemotongan Digunggung, Penyetoran Sendiri</h3>
+                            <p class="menu-subtitle">Download Bukti Potong PPh Unifikasi (BPPU), Bukan Peredaran Bruto (BPNR), BP 21, BP 26, Pemotongan Digunggung, dan Penyetoran Sendiri</p>
+                        </div>
+                        <span class="menu-arrow">&#8250;</span>
+                    </a>
                 </div>
             </div>
-        </div>
 
-        <div id="statusArea">Siap untuk memulai.</div>
+            <!-- Bukpot Rekap Section -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">Bukpot Rekap</span>
+                </div>
+                <p class="section-description">Tools tambahan untuk mengelola file bukti potong</p>
+                <div class="tools-list">
+                    <a href="https://www.bukpotrekap.id/app" target="_blank" class="tool-item" id="tool-ekstrak">
+                        <div class="tool-icon tool-icon-extract">&#128194;</div>
+                        <span class="tool-title">Ekstrak Bukti Potong BPPU/BPA1</span>
+                        <span class="tool-arrow">&#8599;</span>
+                    </a>
+                    <a href="https://www.bukpotrekap.id/rename-bukpot" target="_blank" class="tool-item" id="tool-rename">
+                        <div class="tool-icon tool-icon-rename">&#9999;</div>
+                        <span class="tool-title">Rename Bukti Potong</span>
+                        <span class="tool-arrow">&#8599;</span>
+                    </a>
+                    <a href="https://www.bukpotrekap.id/combine-excel" target="_blank" class="tool-item" id="tool-excel">
+                        <div class="tool-icon tool-icon-excel">&#128200;</div>
+                        <span class="tool-title">Gabungkan File Excel</span>
+                        <span class="tool-arrow">&#8599;</span>
+                    </a>
+                    <a href="https://www.bukpotrekap.id/combine-pdf" target="_blank" class="tool-item" id="tool-pdf">
+                        <div class="tool-icon tool-icon-pdf">&#128451;</div>
+                        <span class="tool-title">Gabungkan File PDF</span>
+                        <span class="tool-arrow">&#8599;</span>
+                    </a>
+                    <a href="https://alatpajak.my.id/kalkulator-pph-unifikasi.html" target="_blank" class="tool-item" id="tool-calculator">
+                        <div class="tool-icon tool-icon-calc">&#128178;</div>
+                        <span class="tool-title">Tax Summary & Invoice Tax Calculator</span>
+                        <span class="tool-arrow">&#8599;</span>
+                    </a>
+                </div>
+            </div>
+        </main>
 
+        <!-- Footer -->
+        <footer class="footer">
+            <span class="footer-text">Gratis oleh <a href="https://alatpajak.id/" target="_blank" class="footer-link">alatpajak.id</a></span>
+            <span class="footer-divider">&#183;</span>
+            <a href="https://trakteer.id/alatpajakid/tip" target="_blank" class="footer-link">Dukung Kami</a>
+        </footer>
     </div>
 
-    <!-- Unified Footer Section -->
-    <div class="footer-section">
-        <!-- Promotional Cards -->
-        <div class="promo-cards">
-            <div class="promo-card" id="efaktur-card">
-                <div class="promo-icon">🚀</div>
-                <div class="promo-content">
-                    <h3 class="promo-title">Cape Kreditkan Pajak Masukan?</h3>
-                    <p class="promo-description">Otomatisasikan dengan <a
-                            href="https://chromewebstore.google.com/detail/e-faktur-automation/hjimkdiphhenkofkbbicaejhflmoicpg"
-                            class="promo-link">E-faktur Automation</a></p>
-                </div>
-            </div>
-
-            <div class="promo-card" id="coffee-card">
-                <div class="promo-icon">☕</div>
-                <div class="promo-content">
-                    <h3 class="promo-title">Dukung Developer</h3>
-                    <p class="promo-description">Dukung pengembangan dengan <a
-                            href="https://trakteer.id/alatpajakid/tip" class="promo-link">Buy Me Coffee</a></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Support Community Section -->
-        <div class="support-community">
-            <div class="community-message">
-                <div class="community-icon">💚</div>
-                <p class="community-text">Didukung oleh <strong><a href="https://alatpajak.id/" target="_blank"
-                            class="promo-link">alatpajak.id</a></strong></p>
-                <p class="community-subtext">🤝 Ekstensi ini tersedia gratis untuk komunitas pajak Indonesia</p>
-            </div>
-        </div>
-    </div>
-
-    <script src="sidebar.js"></script>
+    <!-- App Scripts -->
+    <script src="landing.js"></script>
 </body>
 
 </html>

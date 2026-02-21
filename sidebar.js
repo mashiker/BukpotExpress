@@ -13,10 +13,13 @@ function applyTheme(theme) {
 
     if (theme === 'dark') {
         body.setAttribute('data-theme', 'dark');
-        if (themeIcon) themeIcon.textContent = '☀️';
+        if (themeIcon) themeIcon.textContent = '☪️'; // Crescent Star for next theme
+    } else if (theme === 'ramadan') {
+        body.setAttribute('data-theme', 'ramadan');
+        if (themeIcon) themeIcon.textContent = '☀️'; // Sun for next theme
     } else {
         body.removeAttribute('data-theme');
-        if (themeIcon) themeIcon.textContent = '🌙';
+        if (themeIcon) themeIcon.textContent = '🌙'; // Moon for next theme
     }
 
     // Save theme preference
@@ -24,8 +27,17 @@ function applyTheme(theme) {
 }
 
 function toggleTheme() {
-    const currentTheme = document.body.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    const currentTheme = document.body.getAttribute('data-theme') || 'light';
+    let newTheme;
+
+    if (currentTheme === 'light') {
+        newTheme = 'dark';
+    } else if (currentTheme === 'dark') {
+        newTheme = 'ramadan';
+    } else {
+        newTheme = 'light';
+    }
+
     applyTheme(newTheme);
 }
 
@@ -37,7 +49,7 @@ function setupThemeToggle() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize theme
     setupThemeToggle();
     initializeTheme();
@@ -55,13 +67,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add click event listeners for promotional cards
     if (efakturCard) {
-        efakturCard.addEventListener('click', function() {
+        efakturCard.addEventListener('click', function () {
             chrome.tabs.create({ url: 'https://chromewebstore.google.com/detail/e-faktur-automation/hjimkdiphhenkofkbbicaejhflmoicpg' });
         });
     }
 
     if (coffeeCard) {
-        coffeeCard.addEventListener('click', function() {
+        coffeeCard.addEventListener('click', function () {
             chrome.tabs.create({ url: 'https://trakteer.id/alatpajakid/tip' });
         });
     }
@@ -84,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleIcon.classList.add('collapsed');
         toggleIcon.textContent = '▶';
 
-        tutorialToggle.addEventListener('click', function() {
+        tutorialToggle.addEventListener('click', function () {
             isTutorialExpanded = !isTutorialExpanded;
 
             if (isTutorialExpanded) {
@@ -106,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
         tipsToggleIcon.classList.add('collapsed');
         tipsToggleIcon.textContent = '▶';
 
-        tipsToggle.addEventListener('click', function() {
+        tipsToggle.addEventListener('click', function () {
             isTipsExpanded = !isTipsExpanded;
 
             if (isTipsExpanded) {
@@ -122,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Stop button click handler
-    stopDownloadBtn.addEventListener('click', async function() {
+    stopDownloadBtn.addEventListener('click', async function () {
         try {
             // Get current active tab
             const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -135,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             chrome.runtime.sendMessage({
                 type: 'STOP_DOWNLOAD',
                 tabId: tab.id
-            }, function(response) {
+            }, function (response) {
                 if (chrome.runtime.lastError) {
                     console.error('Error sending stop message:', chrome.runtime.lastError);
                 } else {
@@ -177,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
     yearSelect.addEventListener('change', updateButtonState);
 
     // Apply and download button click handler
-    applyDownloadBtn.addEventListener('click', async function() {
+    applyDownloadBtn.addEventListener('click', async function () {
         const selectedMonth = monthSelect.value;
         const selectedYear = yearSelect.value;
 
@@ -214,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 month: selectedMonth,
                 year: selectedYear,
                 downloadMode: 'all'
-            }, function(response) {
+            }, function (response) {
                 if (chrome.runtime.lastError) {
                     console.error('Error sending message:', chrome.runtime.lastError);
                     statusArea.textContent = 'Error: ' + chrome.runtime.lastError.message;
@@ -232,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             // Listen for status updates from background script
-            chrome.runtime.onMessage.addListener(function(message) {
+            chrome.runtime.onMessage.addListener(function (message) {
                 if (message.type === 'UPDATE_STATUS') {
                     statusArea.textContent = message.status;
 
@@ -302,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Tutorial button click handler
-    tutorialBtn.addEventListener('click', function() {
+    tutorialBtn.addEventListener('click', function () {
         showTutorialModal();
     });
 
@@ -419,14 +431,14 @@ function showTutorialModal() {
     }
 
     document.getElementById('closeTutorialBtn').addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', function(e) {
+    modalOverlay.addEventListener('click', function (e) {
         if (e.target === modalOverlay) {
             closeModal();
         }
     });
 
     // Escape key to close
-    const escKeyHandler = function(e) {
+    const escKeyHandler = function (e) {
         if (e.key === 'Escape') {
             closeModal();
             document.removeEventListener('keydown', escKeyHandler);

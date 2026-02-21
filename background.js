@@ -5,6 +5,19 @@
 let isDownloading = false;
 let downloadTabId = null;
 
+// ============================================
+// SIDE PANEL SETUP
+// ============================================
+
+// Open side panel when extension icon is clicked
+chrome.action.onClicked.addListener((tab) => {
+    chrome.sidePanel.open({ windowId: tab.windowId });
+});
+
+// Set side panel behavior - open on action click
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
+    .catch((error) => console.error("BG: Error setting panel behavior:", error));
+
 // Track pending timeouts for cleanup
 let pendingTimeouts = [];
 

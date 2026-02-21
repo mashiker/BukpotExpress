@@ -42,6 +42,33 @@
   --footer-bg: #2a1f25;
 }
 
+/* Ramadan Theme */
+[data-theme="ramadan"] {
+  --primary-color: #059669;
+  /* Emerald Green */
+  --primary-hover: #047857;
+  /* Darker Emerald */
+  --background-color: #F8FAF9;
+  --card-background: #F0FDF4;
+  /* Very light green tint */
+  --light-gray: #ECFDF5;
+  --section-bg: #ECFDF5;
+  --dark-text: #064E3B;
+  /* Very dark green */
+  --light-text: #065F46;
+  /* Medium green */
+  --border-color: #A7F3D0;
+  --shadow: 0 2px 8px rgba(6, 78, 59, 0.1);
+  --header-bg: linear-gradient(135deg, #064E3B 0%, #059669 40%, #10B981 100%);
+  --tutorial-bg: #D1FAE5;
+  --input-bg: #FFFFFF;
+  --input-border: #A7F3D0;
+  --button-text: #ffffff;
+  --mode-bg: #D1FAE5;
+  --promo-bg: #D1FAE5;
+  --footer-bg: #D1FAE5;
+}
+
 body {
   font-family: 'Poppins', 'Segoe UI', Tahoma, sans-serif;
   width: 400px;
