@@ -1,345 +1,288 @@
-# 📋 Bukpot Express
-
-[![Version](https://img.shields.io/badge/version-1.0-blue.svg)](https://github.com/username/BukpotExpress)
-[![Chrome Extension](https://img.shields.io/badge/chrome-extension-green.svg)](https://chrome.google.com/webstore)
-[![License](https://img.shields.io/badge/license-Apache%202.0%20%2B%20Commons%20Clause-orange.svg)](LICENSE)
-
-**Bukpot Express** adalah ekstensi Chrome yang dirancang khusus untuk mengotomatisasi proses pengunduhan dokumen perpajakan (bukti potong) dari portal CoreTax DJP (Direktorat Jenderal Pajak) Indonesia.
-
-## ✨ Fitur Utama
-
-### 🚀 Fitur Unggulan yang Membuat Hidup Lebih Mudah!
-
-- **⚡ Download 100+ Dokumen SEKALI KLIK** - Berhenti klik satu per satu! Cukup pilih bulan/tahun, klik tombol, dan semua bukti potong akan terunduh otomatis. ** hemat waktu berjam-jam!**
-
-- **🎯 Interface Sidebar yang Smart** - Tetap bekerja di CoreTax sambil ekstensi terbuka di samping! Tidak perlu lagi pindah-pindah tab yang bikin pusing.
-
-- **🔄 Filter Otomatis Anti Ribet** - Lupakan scroll-scroll mencari periode pajak! Cukup pilih bulan & tahun dari dropdown, ekstensi yang akan mengatur semuanya.
-
-- **🛡️ Anti Error & Auto Recovery** - Sistem cerdas yang secara otomatis memperbaiki error dan melanjutkan download dari mana berhenti. **No more frustasi!**
-
-- **🔄 Mode Switching yang Andal** - Beralih antara multi-page dan single-page download tanpa perlu restart ekstensi. State management yang diperbaiki memastikan tidak ada konflik proses.
-
-- **📊 Progres Real-time yang Memuaskan** - Pantau setiap file yang diunduh dengan status update yang jelas. Tahu persis kapan pekerjaan selesai!
-
-- **💡 Tips & Trik Terintegrasi** - Panduan lengkap langsung di ekstensi! Dari cara reload hingga solusi masalah, semua ada tanpa perlu browsing.
-
-- **⏹️ Stop Button yang Andal** - Tombol STOP yang berfungsi dengan baik, menampilkan jumlah file yang berhasil diunduh saat proses dihentikan.
-
-- **📄 Multi-Page Download** - Kemampuan mengunduh dokumen dari beberapa halaman secara otomatis dengan navigasi pintar.
-
-- **⏰ Waktu Terbaik Penggunaan** - Tips optimal untuk menggunakan ekstensi saat CoreTax sedang lancar.
-
-### 🔧 Kemampuan Teknis Canggih di Balik Kemudahan
-- ✅ **Manifest V3 Compatible** - Teknologi terbaru Chrome yang lebih aman dan cepat
-- ✅ **Side Panel API** - Interface modern yang tidak mengganggu workflow
-- ✅ **Smart Injection** - Sistem cerdas yang bekerja sempurna di halaman CoreTax
-- ✅ **Auto Recovery System** - Bangkit sendiri dari error tanpa perlu restart
-- ✅ **Queue Processing** - Download rapih teratur seperti antrian bank
-- ✅ **Permission Management** - Tidak perlu setting manual, semua otomatis
-- ✅ **Enhanced Stop Functionality** - Stop button dengan accurate progress reporting
-- ✅ **Multi-Page Navigation** - Navigasi otomatis antar halaman dengan konfirmasi perubahan
-- ✅ **Frame Broadcasting** - Pengiriman perintah ke semua frame untuk reliability
-- ✅ **Message Port Handling** - Penanganan error komunikasi async yang robust
-
-## 📋 Persyaratan Sistem
-
-- **Browser**: Google Chrome 114+ (diperlukan untuk Side Panel API)
-- **Platform**: Windows, macOS, Linux
-- **Akses**: Portal CoreTax DJP Indonesia
-- **Koneksi**: Internet yang stabil
-
-## 🛠️ Cara Instalasi
-
-### Metode 1: Load Unpacked (Development)
-1. **Download** source code dari repository ini
-2. **Buka** Google Chrome
-3. **Navigasi** ke `chrome://extensions/`
-4. **Aktifkan** "Developer mode" dengan toggle di pojok kanan atas
-5. **Klik** tombol "Load unpacked"
-6. **Pilih** folder ekstensi yang telah didownload
-7. **Icon** ekstensi akan muncul di toolbar Chrome
-
-### Metode 2: Chrome Web Store
-*(Coming Soon)*
-
-## 🎯 Cara Penggunaan
-
-### Alur Kerja Dasar
-
-1. **🌐 Buka CoreTax**: Masuk ke portal CoreTax DJP dan buka halaman "Bukti Potong" (BPPU atau BP series)
-2. **📱 Buka Ekstensi**: Klik ikon ekstensi di toolbar Chrome (popup/sidebar akan terbuka)
-3. **📅 Pilih Periode Pajak**:
-   - Pilih bulan yang diinginkan dari dropdown "Pilih Bulan"
-   - Pilih tahun yang diinginkan dari dropdown "Pilih Tahun"
-4. **⚙️ Pilih Mode Download**:
-   - **Single Page**: Download semua dokumen dari halaman saat ini
-   - **Multi-Page**: Download dari semua halaman yang tersedia
-5. **▶️ Mulai Proses**: Klik tombol "Filter & Download"
-6. **📊 Monitor Progres**: Amati area status untuk update real-time
-7. **⏹️ Stop Kapan Saja**: Klik tombol "STOP Download" untuk menghentikan proses
-8. **✅ Unduh Selesai**: Semua dokumen akan otomatis terunduh ke folder Downloads
-
-### Flow Proses
-
-```
-Pilih Bulan/Tahun → Pilih Mode Download → Klik Tombol → Filter Diterapkan → Halaman Refresh → Auto-Download Mulai → File Terunduh
-```
-
-## 🖥️ Antarmuka Pengguna
-
-### Komponen Utama
-
-- **🎨 Logo**: Branding Bukpot Express dengan versi
-- **📖 Cara Penggunaan**: Tutorial interaktif yang dapat di-expand/collapse (default minimized)
-- **💡 Tips Penting**: Panduan troubleshooting, tips penggunaan optimal, dan informasi reload manual (default minimized)
-- **🔍 Filter Section**: Dropdown selector bulan dan tahun
-- **⚙️ Mode Download**: Pilihan antara Single Page dan Multi-Page download
-- **⚡ Action Buttons**: Tombol "Filter & Download" dengan tombol "STOP Download" yang andal
-- **📊 Status Area**: Pesan progres dan status real-time dengan update yang jelas
-- **🚀 Promosi Banner**: Informasi tentang E-faktur Automation dan donasi
-- **ℹ️ Footer**: Informasi pendukung dan kredit
-
-### Panduan Sections
-
-#### 📖 Cara Penggunaan (Default Minimized)
-- **Langkah 1**: Persiapan - Login ke CoreTax DJP dan buka halaman Bukti Potong
-- **Langkah 2**: Pilih Masa Pajak - Pilih bulan dan tahun
-- **Langkah 3**: Mulai Download - Klik tombol download
-- **Langkah 4**: Tunggu Proses - Download otomatis dengan jeda
-
-#### 💡 Tips Penting (Default Minimized)
-- **⏰ Waktu Terbaik Penggunaan**: Tips optimal menggunakan ekstensi saat CoreTax lancar
-- **🔄 Cara Reload Ekstensi Manual**: Langkah-langkah jika ekstensi tidak merespon
-- **⏹️ Cara Menghentikan Download**: Metode STOP button yang andal dan alternatif
-- **🔧 Solusi Masalah Umum**: Troubleshooting untuk berbagai isu
-
-### Pesan Status
-
-- **🟢 Siap**: "Siap untuk memulai unduh otomatis."
-- **🟡 Memfilter**: "Menerapkan filter masa pajak..."
-- **🔥 Berhasil**: "Filter berhasil diterapkan. Memulai proses unduh otomatis..."
-- **💪 Mengunduh**: "Mengunduh semua dokumen..." / "📥 Mengunduh halaman X dari beberapa halaman..."
-- **⏹️ Dihentikan**: "⏹️ Download dihentikan oleh user" dengan jumlah file yang berhasil diunduh
-- **✅ Selesai**: "Proses unduh selesai!" / "Download multi-halaman selesai! Total: X file dari Y halaman"
-- **❌ Error**: Pesan error deskriptif
-- **⚠️ Timeout**: "Multi-page download timeout - process may still be running"
-
-## 🏗️ Struktur Kode
-
-```
-BukpotExpress/
-├── 📄 manifest.json           # Konfigurasi ekstensi (Manifest V3)
-├── 🎨 popup.html             # Antarmuka popup
-├── 🎨 popup.css              # Styling popup
-├── ⚙️ popup.js               # Logika popup
-├── 🎨 sidebar.html           # Antarmuka sidebar
-├── 🎨 sidebar.css            # Styling sidebar
-├── ⚙️ sidebar.js             # Logika sidebar
-├── 🔧 background.js          # Background service worker dengan permission recovery
-├── 🔄 filter_changer.js      # Otomasi filter periode pajak
-├── 📥 collector.js           # Logika pengumpulan dokumen
-├── 💉 injector.js            # Injeksi modal progres
-├── ⬇️ downloader.js          # Koordinasi pengunduhan single page
-├── 📄 multi_page_downloader.js # Pengunduhan multi-halaman
-├── 🖼️ images/                # Ikon ekstensi
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-├── 📖 README.md              # Dokumentasi ini
-└── 📄 LICENSE                # Apache 2.0 + Commons Clause
-```
-
-## 🔐 Izin & Keamanan
-
-### Permissions yang Diperlukan
-
-- **`activeTab`**: Akses ke tab yang sedang aktif
-- **`scripting`**: Menyuntikkan skrip ke halaman web
-- **`sidePanel`**: Membuka dan mengelola antarmuka sidebar
-- **`storage`**: Menyimpan preferensi dan state ekstensi
-- **`tabs`**: Membuka tab baru untuk link promosi
-
-### Host Permissions
-
-- **`https://coretax.pajak.go.id/*`**: Portal CoreTax DJP
-- **`https://*.coretax.pajak.go.id/*`**: Subdomain Coretax
-- **`https://coretaxdjp.pajak.go.id/*`**: Portal Coretax DJP Alternative
-- **`https://*.coretaxdjp.pajak.go.id/*`**: Subdomain Coretax DJP Alternative
-
-### 🛡️ Keamanan & Privasi
-
-- 🔒 Ekstensi ini **hanya beroperasi** di halaman portal CoreTax DJP
-- 🚫 **Tidak ada data** yang dikumpulkan atau dikirim ke pihak ketiga
-- 💻 Semua pemrosesan terjadi **lokal di browser** Anda
-- 🔓 **Source code terbuka** dan dapat ditinjau ulang
-
-## 🔧 Pemecahan Masalah
-
-### Masalah Umum & Solusi
-
-#### 1. **Ekstensi tidak merespon**
-- ✅ **Cara 1**: Buka `chrome://extensions/` → Cari "Bukpot Express" → Klik 🔄 Reload
-- ✅ **Cara 2**: Refresh halaman CoreTax dan coba kembali
-- ✅ **Cara 3**: Restart browser Chrome
-
-#### 2. **Filter tidak diterapkan**
-- ✅ Pastikan berada di halaman CoreTax yang benar dengan daftar dokumen
-- ✅ Pastikan dropdown periode pajak terlihat di halaman
-- ✅ Coba refresh halaman dan restart proses
-
-#### 3. **Download macet atau error**
-- ✅ Klik tombol **STOP** untuk menghentikan proses (akan menampilkan jumlah file yang berhasil diunduh)
-- ✅ Jika tombol tidak berfungsi, tutup browser Chrome
-- ✅ Mulai kembali dengan filter yang sama
-- ✅ Multi-page download memiliki safety timeout 60 detik untuk mencegah stuck state
-- ✅ **NEW**: Timeout conflicts telah diperbaiki - switching antar mode download sekarang lebih andal
-- ✅ **NEW**: State management diperbaiki untuk mencegah bug saat berpindah mode download
-
-#### 4. **Mode switching tidak berfungsi**
-- ✅ **Issue**: Single-page download tidak bekerja setelah multi-page download
-- ✅ **Solution**: Timeout conflicts telah diperbaiki di v2.0.1 - restart ekstensi jika masih terjadi
-- ✅ **Prevention**: Tunggu proses download selesai sempurna sebelum mengganti mode
-
-#### 5. **Permission denied error**
-- ✅ Reload ekstensi secara manual melalui `chrome://extensions/`
-- ✅ Refresh halaman CoreTax
-- ✅ Coba proses kembali
-
-### Debug Information
-
-Ekstensi menyediakan logging detail di browser console. Untuk melihat logs:
-
-1. **Tekan F12** untuk membuka Developer Tools
-2. **Pergi ke tab Console**
-3. **Cari pesan dengan prefiks**:
-   - `BG:` (Background script logs)
-   - `Content script:` (Content script logs)
-   - `Collector:` (Collector script logs)
-   - `Downloader:` (Single page download logs)
-   - `Multi-page downloader:` (Multi-page download logs)
-   - `FilterChanger:` (Filter automation logs)
-
-## 📊 Kompatibilitas Browser
-
-| Browser | Versi Minimum | Status |
-|---------|---------------|---------|
-| Google Chrome | 114+ | ✅ Fully Supported |
-| Microsoft Edge | 114+ | ⚠️ Test Required |
-| Opera | 100+ | ⚠️ Test Required |
-| Firefox | - | ❌ Not Supported |
-
-## 🚀 Tools Lainnya oleh AlatPajakID
-
-### E-faktur Automation
-**Cape kreditkan pajak masukan satu-satu? Otomatisasikan dengan E-faktur Automation!**
-
-- 🚀 **Solusi cerdas** untuk efisiensi pajak Anda
-- ⚡ **Otomasi lengkap** proses input pajak masukan
-- 💡 ** hemat waktu** dan kurangi human error
-- 📈 **Tingkatkan produktivitas** tim akuntansi Anda
-
-**[👉 Cek sekarang di alatpajak.id](https://alatpajak.id)**
-
-## 🤝 Dukung Pengembangan
-
-Jika Anda merasa tools ini bermanfaat, dukung pengembangan kami:
-
-- ☕ **[Buy Me Coffee](https://trakteer.id/alatpajakid/tip)** - Dukung developer dengan donasi
-- 🌟 **Beri bintang** di repository GitHub
-- 🐛 **Report bug** dan berikan feedback
-- 📢 **Bagikan** ke rekan kerja Anda
-
-## 🤝 Kontribusi
-
-Kami menyambut kontribusi dari komunitas! Untuk berkontribusi:
-
-1. **Fork** repository ini
-2. **Buat branch** baru (`git checkout -b fitur/baru`)
-3. **Commit** perubahan Anda (`git commit -am 'Tambah fitur baru'`)
-4. **Push** ke branch (`git push origin fitur/baru`)
-5. **Buat Pull Request**
-
-### 📝 Panduan Kontribusi
-
-- 🎯 Ikuti style guide yang sudah ada
-- 📖 Tambah dokumentasi untuk fitur baru
-- ✅ Pastikan semua tes lulus
-- 🐛 Report bug dengan jelas
-
-## 📝 Changelog
-
-### v1.0 (2025-10-11) - Chrome Web Store Release
-- ✨ **NEW**: Sidebar interface yang persisten dengan Side Panel API
-- ✨ **NEW**: Filter periode pajak otomatis dengan dropdown bulan/tahun
-- ✨ **NEW**: One-click download functionality untuk kemudahan pengguna
-- ✨ **NEW**: Multi-page download dengan navigasi otomatis antar halaman
-- ✨ **NEW**: Mode download pilihan antara Single Page dan Multi-Page
-- ✨ **NEW**: Enhanced error handling dengan automatic recovery
-- ✨ **NEW**: Clean interface dengan sections yang default minimized
-- ✨ **NEW**: Tips Section dengan panduan troubleshooting terintegrasi
-- ✨ **NEW**: Promosi cards untuk E-faktur Automation dan Buy Me Coffee donation
-- ✨ **NEW**: Modern UI/UX design dengan gradient dan smooth animations
-- ✨ **NEW**: Enhanced logging system untuk debugging yang lebih baik
-- ✨ **NEW**: Safety timeout 60 detik untuk mencegah stuck state di multi-page download
-- ✨ **NEW**: Tips "Waktu Terbaik Penggunaan" untuk optimal performance
-- 🔧 **IMPROVEMENT**: Manifest V3 compatibility
-- 🔧 **IMPROVEMENT**: Enhanced permission recovery system
-- 🔧 **IMPROVEMENT**: Comprehensive logging system
-- 🔧 **IMPROVEMENT**: Better error handling dan user feedback
-- 🔧 **IMPROVEMENT**: Message port handling untuk komunikasi async yang robust
-- 🔧 **IMPROVEMENT**: Additional host permissions untuk broader CoreTax compatibility
-- 🔧 **IMPROVEMENT**: UI improvements dengan proper z-index dan pointer events
-- 🔧 **IMPROVEMENT**: Better status reporting untuk multi-page download progress
-- 🔧 **IMPROVEMENT**: Timeout tracking system untuk mencegah konflik antar proses
-- 🔧 **IMPROVEMENT**: Enhanced state cleanup saat berpindah mode download
-- 🔧 **IMPROVEMENT**: Update license ke Apache 2.0 + Commons Clause
-- 🐛 **FIX**: Stop button sekarang menampilkan jumlah file yang benar saat dihentikan
-- 🐛 **FIX**: Multi-page download error "message port closed before a response was received" telah diatasi
-- 🐛 **FIX**: Enhanced stop functionality dengan frame broadcasting untuk reliability
-- 🐛 **FIX**: Single page download sekarang mengunduh semua file, bukan hanya file pertama
-- 🐛 **FIX**: Multi-page download tidak berfungsi dari sidebar setelah perubahan validasi
-- 🐛 **FIX**: State management bug yang mencegah single-page download berfungsi setelah multi-page download
-- 🐛 **FIX**: Timeout conflicts antar proses download yang menyebabkan race conditions
-- 🗑️ **REMOVED**: Hard Refresh button (diganti dengan panduan manual On/Off)
-
-## 📞 Dukungan & Kontak
-
-Untuk dukungan teknis atau pertanyaan:
-
-- 📧 **Email**: support@alatpajak.my.id
-- 🌐 **Website**: [alatpajak.id](https://alatpajak.id)
-- ☕ **Donasi**: [Trakteer](https://trakteer.id/alatpajakid/tip)
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/username/BukpotExpress/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/username/BukpotExpress/discussions)
-
-## ⚖️ Lisensi
-
-Proyek ini dilisensikan di bawah **Apache License 2.0 dengan Commons Clause** - lihat file [LICENSE](LICENSE) untuk detailnya.
-
-### 📋 Ringkasan Lisensi
-
-- ✅ **Penggunaan Gratis**: Untuk keperluan personal dan non-komersial
-- ✅ **Modifikasi**: Dapat mengubah source code
-- ✅ **Distribusi**: Dapat mendistribusikan untuk non-komersial
-- ❌ **Komersial**: Diperlukan izin tertulis untuk penggunaan komersial
-- 📞 **Lisensi Komersial**: Hubungi support@alatpajak.my.id
-
-## 🙏 Kredit
-
-- **Direktorat Jenderal Pajak** - Portal CoreTax DJP
-- **AlatPajakID Dev Team** - Inisiator dan maintainer
-- **Kontributor Komunitas** - Dukungan, feedback, dan testing
-- **Pengguna Setia** - Yang terus mendukung pengembangan tools pajak gratis
+# Bukpot Express
+
+<p align="center">
+  <img src="images/icon128.png" alt="Bukpot Express Logo" width="128">
+</p>
+
+<p align="center">
+  <strong>Automated Tax Document Downloader for CoreTax DJP Portal</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/username/BukpotExpress">
+    <img src="https://img.shields.io/badge/version-1.5-blue.svg" alt="Version">
+  </a>
+  <a href="https://chromewebstore.google.com/detail/bukpot-express/kgombpioeclaoecannbilgcjcbpdplnb">
+    <img src="https://img.shields.io/badge/chrome-extension-green.svg" alt="Chrome Extension">
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
+  </a>
+  <a href="https://chromewebstore.google.com/detail/bukpot-express/kgombpioeclaoecannbilgcjcbpdplnb">
+    <img src="https://img.shields.io/chrome-web-store/users/kgombpioeclaoecannbilgcjcbpdplnb?label=users&color=brightgreen" alt="Chrome Web Store Users">
+  </a>
+</p>
+
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#supported-documents">Supported Documents</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#contributing">Contributing</a>
+</p>
 
 ---
 
-<div align="center">
+## Screenshots
 
-**[🔝 Kembali ke Atas](#-bukpot-express)**
+<p align="center">
+  <strong>Extension Interface</strong><br>
+  <img src="images/Screenshot_2026-02-27_05-50-42.png" alt="Extension Interface" width="400">
+</p>
 
-Made with ❤️ by [AlatPajakId Dev](mailto:support@alatpajak.my.id)
+<p align="center">
+  <strong>In Action on CoreTax Portal</strong><br>
+  <img src="images/Screenshot_2026-02-27_05-51-37.png" alt="Extension in Action" width="600">
+</p>
 
-© 2025 Bukpot Express. Licensed under Apache 2.0 + Commons Clause.
+---
 
-</div>
+## Supported Documents
+
+The extension supports downloading the following document types from the CoreTax DJP portal:
+
+| Document Type | Description |
+|---------------|-------------|
+| **BPPU** | Bukti Potong Pajak Penghasilan Unifikasi (Unification Income Tax Withholding Slip) |
+| **BP NR** | Bukti Potong Non-Resident (Withholding slip for non-resident taxpayers) |
+| **BP 21** | Bukti Potong PPh Pasal 21 (Income Tax Article 21 - employee income) |
+| **Prepaid Bukpot** | Prepaid Bukti Potong (Down payment withholding documents) |
+
+---
+
+## Features
+
+- **Batch Download** - Download 1000+ tax documents with a single click
+- **Multi-Document Support** - Works with all document types (BPPU, BP NR, BP 21, Prepaid Bukpot)
+- **Period Filtering** - Filter by month and year with automatic dropdown selection
+- **Multi-Page Support** - Automatically navigate and download from all available pages
+- **Real-Time Progress** - Monitor download status with live updates
+- **Auto Recovery** - Intelligent error handling with automatic recovery
+- **Side Panel Interface** - Non-intrusive UI using Chrome's Side Panel API
+- **Stop & Resume** - Reliable stop functionality with accurate progress reporting
+
+---
+
+## Requirements
+
+- Any Chromium-based browser v114+ (Chrome, Edge, Brave, Opera, Vivaldi, Arc, etc.)
+- Access to CoreTax DJP portal (Indonesia)
+
+---
+
+## Installation
+
+### Chrome Web Store (Recommended)
+
+Install directly from the [Chrome Web Store](https://chromewebstore.google.com/detail/bukpot-express/kgombpioeclaoecannbilgcjcbpdplnb)
+
+### From Source (Developer Mode)
+
+1. Clone or download this repository
+   ```bash
+   git clone https://github.com/username/BukpotExpress.git
+   ```
+2. Open Chrome and navigate to `chrome://extensions/`
+3. Enable **Developer mode** (toggle in top-right corner)
+4. Click **Load unpacked**
+5. Select the `BukpotExpress` folder
+6. The extension icon will appear in your Chrome toolbar
+
+---
+
+## Usage
+
+### Quick Start
+
+1. Install the extension from [Chrome Web Store](https://chromewebstore.google.com/detail/bukpot-express/kgombpioeclaoecannbilgcjcbpdplnb)
+2. Log in to CoreTax DJP portal
+3. Navigate to any Bukti Potong page (BPPU, BP NR, BP 21, or Prepaid Bukpot)
+4. Click the Bukpot Express icon in your toolbar
+5. Select tax period (month/year) and click **Filter & Download**
+
+### Detailed Steps
+
+1. **Open CoreTax Portal** - Log in to the CoreTax DJP portal and navigate to the Bukti Potong page (e.g., Daftar BPPU, Daftar BP NR, Daftar BP 21, or Prepaid Bukpot)
+
+2. **Open the Extension** - Click the Bukpot Express icon in your Chrome toolbar
+
+3. **Select Tax Period**
+   - Choose the month from the dropdown
+   - Choose the year from the dropdown
+
+4. **Choose Download Mode**
+   - **Single Page** - Download all documents from the current page
+   - **Multi-Page** - Download from all available pages automatically
+
+5. **Start Download** - Click the "Filter & Download" button
+
+6. **Monitor Progress** - Watch the status area for real-time updates
+
+7. **Stop Anytime** - Click "STOP Download" to halt the process
+
+All documents will be saved to your default Downloads folder as PDF files with their respective document numbers as filenames.
+
+---
+
+## Project Structure
+
+```
+BukpotExpress/
+├── manifest.json              # Extension configuration (Manifest V3)
+├── popup.html                 # Popup UI
+├── popup.css                  # Popup styles
+├── popup.js                   # Popup logic
+├── sidebar.html               # Sidebar UI
+├── sidebar.css                # Sidebar styles
+├── background.js              # Background service worker
+├── filter_changer.js          # Tax period filter automation
+├── collector.js               # Document link collector
+├── injector.js                # Progress modal injection
+├── downloader.js              # Single-page download coordinator
+├── multi_page_downloader.js   # Multi-page download handler
+└── images/                    # Extension icons
+    ├── icon16.png
+    ├── icon48.png
+    └── icon128.png
+```
+
+---
+
+## Permissions
+
+| Permission | Purpose |
+|------------|---------|
+| `activeTab` | Access the currently active tab |
+| `scripting` | Inject content scripts into pages |
+| `sidePanel` | Display the sidebar interface |
+| `storage` | Store extension preferences |
+| `tabs` | Open promotional links |
+
+### Host Permissions
+
+The extension only operates on CoreTax DJP domains:
+- `https://coretax.pajak.go.id/*`
+- `https://*.coretax.pajak.go.id/*`
+- `https://coretaxdjp.pajak.go.id/*`
+- `https://*.coretaxdjp.pajak.go.id/*`
+
+---
+
+## Security & Privacy
+
+- **Local Processing** - All operations happen locally in your browser
+- **No Data Collection** - No user data is collected or transmitted to third parties
+- **Limited Scope** - The extension only functions on CoreTax DJP portals
+- **Open Source** - Full source code is available for review
+
+---
+
+## Browser Compatibility
+
+This extension works on any Chromium-based browser (v114+) since it uses standard Chrome Extension APIs (Manifest V3).
+
+| Browser | Minimum Version | Status |
+|---------|-----------------|--------|
+| Google Chrome | 114+ | Fully Supported |
+| Microsoft Edge | 114+ | Supported |
+| Brave | 114+ | Supported |
+| Opera | 100+ | Supported |
+| Vivaldi | 6.0+ | Supported |
+| Arc | Any | Supported |
+| Chromium | 114+ | Supported |
+| Firefox | - | Not Supported |
+
+---
+
+## Troubleshooting
+
+### Extension Not Responding
+1. Go to `chrome://extensions/`
+2. Find "Bukpot Express" and click the refresh icon
+3. Refresh the CoreTax page and try again
+
+### Filter Not Applied
+- Ensure you're on the correct Bukti Potong page
+- Verify that the tax period dropdowns are visible on the page
+- Refresh the page and restart the process
+
+### Download Stuck or Errors
+- Click **STOP** to halt the process
+- Refresh the CoreTax page
+- Restart the download process
+
+### Debug Logging
+
+Press **F12** to open Developer Tools and check the Console tab. Look for messages prefixed with:
+- `BG:` - Background script logs
+- `Content script:` - Content script logs
+- `Collector:` - Document collection logs
+- `Downloader:` - Download process logs
+
+---
+
+## FAQ
+
+<details>
+<summary><strong>Is this extension free to use?</strong></summary>
+<br>
+Yes! Bukpot Express is completely free and open source under the MIT License.
+</details>
+
+<details>
+<summary><strong>Does this extension collect my data?</strong></summary>
+<br>
+No. All processing happens locally in your browser. No data is sent to any external servers.
+</details>
+
+<details>
+<summary><strong>Which tax documents can I download?</strong></summary>
+<br>
+The extension supports BPPU, BP NR, BP 21, and Prepaid Bukpot documents from the CoreTax DJP portal.
+</details>
+
+<details>
+<summary><strong>Can I use this on Firefox?</strong></summary>
+<br>
+No. This extension uses Chrome's Side Panel API which is not available in Firefox. It only works on Chromium-based browsers (Chrome, Edge, Brave, Opera, Vivaldi, Arc).
+</details>
+
+<details>
+<summary><strong>Where are the downloaded files saved?</strong></summary>
+<br>
+All documents are saved to your browser's default Downloads folder as PDF files.
+</details>
+
+---
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<p align="center">
+  Made with ❤️ for Indonesian taxpayers
+</p>

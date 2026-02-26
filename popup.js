@@ -524,7 +524,7 @@ function setupPromotionalCards() {
     const bukpotRekapCard = document.getElementById('BukpotRekap');
     if (bukpotRekapCard) {
         bukpotRekapCard.addEventListener('click', function () {
-            chrome.tabs.create({ url: 'https://bukpotrekap.alatpajak.id/app' });
+            chrome.tabs.create({ url: 'https://bukpotrekap.id' });
         });
     }
 
