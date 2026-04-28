@@ -38,6 +38,17 @@ function injectModalStyles() {
         /* Progress bar styling */
         .progress-container { width: 100%; height: 4px; background-color: #e0e0e0; border-radius: 2px; margin: 12px 0; overflow: hidden; }
         .progress-bar { height: 100%; background-color: #F25F5C; border-radius: 2px; transition: width 0.3s ease; }
+
+	        /* Dark theme for injected modal */
+	        @media (prefers-color-scheme: dark) {
+	            .ct-modal-overlay { background-color: rgba(15, 23, 42, 0.95); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+	            .ct-modal-content h2 { color: #e2e8f0; }
+	            .modal-header { border-bottom-color: #334155; }
+	            .modal-header span { color: #94a3b8; }
+	            .ct-modal-content p { color: #cbd5e1; }
+	            .ct-modal-content .details { color: #94a3b8; }
+	            .progress-container { background-color: #334155; }
+	        }
     `;
     document.head.appendChild(style);
 }
@@ -56,7 +67,7 @@ function displayModal(title, message, details = '', showButton = true) {
                 <p id="ct-modal-message"></p>
                 <div id="ct-modal-details" class="details"></div>
                 <div class="progress-container">
-                    <div class="progress-bar" id="progress-bar"></div>
+                    <div class="progress-bar" id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <button id="ct-modal-close-btn">Close</button>
             </div>
