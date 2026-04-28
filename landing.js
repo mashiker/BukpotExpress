@@ -51,6 +51,14 @@ function setupThemeToggle() {
 // ============================================
 
 function setupNavigation() {
+    // Back button
+    const backBtn = document.getElementById('backBtn');
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            window.history.back();
+        });
+    }
+
     // Main menu items - handle click for navigation
     const menuPrepaid = document.getElementById('menu-prepaid');
     const menuBppu = document.getElementById('menu-bppu');
