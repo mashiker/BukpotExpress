@@ -1,50 +1,50 @@
 /* Light Theme (Default) */
 :root {
-  --primary-color: #0d9488;
-  /* Emerald Green */
-  --primary-hover: #0f766e;
-  /* Darker Emerald */
-  --background-color: #F0FDFA;
-  --card-background: #F0FDFA;
-  /* Very light green tint */
-  --light-gray: #F0FDFA;
-  --section-bg: #F0FDFA;
-  --dark-text: #134E4A;
-  /* Very dark green */
-  --light-text: #115E59;
-  /* Medium green */
-  --border-color: #99F6E4;
-  --shadow: 0 2px 8px rgba(13, 148, 136, 0.1);
-  --header-bg: linear-gradient(135deg, #134E4A 0%, #0d9488 40%, #14B8A6 100%);
-  --tutorial-bg: #CCFBF1;
+  --primary-color: #374151;
+  /* Charcoal */
+  --primary-hover: #1f2937;
+  /* Darker Charcoal */
+  --background-color: #f9fafb;
+  --card-background: #f9fafb;
+  /* Very light gray */
+  --light-gray: #f3f4f6;
+  --section-bg: #f3f4f6;
+  --dark-text: #111827;
+  /* Near black */
+  --light-text: #4b5563;
+  /* Dark gray */
+  --border-color: #e5e7eb;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --header-bg: linear-gradient(135deg, #1f2937 0%, #374151 40%, #4b5563 100%);
+  --tutorial-bg: #f3f4f6;
   --input-bg: #FFFFFF;
-  --input-border: #99F6E4;
+  --input-border: #e5e7eb;
   --button-text: #ffffff;
-  --mode-bg: #CCFBF1;
-  --promo-bg: #F0FDFA;
-  --footer-bg: #F0FDFA;
+  --mode-bg: #f3f4f6;
+  --promo-bg: #f9fafb;
+  --footer-bg: #f3f4f6;
 }
 
 /* Dark Theme */
 [data-theme="dark"] {
-  --primary-color: #FF8A80;
-  --primary-hover: #FF6F61;
-  --background-color: #1a1a1a;
-  --card-background: #242424;
-  --light-gray: #2d2d2d;
-  --section-bg: #2d2d2d;
-  --dark-text: #e0e0e0;
-  --light-text: #a0a0a0;
-  --border-color: #404040;
+  --primary-color: #9ca3af;
+  --primary-hover: #d1d5db;
+  --background-color: #111827;
+  --card-background: #1f2937;
+  --light-gray: #374151;
+  --section-bg: #374151;
+  --dark-text: #f9fafb;
+  --light-text: #d1d5db;
+  --border-color: #4b5563;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --header-bg: linear-gradient(135deg, #361522 0%, #FF8A80 100%);
-  --tutorial-bg: #2a1f25;
-  --input-bg: #2d2d2d;
-  --input-border: #404040;
+  --header-bg: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  --tutorial-bg: #1f2937;
+  --input-bg: #374151;
+  --input-border: #4b5563;
   --button-text: #ffffff;
-  --mode-bg: #2a1f25;
-  --promo-bg: #2a1f25;
-  --footer-bg: #2a1f25;
+  --mode-bg: #1f2937;
+  --promo-bg: #1f2937;
+  --footer-bg: #1f2937;
 }
 
 

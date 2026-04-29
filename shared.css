@@ -8,38 +8,38 @@
    1. CSS VARIABLES - LIGHT THEME
    ============================================ */
 :root {
-  /* Primary Colors - Emerald Green */
-  --primary-color: #0d9488;
-  --primary-hover: #0f766e;
-  --primary-light: rgba(13, 148, 136, 0.12);
+  /* Primary Colors - Charcoal */
+  --primary-color: #374151;
+  --primary-hover: #1f2937;
+  --primary-light: rgba(55, 65, 81, 0.08);
 
-  /* Background Colors - Light with green tint */
+  /* Background Colors */
   --bg-primary: #ffffff;
-  --bg-secondary: #f0fdfa;
-  --bg-tertiary: #ccfbf1;
-  --bg-hover: rgba(5, 150, 105, 0.08);
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  --bg-hover: rgba(55, 65, 81, 0.05);
 
   /* Text Colors */
-  --text-primary: #134e4a;
-  --text-secondary: #0f766e;
-  --text-muted: #14b8a6;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
   --text-inverse: #ffffff;
 
   /* Border & Divider */
-  --border-color: #99f6e4;
-  --divider-color: #5eead4;
+  --border-color: #e5e7eb;
+  --divider-color: #f3f4f6;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(13, 148, 136, 0.1);
-  --shadow-md: 0 2px 8px rgba(13, 148, 136, 0.15);
-  --shadow-lg: 0 4px 16px rgba(13, 148, 136, 0.2);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
 
-  /* Header Gradient - Emerald to Gold */
-  --header-bg: linear-gradient(135deg, #134E4A 0%, #0d9488 50%, #14b8a6 100%);
+  /* Header Gradient - Charcoal */
+  --header-bg: linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%);
 
   /* Success/Warning/Danger */
-  --success-color: #0d9488;
-  --success-hover: #0f766e;
+  --success-color: #374151;
+  --success-hover: #1f2937;
   --warning-color: #f59e0b;
   --danger-color: #dc3545;
   --danger-hover: #c82333;
@@ -54,34 +54,34 @@
    2. CSS VARIABLES - DARK THEME
    ============================================ */
 [data-theme="dark"] {
-  /* Primary Colors - Emerald Green & Gold */
-  --primary-color: #2dd4bf;
-  --primary-hover: #0d9488;
-  --primary-light: rgba(45, 212, 191, 0.15);
+  /* Primary Colors - Charcoal */
+  --primary-color: #9ca3af;
+  --primary-hover: #d1d5db;
+  --primary-light: rgba(156, 163, 175, 0.15);
 
-  /* Background Colors - Deep night sky with green tint */
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
-  --bg-hover: rgba(45, 212, 191, 0.1);
+  /* Background Colors */
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-tertiary: #374151;
+  --bg-hover: rgba(156, 163, 175, 0.1);
 
   /* Text Colors */
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-inverse: #0f172a;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #6b7280;
+  --text-inverse: #111827;
 
   /* Border & Divider */
-  --border-color: #475569;
-  --divider-color: #334155;
+  --border-color: #4b5563;
+  --divider-color: #374151;
 
   /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.5);
 
-  /* Header Gradient - Night sky with emerald */
-  --header-bg: linear-gradient(135deg, #134E4A 0%, #0d9488 50%, #14b8a6 100%);
+  /* Header Gradient - Charcoal */
+  --header-bg: linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%);
 }
 
 /* ============================================
@@ -393,7 +393,7 @@ a:hover {
 
 /* Unique colors for each tool icon */
 .tool-icon-extract {
-  background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+  background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
   color: white;
 }
 
@@ -403,17 +403,17 @@ a:hover {
 }
 
 .tool-icon-excel {
-  background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
   color: white;
 }
 
 .tool-icon-pdf {
-  background: linear-gradient(135deg, #0d9488 0%, #2dd4bf 100%);
+  background: linear-gradient(135deg, #374151 0%, #6b7280 100%);
   color: white;
 }
 
 .tool-icon-calc {
-  background: linear-gradient(135deg, #134e4a 0%, #0d9488 100%);
+  background: linear-gradient(135deg, #111827 0%, #374151 100%);
   color: white;
 }
 
@@ -1172,7 +1172,7 @@ a:hover {
   display: block;
   margin: 12px 16px;
   padding: 14px 16px;
-  background: linear-gradient(135deg, #134E4A 0%, #0d9488 50%, #14b8a6 100%);
+  background: linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%);
   background-size: 200% 200%;
   animation: gradientShift 3s ease infinite;
   border-radius: 12px;
@@ -1181,7 +1181,7 @@ a:hover {
   overflow: hidden;
   cursor: pointer;
   transition: all var(--transition-normal);
-  box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
+  box-shadow: 0 4px 15px rgba(55, 65, 81, 0.3);
 }
 
 .ad-banner::before {
@@ -1197,7 +1197,7 @@ a:hover {
 
 .ad-banner:hover {
   transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.4);
+  box-shadow: 0 6px 20px rgba(55, 65, 81, 0.4);
 }
 
 @keyframes gradientShift {
@@ -1286,11 +1286,11 @@ a:hover {
 
 /* Dark theme adjustments for ad-banner */
 [data-theme="dark"] .ad-banner {
-  box-shadow: 0 4px 15px rgba(45, 212, 191, 0.3);
+  box-shadow: 0 4px 15px rgba(156, 163, 175, 0.3);
 }
 
 [data-theme="dark"] .ad-banner:hover {
-  box-shadow: 0 6px 20px rgba(45, 212, 191, 0.4);
+  box-shadow: 0 6px 20px rgba(156, 163, 175, 0.4);
 }
 
 /* ============================================
@@ -1303,7 +1303,7 @@ a:hover {
 }
 
 [data-theme="dark"] .btn-primary {
-  background: linear-gradient(135deg, #2dd4bf 0%, #0d9488 100%);
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
   box-shadow: 0 2px 8px rgba(45, 212, 191, 0.3);
 }
 
