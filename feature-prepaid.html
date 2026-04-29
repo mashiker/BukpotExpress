@@ -16,12 +16,12 @@
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <button id="backBtn" class="back-btn" title="Kembali">&#8592;</button>
+                <button id="backBtn" class="back-btn" title="Kembali" aria-label="Kembali">&#8592;</button>
                 <h1 class="header-title">Prepaid Bukpot</h1>
             </div>
             <div class="header-right">
-                <button id="themeToggle" class="theme-toggle" title="Toggle theme">
-                    <span class="theme-icon">&#127769;</span>
+                <button id="themeToggle" class="theme-toggle" title="Toggle theme" aria-label="Ganti tema gelap/terang">
+                    <span class="theme-icon" aria-hidden="true">&#127769;</span>
                 </button>
             </div>
         </header>
@@ -38,7 +38,7 @@
             <div class="feature-content">
                 <!-- Tutorial Section -->
                 <div class="collapsible">
-                    <div class="collapsible-header" id="tutorialToggle">
+                    <div class="collapsible-header" id="tutorialToggle" role="button" tabindex="0" aria-expanded="false" aria-controls="tutorialContent">
                         <span class="collapsible-title">&#128214; Cara Penggunaan</span>
                         <span class="collapsible-icon collapsed" id="tutorialIcon">&#9660;</span>
                     </div>
@@ -68,14 +68,14 @@
 
                 <!-- Action Section -->
                 <div class="action-section">
-                    <button id="downloadPrepaidBtn" class="btn btn-success">
+                    <button id="downloadPrepaidBtn" class="btn btn-success" aria-label="Mulai download bukti potong">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
                             <path d="M12 16.5l4-4h-3v-9h-2v9h-3l4 4zm9-13h-6v1.99h6v14.03h-18v-14.03h6v-1.99h-6c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2v-14c0-1.1-.9-2-2-2z"/>
                         </svg>
                         <span>Mulai Download</span>
                     </button>
 
-                    <button id="stopBtn" class="btn btn-danger hidden">
+                    <button id="stopBtn" class="btn btn-danger hidden" aria-label="Hentikan download">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
                             <path d="M6 6h12v12H6V6z"/>
                         </svg>
@@ -92,17 +92,17 @@
 
                 <!-- Stop Section -->
                 <div class="stop-section">
-                    <button id="hardForceStopBtn" class="stop-btn-alt">
+                    <button id="hardForceStopBtn" class="stop-btn-alt" aria-label="Emergency Stop">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
                             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                         </svg>
-                        <span>Force Close Browser</span>
+                        <span>Emergency Stop</span>
                     </button>
                 </div>
 
                 <!-- Tips Section -->
                 <div class="collapsible mt-16">
-                    <div class="collapsible-header" id="tipsToggle">
+                    <div class="collapsible-header" id="tipsToggle" role="button" tabindex="0" aria-expanded="false" aria-controls="tipsContent">
                         <span class="collapsible-title">&#128161; Tips Penting</span>
                         <span class="collapsible-icon collapsed" id="tipsIcon">&#9660;</span>
                     </div>
@@ -136,7 +136,16 @@
                     <span class="status-title">Status Log</span>
                     <button id="clearLogBtn" class="clear-log-btn">Clear</button>
                 </div>
-                <div id="statusLog" class="status-log">Menunggu perintah...</div>
+                <div id="progressSection" class="progress-section hidden">
+                    <div class="progress-bar-container">
+                        <div id="progressBarFill" class="progress-bar-fill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressCounter" class="progress-counter">0 / 0</span>
+                        <span id="progressStatus" class="progress-status">Mengunduh...</span>
+                    </div>
+                </div>
+                <div id="statusLog" class="status-log" role="log" aria-live="polite" aria-label="Status download">Menunggu perintah...</div>
             </div>
         </main>
 

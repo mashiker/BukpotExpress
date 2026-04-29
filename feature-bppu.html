@@ -16,12 +16,12 @@
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <button id="backBtn" class="back-btn" title="Kembali">&#8592;</button>
+                <button id="backBtn" class="back-btn" title="Kembali" aria-label="Kembali">&#8592;</button>
                 <h1 class="header-title">Download BPPU, BPNR, BP 21, BP 26</h1>
             </div>
             <div class="header-right">
-                <button id="themeToggle" class="theme-toggle" title="Toggle theme">
-                    <span class="theme-icon">&#127769;</span>
+                <button id="themeToggle" class="theme-toggle" title="Toggle theme" aria-label="Ganti tema gelap/terang">
+                    <span class="theme-icon" aria-hidden="true">&#127769;</span>
                 </button>
             </div>
         </header>
@@ -38,7 +38,7 @@
             <div class="feature-content">
                 <!-- Tutorial Section -->
                 <div class="collapsible">
-                    <div class="collapsible-header" id="tutorialToggle">
+                    <div class="collapsible-header" id="tutorialToggle" role="button" tabindex="0" aria-expanded="false" aria-controls="tutorialContent">
                         <span class="collapsible-title">&#128214; Cara Penggunaan</span>
                         <span class="collapsible-icon collapsed" id="tutorialIcon">&#9660;</span>
                     </div>
@@ -73,7 +73,7 @@
                 </div>
 
                 <!-- Filter Section -->
-                <div class="section px-20 py-16" style="padding: 0; border: none;">
+                <div class="section section--flush">
                     <div class="section-header">
                         <span class="section-title">Filter Masa Pajak</span>
                     </div>
@@ -108,7 +108,7 @@
                 </div>
 
                 <!-- Download Mode Section -->
-                <div class="section px-20 py-16" style="padding: 0; border: none; margin-top: 16px;">
+                <div class="section section--flush">
                     <div class="section-header">
                         <span class="section-title">Mode Download</span>
                     </div>
@@ -137,7 +137,7 @@
 
                 <!-- Action Section -->
                 <div class="action-section">
-                    <button id="filterBtn" class="btn btn-primary">
+                    <button id="filterBtn" class="btn btn-primary" aria-label="Filter dan mulai download">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
                             <path d="M12 15.25a.75.75 0 01-.75-.75V4.75a.75.75 0 011.5 0V14.5a.75.75 0 01-.75-.75z"/>
                             <path d="M18.25 14a.75.75 0 00-.53 1.28l-5 5a.75.75 0 00-1.06 0l-5-5a.75.75 0 00-1.06 1.06l5 5a2.25 2.25 0 003.18 0l5-5a.75.75 0 00-.53-1.34z"/>
@@ -145,7 +145,7 @@
                         <span>Filter & Download</span>
                     </button>
 
-                    <button id="stopBtn" class="btn btn-danger hidden">
+                    <button id="stopBtn" class="btn btn-danger hidden" aria-label="Hentikan download">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
                             <path d="M6 6h12v12H6V6z"/>
                         </svg>
@@ -155,17 +155,17 @@
 
                 <!-- Stop Section -->
                 <div class="stop-section">
-                    <button id="hardForceStopBtn" class="stop-btn-alt">
+                    <button id="hardForceStopBtn" class="stop-btn-alt" aria-label="Emergency Stop">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
                             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                         </svg>
-                        <span>Force Close Browser</span>
+                        <span>Emergency Stop</span>
                     </button>
                 </div>
 
                 <!-- Tips Section -->
                 <div class="collapsible mt-16">
-                    <div class="collapsible-header" id="tipsToggle">
+                    <div class="collapsible-header" id="tipsToggle" role="button" tabindex="0" aria-expanded="false" aria-controls="tipsContent">
                         <span class="collapsible-title">&#128161; Tips Penting</span>
                         <span class="collapsible-icon collapsed" id="tipsIcon">&#9660;</span>
                     </div>
@@ -186,7 +186,7 @@
                                 <div class="tip-content">
                                     <ol>
                                         <li>Klik tombol "STOP Download" (normal stop)</li>
-                                        <li>Atau klik "Force Close Browser" jika tidak merespon</li>
+                                        <li>Atau klik "Emergency Stop" jika tidak merespon</li>
                                     </ol>
                                 </div>
                             </div>
@@ -201,7 +201,16 @@
                     <span class="status-title">Status Log</span>
                     <button id="clearLogBtn" class="clear-log-btn">Clear</button>
                 </div>
-                <div id="statusLog" class="status-log">Menunggu perintah...</div>
+                <div id="progressSection" class="progress-section hidden">
+                    <div class="progress-bar-container">
+                        <div id="progressBarFill" class="progress-bar-fill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressCounter" class="progress-counter">0 / 0</span>
+                        <span id="progressStatus" class="progress-status">Mengunduh...</span>
+                    </div>
+                </div>
+                <div id="statusLog" class="status-log" role="log" aria-live="polite" aria-label="Status download">Menunggu perintah...</div>
             </div>
         </main>
 

@@ -5,6 +5,7 @@
 let loadingOverlay, statusLog, clearLogBtn;
 let bulanSelect, tahunSelect, filterBtn, stopBtn, hardForceStopBtn;
 let modeRadioGroup, modeInfo, filterHelper;
+let progressSection, progressBarFill, progressCounter, progressStatus;
 
 document.addEventListener('DOMContentLoaded', () => {
     initializeElements();
@@ -36,6 +37,10 @@ function initializeElements() {
     modeRadioGroup = document.getElementById('modeRadioGroup');
     modeInfo = document.getElementById('modeInfo');
     filterHelper = document.getElementById('filterHelper');
+    progressSection = document.getElementById('progressSection');
+    progressBarFill = document.getElementById('progressBarFill');
+    progressCounter = document.getElementById('progressCounter');
+    progressStatus = document.getElementById('progressStatus');
 }
 
 function populateYearSelect() {
@@ -223,6 +228,35 @@ function loadExistingLogs() {
 }
 
 // ============================================
+// PROGRESS INDICATOR
+// ============================================
+
+function showProgress(current, total) {
+    if (progressSection) {
+        progressSection.classList.remove('hidden');
+    }
+    if (progressCounter) {
+        progressCounter.textContent = `${current} / ${total}`;
+    }
+    if (progressBarFill) {
+        const percent = total > 0 ? Math.min((current / total) * 100, 100) : 0;
+        progressBarFill.style.width = `${percent}%`;
+    }
+    if (progressStatus) {
+        progressStatus.textContent = total > 0 ? `Mengunduh... (${Math.round((current / total) * 100)}%)` : 'Mengunduh...';
+    }
+}
+
+function hideProgress() {
+    if (progressSection) {
+        progressSection.classList.add('hidden');
+    }
+    if (progressBarFill) {
+        progressBarFill.style.width = '0%';
+    }
+}
+
+// ============================================
 // VALIDATION
 // ============================================
 
@@ -354,26 +388,24 @@ function setupEventListeners() {
         });
     }
 
-    // Force Close Browser Button
+    // Emergency Stop Button - stops download without closing browser
     if (hardForceStopBtn) {
         hardForceStopBtn.addEventListener('click', () => {
             const confirmed = confirm(
-                "Force Close Browser\n\n" +
-                "Ini akan menutup seluruh browser Chrome.\n" +
-                "Semua download akan berhenti.\n\n" +
+                "Emergency Stop\n\n" +
+                "Ini akan menghentikan semua proses download secara paksa.\n" +
+                "Proses yang sedang berjalan akan dihentikan segera.\n\n" +
                 "Lanjutkan?"
             );
 
             if (confirmed) {
-                updateAndSaveStatus("Menutup browser secara paksa...");
-
-                chrome.windows.getAll({}, (windows) => {
-                    windows.forEach(window => {
-                        chrome.windows.remove(window.id);
-                    });
-                });
+                updateAndSaveStatus("Emergency stop: Menghentikan semua proses...");
+                chrome.runtime.sendMessage({ type: "EMERGENCY_STOP" });
+                chrome.storage.local.set({ isDownloading: false, stopRequested: true });
+                setDownloadButtonState(false);
+                hideProgress();
             } else {
-                updateAndSaveStatus("Force close dibatalkan.");
+                updateAndSaveStatus("Emergency stop dibatalkan.");
             }
         });
     }
@@ -399,10 +431,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         if (message.complete) {
             setDownloadButtonState(false);
+            hideProgress();
             chrome.storage.local.set({ isDownloading: false });
         } else {
             setDownloadButtonState(true);
             chrome.storage.local.set({ isDownloading: true });
         }
+    }
+
+    if (message.type === 'DOWNLOAD_PROGRESS') {
+        showProgress(message.current || 0, message.total || 0);
     }
 });
