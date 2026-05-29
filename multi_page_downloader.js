@@ -1,6 +1,7 @@
-// Bukpot Downloader With Filter Masa Pajak - Chrome Extension
-// Version 2.0 - Simplified Page-Based Navigation
+// Bukpot Express - Multi Page Downloader
+// Version 3.0 - Updated for Coretax DJP withholding-slips-portal
 // Multi-page downloader with reliable page confirmation
+// Supports both OLD (home-portal) and NEW (withholding-slips-portal) page structures
 
 (function () {
     if (typeof window !== 'undefined' && window.__BPE_MULTI_PAGE_LOADED__) {
@@ -50,9 +51,105 @@
         downloadedFileIds.clear();
     }
 
+    /**
+     * Wait for table data to appear after clicking Cari.
+     * Polls every 300ms, max 3 seconds (10 attempts).
+     * Returns true if data rows or download buttons found, false otherwise.
+     */
+    async function waitForTableAfterCari() {
+        const maxAttempts = 10; // 10 x 300ms = 3 seconds
+        const pollInterval = 300;
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            const tableRows = document.querySelectorAll('tbody tr');
+            const downloadBtns = queryDownloadButtons();
+            const visibleBtns = downloadBtns.filter(btn => {
+                const style = window.getComputedStyle(btn);
+                return style.display !== 'none' && style.visibility !== 'hidden' && btn.offsetParent !== null;
+            });
+
+            const hasData = tableRows.length > 0 || visibleBtns.length > 0;
+
+            if (attempt % 3 === 0 || hasData) {
+                console.log(`BPPU: waitForTableAfterCari attempt ${attempt}/${maxAttempts} - rows: ${tableRows.length}, buttons: ${visibleBtns.length}`);
+            }
+
+            if (hasData) {
+                console.log(`BPPU: Data found after Cari - ${tableRows.length} rows, ${visibleBtns.length} download buttons`);
+                return true;
+            }
+
+            await new Promise(r => setTimeout(r, pollInterval));
+        }
+
+        console.log('BPPU: waitForTableAfterCari timed out - no data found after 3 seconds');
+        return false;
+    }
+
+    /**
+     * Click the Cari button and wait for table to load.
+     * Returns true if data appeared, false if still empty after wait.
+     */
+    async function clickCariAndWait() {
+        const searchBtn = document.querySelector('#search, button[arialabel="Search"], button.btn-primary[type="submit"]');
+        if (!searchBtn) {
+            console.log('BPPU: Cari button not found - skipping Cari click');
+            return true; // No Cari button, proceed anyway
+        }
+
+        console.log('BPPU: Clicking Cari button...');
+        searchBtn.click();
+
+        return await waitForTableAfterCari();
+    }
+
+
+
+
+    /**
+     * Detect which portal version we're on.
+     * NEW portal: URL contains 'withholding-slips-portal' or 'my-withholding-slips'
+     * OLD portal: URL contains 'home-portal' or old-style table with ActionDownloadButton
+     */
+    function detectPortalVersion() {
+        const url = window.location.href;
+        if (url.includes('withholding-slips-portal') || url.includes('my-withholding-slips')) {
+            return true; // NEW
+        }
+        if (document.querySelector('coretax-my-withholding-slips')) {
+            return true; // NEW
+        }
+        // New portal uses #DownloadButton (no leading space), old uses #ActionDownloadButton
+        if (document.querySelector('#DownloadButton.p-button-danger')) {
+            return true; // NEW
+        }
+        if (document.querySelector('#ActionDownloadButton') || document.querySelector('.ct-ovw-btn-mini-save')) {
+            return false; // OLD
+        }
+        return !!document.querySelector('#DownloadButton');
+    }
+
+    /**
+     * Get all download buttons on the page using portal-aware selectors.
+     * NEW portal: button#DownloadButton (exact ID, p-button-danger class, pi pi-file-pdf icon)
+     * OLD portal: #ActionDownloadButton, .ct-ovw-btn-mini-save
+     */
+    function queryDownloadButtons() {
+        const isNew = detectPortalVersion();
+        let allButtons = [];
+        if (isNew) {
+            // NEW portal selectors - use exact ID match
+            allButtons = Array.from(document.querySelectorAll('button#DownloadButton'));
+        } else {
+            // OLD portal selectors
+            allButtons = Array.from(document.querySelectorAll('#DownloadButton, #ActionDownloadButton, button.ct-ovw-btn-mini-save, [id*="DownloadButton"], [id*="ActionDownloadButton"]'));
+        }
+        return allButtons;
+    }
 
     async function startMultiPageDownload() {
         console.log('Multi-page downloader: === STARTING MULTI-PAGE DOWNLOAD ===');
+        console.log(`Multi-page downloader: Portal: ${detectPortalVersion() ? 'NEW' : 'OLD'}`);
 
         // Clear any prior stop request persisted by background
         try { chrome.storage?.local?.set({ stopRequested: false }); } catch (e) { }
@@ -62,6 +159,24 @@
         isDownloadStopped = false;
 
         resetModuleState();
+
+        // Send status update
+        try {
+            chrome.runtime.sendMessage({
+                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                status: '\U0001f504 Memulai proses download...'
+            });
+        } catch (e) {}
+
+        // NEW PORTAL GUARD: If on new portal and no table data visible, click Cari first
+        const isNewPortalForGuard = detectPortalVersion();
+        if (isNewPortalForGuard) {
+            const hasData = document.querySelectorAll('tbody tr').length > 0 || queryDownloadButtons().length > 0;
+            if (!hasData) {
+                console.log('BPPU: startMultiPageDownload - no data visible, clicking Cari first...');
+                await clickCariAndWait();
+            }
+        }
 
         try {
             // Start downloading from current page
@@ -85,48 +200,82 @@
         resetModuleState();
 
         try {
-            // 1. Refresh Grid
-            console.log('BPPU Automation: Clicking refresh button...');
-            const refreshBtn = document.querySelector('button[icon="pi pi-refresh"]');
-            if (refreshBtn) {
-                refreshBtn.click();
-                await new Promise(r => setTimeout(r, 2000)); // Wait for refresh
+            const isNewPortal = detectPortalVersion();
+            console.log(`BPPU Automation: Portal version: ${isNewPortal ? 'NEW (withholding-slips-portal)' : 'OLD (home-portal)'}`);
+
+            if (isNewPortal) {
+                // NEW PORTAL: withholding-slips-portal/id-ID/my-withholding-slips
+                console.log('BPPU Automation: New portal detected - clicking Cari to load data...');
+
+                try {
+                    chrome.runtime.sendMessage({
+                        type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                        status: '🔍 Mengklik tombol Cari...'
+                    });
+                } catch (e) {}
+
+                // Click Cari and wait for data, with retry (max 2 attempts)
+                let dataLoaded = false;
+                for (let attempt = 1; attempt <= 2; attempt++) {
+                    console.log(`BPPU Automation: Cari attempt ${attempt}/2`);
+                    dataLoaded = await clickCariAndWait();
+                    if (dataLoaded) break;
+
+                    if (attempt < 2) {
+                        console.log('BPPU Automation: No data found, retrying Cari click...');
+                        try {
+                            chrome.runtime.sendMessage({
+                                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                status: `⏳ Data belum muncul, mencoba lagi (attempt ${attempt}/2)...`
+                            });
+                        } catch (e) {}
+                    }
+                }
+
+                if (!dataLoaded) {
+                    console.log('BPPU Automation: No data found after Cari - proceeding anyway');
+                    try {
+                        chrome.runtime.sendMessage({
+                            type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                            status: '⚠️ Tidak ada data ditemukan setelah klik Cari. Pastikan filter sudah benar.'
+                        });
+                    } catch (e) {}
+                } else {
+                    const rowCount = document.querySelectorAll('tbody tr').length;
+                    try {
+                        chrome.runtime.sendMessage({
+                            type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                            status: `✅ Data ditemukan: ${rowCount} baris. Mulai download...`
+                        });
+                    } catch (e) {}
+                }
             } else {
-                console.warn('BPPU Automation: Refresh button not found');
+                // OLD PORTAL: home-portal based flow - needs filter
+                console.log('BPPU Automation (old): Applying Jenis Dokumen filter...');
+
+                // 1. Refresh Grid
+                const refreshBtn = document.querySelector('button[icon="pi pi-refresh"]');
+                if (refreshBtn) {
+                    refreshBtn.click();
+                    await new Promise(r => setTimeout(r, 2000));
+                }
+
+                // 2. Filter "Jenis Dokumen" - 4th column filter (index 3)
+                const filterInputs = document.querySelectorAll('th p-columnfilterformelement input');
+                let targetInput = filterInputs.length > 3 ? filterInputs[3] : null;
+
+                if (targetInput) {
+                    targetInput.value = "Bukti Potong PPh Unifikasi (BPPU)";
+                    targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    targetInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', bubbles: true }));
+                    await waitForPageLoad();
+                    await new Promise(r => setTimeout(r, 2000));
+                } else {
+                    console.warn('BPPU Automation (old): Could not find Jenis Dokumen filter, proceeding without filter');
+                }
             }
 
-            // 2. Filter "Jenis Dokumen"
-            console.log('BPPU Automation: Applying filter...');
-            // The 4th column filter is usually for "Jenis Dokumen" based on the HTML structure provided
-            // We need to find the correct input.
-            // Based on user provided HTML: <th ... name="DocumentTypeConfigurationNameGridColumn3">
-            // It's the 4th column (index 3).
-            const filterInputs = document.querySelectorAll('th p-columnfilterformelement input');
-
-            // Strategy: Try to find the input under the correct header if possible, or fallback to index
-            // The HTML structure shows headers then filters in separate rows but aligned. 
-            // Index 3 seems correct for "Jenis Dokumen" (0-based: Number, Date, Title, Type)
-
-            let targetInput = null;
-            if (filterInputs.length > 3) {
-                targetInput = filterInputs[3];
-            }
-
-            if (targetInput) {
-                targetInput.value = "Bukti Potong PPh Unifikasi (BPPU)";
-                targetInput.dispatchEvent(new Event('input', { bubbles: true }));
-                // Trigger filter - usually Enter key or just input event + delay
-                targetInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', bubbles: true }));
-
-                console.log('BPPU Automation: Filter applied, waiting for table reload...');
-                await waitForPageLoad();
-                await new Promise(r => setTimeout(r, 2000)); // Extra wait for safety
-            } else {
-                console.error('BPPU Automation: Could not find "Jenis Dokumen" filter input');
-                throw new Error('Filter input for Jenis Dokumen not found');
-            }
-
-            // 3. Start Multi-page Download
+            // Start Multi-page Download (works for both old and new portal)
             console.log('BPPU Automation: Starting download loop...');
             return await startMultiPageDownload();
 
@@ -443,7 +592,12 @@
                 // Check if table is loaded and has data
                 const table = document.querySelector('table');
                 // Updated to be more inclusive
-                const downloadButtons = document.querySelectorAll('#DownloadButton, #ActionDownloadButton, button.ct-ovw-btn-mini-save, [id*="DownloadButton"]');
+                // Use portal-aware button detection
+                const allDownloadBtns = queryDownloadButtons();
+                const downloadButtons = allDownloadBtns.filter(btn => {
+                    const style = window.getComputedStyle(btn);
+                    return style.display !== 'none' && style.visibility !== 'hidden' && btn.offsetParent !== null;
+                });
                 const tableRows = document.querySelectorAll('tbody tr');
 
                 // More comprehensive page readiness check
@@ -463,7 +617,7 @@
                 // HEURISTIC: We expect roughly 1 button per data row. 
                 // If we have rows but 0 buttons, we definitely wait.
                 // If we have significantly fewer buttons than rows, we validly wait a bit longer to see if more render.
-                if (!hasLoadingElements && hasDataRows && hasButtons) {
+                if (!hasLoadingElements && (hasButtons || (hasDataRows && attempts > 20))) {
 
                     // Stability check: Wait until button count stops increasing
                     if (downloadButtons.length === lastButtonCount) {
@@ -501,17 +655,12 @@
 
             // Helper to get fresh list of buttons
             const getFreshButtons = () => {
-                const query = document.querySelectorAll('#DownloadButton, #ActionDownloadButton, button.ct-ovw-btn-mini-save, [id*="DownloadButton"]');
-                return Array.from(query).filter(btn => {
+                const allBtns = queryDownloadButtons();
+                return allBtns.filter(btn => {
                     const style = window.getComputedStyle(btn);
                     const isVisible = style.display !== 'none' && style.visibility !== 'hidden' && btn.offsetParent !== null;
                     const isDisabled = btn.disabled || btn.classList.contains('p-disabled') || btn.getAttribute('aria-disabled') === 'true';
-
-                    // Check text content 'Unduh' as fallback if ID checks failed
-                    const text = (btn.textContent || '').trim().toLowerCase();
-                    const isDownloadBtn = text === 'unduh' || btn.id === 'ActionDownloadButton' || btn.id === 'DownloadButton' || btn.classList.contains('ct-ovw-btn-mini-save');
-
-                    return isVisible && !isDisabled && isDownloadBtn;
+                    return isVisible && !isDisabled;
                 });
             };
 

@@ -320,4 +320,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'DOWNLOAD_PROGRESS') {
         showProgress(message.current || 0, message.total || 0);
     }
+
+    // Handle real-time navigation/status updates from multi_page_downloader.js
+    if (message.type === 'MULTI_PAGE_NAVIGATION_UPDATE') {
+        updateAndSaveStatus(message.status);
+    }
 });
