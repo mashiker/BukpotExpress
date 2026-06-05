@@ -205,49 +205,67 @@
 
             if (isNewPortal) {
                 // NEW PORTAL: withholding-slips-portal/id-ID/my-withholding-slips
-                console.log('BPPU Automation: New portal detected - clicking Cari to load data...');
+                // CHECK FIRST: if data already loaded, skip Cari click entirely
+                const existingRows = document.querySelectorAll('tbody tr').length;
+                const existingBtns = queryDownloadButtons().filter(btn => {
+                    const s = window.getComputedStyle(btn);
+                    return s.display !== 'none' && s.visibility !== 'hidden' && btn.offsetParent !== null;
+                }).length;
 
-                try {
-                    chrome.runtime.sendMessage({
-                        type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                        status: '🔍 Mengklik tombol Cari...'
-                    });
-                } catch (e) {}
-
-                // Click Cari and wait for data, with retry (max 2 attempts)
-                let dataLoaded = false;
-                for (let attempt = 1; attempt <= 2; attempt++) {
-                    console.log(`BPPU Automation: Cari attempt ${attempt}/2`);
-                    dataLoaded = await clickCariAndWait();
-                    if (dataLoaded) break;
-
-                    if (attempt < 2) {
-                        console.log('BPPU Automation: No data found, retrying Cari click...');
-                        try {
-                            chrome.runtime.sendMessage({
-                                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                                status: `⏳ Data belum muncul, mencoba lagi (attempt ${attempt}/2)...`
-                            });
-                        } catch (e) {}
-                    }
-                }
-
-                if (!dataLoaded) {
-                    console.log('BPPU Automation: No data found after Cari - proceeding anyway');
+                if (existingRows > 0 || existingBtns > 0) {
+                    console.log(`BPPU Automation: Data already present (${existingRows} rows, ${existingBtns} buttons) - skipping Cari`);
                     try {
                         chrome.runtime.sendMessage({
                             type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                            status: '⚠️ Tidak ada data ditemukan setelah klik Cari. Pastikan filter sudah benar.'
+                            status: `✅ Data sudah ada: ${existingRows} baris. Langsung mulai download...`
                         });
                     } catch (e) {}
                 } else {
-                    const rowCount = document.querySelectorAll('tbody tr').length;
+                    // No data visible - click Cari to load
+                    console.log('BPPU Automation: No data visible - clicking Cari to load data...');
+
                     try {
                         chrome.runtime.sendMessage({
                             type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                            status: `✅ Data ditemukan: ${rowCount} baris. Mulai download...`
+                            status: '🔍 Mengklik tombol Cari...'
                         });
                     } catch (e) {}
+
+                    // Click Cari and wait for data, with retry (max 2 attempts)
+                    let dataLoaded = false;
+                    for (let attempt = 1; attempt <= 2; attempt++) {
+                        console.log(`BPPU Automation: Cari attempt ${attempt}/2`);
+                        dataLoaded = await clickCariAndWait();
+                        if (dataLoaded) break;
+
+                        if (attempt < 2) {
+                            console.log('BPPU Automation: No data found, retrying Cari click...');
+                            try {
+                                chrome.runtime.sendMessage({
+                                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                    status: `⏳ Data belum muncul, mencoba lagi (attempt ${attempt}/2)...`
+                                });
+                            } catch (e) {}
+                        }
+                    }
+
+                    if (!dataLoaded) {
+                        console.log('BPPU Automation: No data found after Cari - proceeding anyway');
+                        try {
+                            chrome.runtime.sendMessage({
+                                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                status: '⚠️ Tidak ada data ditemukan setelah klik Cari. Pastikan filter sudah benar.'
+                            });
+                        } catch (e) {}
+                    } else {
+                        const rowCount = document.querySelectorAll('tbody tr').length;
+                        try {
+                            chrome.runtime.sendMessage({
+                                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                status: `✅ Data ditemukan: ${rowCount} baris. Mulai download...`
+                            });
+                        } catch (e) {}
+                    }
                 }
             } else {
                 // OLD PORTAL: home-portal based flow - needs filter
@@ -327,8 +345,22 @@
             // const downloadButtons = document.querySelectorAll('#DownloadButton');
             // console.log(`🔢 Found ${downloadButtons.length} download buttons on page ${totalPagesDownloaded}`);
 
-            // Just proceed to download, the function will handle detection and returning 0 if none found
-            const downloadedCount = await downloadFilesOnCurrentPage();
+            // Download files on current page
+            let downloadedCount = await downloadFilesOnCurrentPage();
+
+            // RETRY: If 0 files downloaded, wait 2s and try once more (buttons may still be rendering)
+            if (downloadedCount === 0) {
+                console.log(`⚠️ No files downloaded from page ${totalPagesDownloaded}. Retrying in 2s...`);
+                try {
+                    chrome.runtime.sendMessage({
+                        type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                        status: `⏳ Halaman ${totalPagesDownloaded}: 0 file. Mencoba ulang...`
+                    });
+                } catch (e) {}
+                await new Promise(r => setTimeout(r, 2000));
+                downloadedCount = await downloadFilesOnCurrentPage();
+            }
+
             totalFilesDownloaded += downloadedCount;
 
             console.log(`✅ Downloaded ${downloadedCount} files from page ${totalPagesDownloaded}`);
@@ -342,7 +374,7 @@
                     console.log('Multi-page downloader: Could not send page completion update:', error.message);
                 });
             } else {
-                console.log(`⚠️ No files downloaded from page ${totalPagesDownloaded}.`);
+                console.log(`⚠️ No files downloaded from page ${totalPagesDownloaded} after retry.`);
             }
 
             /* 
