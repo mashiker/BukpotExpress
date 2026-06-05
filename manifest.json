@@ -20,6 +20,7 @@
   "name": "Bukpot Express",
   "permissions": [
     "activeTab",
+    "downloads",
     "scripting",
     "sidePanel",
     "storage",

@@ -680,6 +680,45 @@
         });
     }
 
+    /**
+     * Verify that a download actually started by checking chrome.downloads API.
+     * Looks for recent PDF downloads within the last 5 seconds.
+     * Returns true if a new download was found.
+     */
+    async function verifyDownloadStarted(itemLabel) {
+        try {
+            if (!chrome.downloads || !chrome.downloads.search) {
+                // Fallback: if downloads API not available, assume success
+                console.log('BPPU: chrome.downloads API not available, assuming success');
+                return true;
+            }
+
+            const fiveSecondsAgo = Date.now() - 5000;
+
+            return new Promise((resolve) => {
+                chrome.downloads.search({ limit: 10, orderBy: ['-startTime'] }, (downloads) => {
+                    if (chrome.runtime.lastError) {
+                        console.log('BPPU: download search error:', chrome.runtime.lastError);
+                        resolve(true); // assume success on error
+                        return;
+                    }
+
+                    const recentPdf = downloads.find(d => {
+                        const startTime = d.startTime ? new Date(d.startTime).getTime() : 0;
+                        return startTime > fiveSecondsAgo &&
+                               d.mime === 'application/pdf' || 
+                               (d.filename && d.filename.toLowerCase().endsWith('.pdf'));
+                    });
+
+                    resolve(!!recentPdf);
+                });
+            });
+        } catch (e) {
+            console.log('BPPU: verifyDownload error:', e);
+            return true; // assume success on error
+        }
+    }
+
     async function downloadFilesOnCurrentPage() {
         return new Promise(async (resolve) => {
             console.log('=== COMPREHENSIVE DEBUG START ===');
@@ -772,32 +811,71 @@
                     button.focus();
 
                     // 3. Click (Angular-friendly)
-                    // Try naive click first, then complex if needed. 
-                    // Actually, for consistency, let's use the click() method first as it's most robust for native buttons.
                     button.click();
-
-                    // If that doesn't work, one might need to dispatch events, but click() usually works if element is fresh.
-                    // We'll dispatch a mouse event just in case it listens for mousedown/up
                     button.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
                     button.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
 
-                    downloadCount++;
-
-                    // Report success
-                    try {
-                        chrome.runtime.sendMessage({
-                            type: 'MULTI_PAGE_NAVIGATION_UPDATE',
-                            status: `✅ Klik: ${itemLabel}`
-                        });
-                    } catch (e) { }
-
-                    console.log(`✅ Clicked: ${itemLabel}`);
-
-                    // HUMAN BEHAVIOR: Wait fast but safe
-                    // Random delay between 500ms and 1000ms
+                    // Wait for download to actually start
                     const delayTime = 500 + Math.random() * 500;
-                    // console.log(`⏳ Waiting ${Math.round(delayTime)}ms...`);
                     await new Promise(r => setTimeout(r, delayTime));
+
+                    // VERIFY: Check if download actually happened via chrome.downloads API
+                    const verified = await verifyDownloadStarted(itemLabel);
+
+                    if (verified) {
+                        downloadCount++;
+                        console.log(`✅ Verified download: ${itemLabel}`);
+                        try {
+                            chrome.runtime.sendMessage({
+                                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                status: `✅ Download: ${itemLabel}`
+                            });
+                        } catch (e) {}
+                    } else {
+                        // RETRY once if download didn't start
+                        console.log(`⚠️ Download not detected for ${itemLabel}, retrying click...`);
+                        try {
+                            chrome.runtime.sendMessage({
+                                type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                status: `⚠️ Gagal: ${itemLabel}. Mencoba ulang...`
+                            });
+                        } catch (e) {}
+
+                        await new Promise(r => setTimeout(r, 500));
+
+                        // Re-query button (stale reference possible)
+                        const retryButtons = getFreshButtons();
+                        const retryBtn = retryButtons[i];
+                        if (retryBtn) {
+                            retryBtn.scrollIntoView({ block: 'center', inline: 'center' });
+                            retryBtn.focus();
+                            retryBtn.click();
+                            retryBtn.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+                            retryBtn.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+                        }
+
+                        await new Promise(r => setTimeout(r, 1500));
+
+                        const retryVerified = await verifyDownloadStarted(itemLabel);
+                        if (retryVerified) {
+                            downloadCount++;
+                            console.log(`✅ Retry download succeeded: ${itemLabel}`);
+                            try {
+                                chrome.runtime.sendMessage({
+                                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                    status: `✅ Retry berhasil: ${itemLabel}`
+                                });
+                            } catch (e) {}
+                        } else {
+                            console.log(`❌ Download failed after retry: ${itemLabel}`);
+                            try {
+                                chrome.runtime.sendMessage({
+                                    type: 'MULTI_PAGE_NAVIGATION_UPDATE',
+                                    status: `❌ Gagal download: ${itemLabel}`
+                                });
+                            } catch (e) {}
+                        }
+                    }
 
                 } catch (err) {
                     console.error(`❌ Error clicking button ${i}:`, err);
