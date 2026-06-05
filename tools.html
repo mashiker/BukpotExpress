@@ -17,7 +17,10 @@
         <header class="header">
             <div class="header-left">
                 <button id="backBtn" class="back-btn" title="Kembali" aria-label="Kembali">&#8592;</button>
-                <h1 class="header-title">Tools Tambahan</h1>
+                <div class="header-brand">
+                    <h1 class="header-title">Tools Tambahan</h1>
+                    <span class="header-version">V.1.7</span>
+                </div>
             </div>
             <div class="header-right">
                 <button id="themeToggle" class="theme-toggle" title="Toggle theme" aria-label="Ganti tema gelap/terang">
@@ -35,27 +38,37 @@
                 <p class="section-description">Tools tambahan untuk mengelola file bukti potong</p>
                 <div class="tools-list">
                     <a href="https://www.bukpotrekap.id/app" target="_blank" class="tool-item" id="tool-ekstrak">
-                        <div class="tool-icon tool-icon-extract">&#128194;</div>
+                        <div class="tool-icon tool-icon-image"><img src="images/tool-extract.png" alt="" class="tool-icon-img"></div>
                         <span class="tool-title">Ekstrak Bukti Potong BPPU/BPA1</span>
                         <span class="tool-arrow">&#8599;</span>
                     </a>
                     <a href="https://www.bukpotrekap.id/rename-bukpot" target="_blank" class="tool-item" id="tool-rename">
-                        <div class="tool-icon tool-icon-rename">&#9999;</div>
+                        <div class="tool-icon tool-icon-image"><img src="images/tool-rename.png" alt="" class="tool-icon-img"></div>
                         <span class="tool-title">Rename Bukti Potong</span>
                         <span class="tool-arrow">&#8599;</span>
                     </a>
+                    <a href="https://www.bukpotrekap.id/ekstrak-faktur" target="_blank" class="tool-item" id="tool-ekstrak-faktur">
+                        <div class="tool-icon tool-icon-image"><img src="images/tool-faktur-extract.png" alt="" class="tool-icon-img"></div>
+                        <span class="tool-title">Ekstrak Faktur Pajak</span>
+                        <span class="tool-arrow">&#8599;</span>
+                    </a>
+                    <a href="https://www.bukpotrekap.id/rename-faktur" target="_blank" class="tool-item" id="tool-rename-faktur">
+                        <div class="tool-icon tool-icon-image"><img src="images/tool-faktur-rename.png" alt="" class="tool-icon-img"></div>
+                        <span class="tool-title">Rename Faktur Pajak</span>
+                        <span class="tool-arrow">&#8599;</span>
+                    </a>
                     <a href="https://www.bukpotrekap.id/combine-excel" target="_blank" class="tool-item" id="tool-excel">
-                        <div class="tool-icon tool-icon-excel">&#128200;</div>
+                        <div class="tool-icon tool-icon-image"><img src="images/tool-excel.png" alt="" class="tool-icon-img"></div>
                         <span class="tool-title">Gabungkan File Excel</span>
                         <span class="tool-arrow">&#8599;</span>
                     </a>
                     <a href="https://www.bukpotrekap.id/combine-pdf" target="_blank" class="tool-item" id="tool-pdf">
-                        <div class="tool-icon tool-icon-pdf">&#128451;</div>
+                        <div class="tool-icon tool-icon-image"><img src="images/tool-pdf.png" alt="" class="tool-icon-img"></div>
                         <span class="tool-title">Gabungkan File PDF</span>
                         <span class="tool-arrow">&#8599;</span>
                     </a>
                     <a href="https://alatpajak.my.id/kalkulator-pph-unifikasi.html" target="_blank" class="tool-item" id="tool-calculator">
-                        <div class="tool-icon tool-icon-calc">&#128178;</div>
+                        <div class="tool-icon tool-icon-image"><img src="images/tool-calculator.png" alt="" class="tool-icon-img"></div>
                         <span class="tool-title">Tax Summary & Invoice Tax Calculator</span>
                         <span class="tool-arrow">&#8599;</span>
                     </a>
@@ -65,9 +78,14 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <span class="footer-text">Gratis oleh <a href="https://alatpajak.id/" target="_blank" class="footer-link">alatpajak.id</a></span>
-            <span class="footer-divider">&#183;</span>
-            <a href="https://trakteer.id/alatpajakid/tip" target="_blank" class="footer-link">Dukung Kami</a>
+            <div class="footer-stack">
+                <div>
+                    <span class="footer-text">Gratis oleh <a href="https://bukpotrekap.id/" target="_blank" class="footer-link">bukpotrekap.id</a></span>
+                    <span class="footer-divider">&#183;</span>
+                    <a href="https://trakteer.id/alatpajakid/tip" target="_blank" class="footer-link">Dukung Kami</a>
+                </div>
+                <div class="footer-text">Menemukan error? hubungi <a href="mailto:Support@alatpajak.my.id" class="footer-link">Support@alatpajak.my.id</a></div>
+            </div>
         </footer>
     </div>
 

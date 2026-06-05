@@ -17,7 +17,10 @@
         <header class="header">
             <div class="header-left">
                 <img src="images/icon48.png" alt="Logo" class="header-icon">
-                <h1 class="header-title">Bukpot Express</h1>
+                <div class="header-brand">
+                    <h1 class="header-title">Bukpot Express</h1>
+                    <span class="header-version">V.1.7</span>
+                </div>
             </div>
             <div class="header-right">
                 <button id="themeToggle" class="theme-toggle" title="Toggle theme" aria-label="Ganti tema gelap/terang">
@@ -41,6 +44,25 @@
                 </div>
             </a>
 
+            <!-- Update Info -->
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">Informasi Update</span>
+                </div>
+                <div class="update-card">
+                    <div class="update-card-header">
+                        <span class="update-card-badge">UPDATE v1.7</span>
+                        <span class="new-feature-badge">BARU</span>
+                    </div>
+                    <div class="update-card-title">Fitur baru Bukpot Express</div>
+                    <p class="update-card-copy">Sekarang download bukti potong lebih mudah dicek dari awal sampai selesai.</p>
+                    <ul class="update-feature-list">
+                        <li>Download Prepaid Bukpot dari EBupot - Bukti Potong Saya.</li>
+                        <li>Download Log untuk melihat bukpot berhasil dan gagal didownload.</li>
+                    </ul>
+                </div>
+            </div>
+
             <!-- Main Features Menu -->
             <div class="section">
                 <div class="section-header">
@@ -48,18 +70,50 @@
                 </div>
                 <div class="menu-list">
                     <a href="feature-prepaid.html" class="menu-item" id="menu-prepaid">
-                        <div class="menu-icon">&#128196;</div>
+                        <div class="menu-icon menu-icon-image"><img src="images/feature-prepaid.png" alt="" class="menu-icon-img"></div>
                         <div class="menu-content">
-                            <h3 class="menu-title">Download Prepaid Bukpot</h3>
-                            <p class="menu-subtitle">Download bukti potong dari Dokumen Saya</p>
+                            <h3 class="menu-title">Download Prepaid Bukpot <span class="new-feature-badge">BARU</span></h3>
+                            <p class="menu-subtitle">Download bukti potong dari EBupot - Bukti Potong Saya</p>
                         </div>
                         <span class="menu-arrow">&#8250;</span>
                     </a>
                     <a href="feature-bppu.html" class="menu-item" id="menu-bppu">
-                        <div class="menu-icon">&#128195;</div>
+                        <div class="menu-icon menu-icon-image"><img src="images/feature-bppu.png" alt="" class="menu-icon-img"></div>
                         <div class="menu-content">
-                            <h3 class="menu-title">Download BPPU & Bukti Potong Lainnya</h3>
-                            <p class="menu-subtitle">Bukti Potong PPh Unifikasi, BPNR, BP 21/26, Pemotongan Digunggung, Penyetoran Sendiri</p>
+                            <h3 class="menu-title">Download BPPU</h3>
+                            <p class="menu-subtitle">Bukti Potong PPh Unifikasi</p>
+                        </div>
+                        <span class="menu-arrow">&#8250;</span>
+                    </a>
+                    <a href="feature-bppu.html" class="menu-item" id="menu-bpnr">
+                        <div class="menu-icon menu-icon-image"><img src="images/feature-bpnr.png" alt="" class="menu-icon-img"></div>
+                        <div class="menu-content">
+                            <h3 class="menu-title">Download BPNR</h3>
+                            <p class="menu-subtitle">Bukti Potong Wajib Pajak Non Residen</p>
+                        </div>
+                        <span class="menu-arrow">&#8250;</span>
+                    </a>
+                    <a href="feature-bppu.html" class="menu-item" id="menu-bp2126">
+                        <div class="menu-icon menu-icon-image"><img src="images/feature-bp2126.png" alt="" class="menu-icon-img"></div>
+                        <div class="menu-content">
+                            <h3 class="menu-title">Download BP21/26</h3>
+                            <p class="menu-subtitle">Bukti Potong PPh Pasal 21/26</p>
+                        </div>
+                        <span class="menu-arrow">&#8250;</span>
+                    </a>
+                    <a href="feature-bppu.html" class="menu-item" id="menu-digunggung">
+                        <div class="menu-icon menu-icon-image"><img src="images/feature-digunggung.png" alt="" class="menu-icon-img"></div>
+                        <div class="menu-content">
+                            <h3 class="menu-title">Download Pemotongan Digunggung</h3>
+                            <p class="menu-subtitle">Pemotongan secara digunggung</p>
+                        </div>
+                        <span class="menu-arrow">&#8250;</span>
+                    </a>
+                    <a href="feature-bppu.html" class="menu-item" id="menu-penyetoran">
+                        <div class="menu-icon menu-icon-image"><img src="images/feature-penyetoran.png" alt="" class="menu-icon-img"></div>
+                        <div class="menu-content">
+                            <h3 class="menu-title">Download Penyetoran Sendiri</h3>
+                            <p class="menu-subtitle">Bukti potong penyetoran sendiri</p>
                         </div>
                         <span class="menu-arrow">&#8250;</span>
                     </a>
@@ -70,9 +124,9 @@
             <div class="section">
                 <div class="menu-list">
                     <a href="tools.html" class="menu-item" id="menu-tools">
-                        <div class="menu-icon">&#128295;</div>
+                        <div class="menu-icon menu-icon-image"><img src="images/tools-bukpotrekap.png" alt="" class="menu-icon-img"></div>
                         <div class="menu-content">
-                            <h3 class="menu-title">Tools Tambahan</h3>
+                            <h3 class="menu-title">Tools Tambahan Bukpotrekap.id</h3>
                             <p class="menu-subtitle">Ekstrak, rename, gabung file bukti potong & kalkulator pajak</p>
                         </div>
                         <span class="menu-arrow">&#8250;</span>
@@ -83,9 +137,14 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <span class="footer-text">Gratis oleh <a href="https://alatpajak.id/" target="_blank" class="footer-link">alatpajak.id</a></span>
-            <span class="footer-divider">&#183;</span>
-            <a href="https://trakteer.id/alatpajakid/tip" target="_blank" class="footer-link">Dukung Kami</a>
+            <div class="footer-stack">
+                <div>
+                    <span class="footer-text">Gratis oleh <a href="https://bukpotrekap.id/" target="_blank" class="footer-link">bukpotrekap.id</a></span>
+                    <span class="footer-divider">&#183;</span>
+                    <a href="https://trakteer.id/alatpajakid/tip" target="_blank" class="footer-link">Dukung Kami</a>
+                </div>
+                <div class="footer-text">Menemukan error? hubungi <a href="mailto:Support@alatpajak.my.id" class="footer-link">Support@alatpajak.my.id</a></div>
+            </div>
         </footer>
     </div>
 

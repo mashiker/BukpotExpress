@@ -8,41 +8,45 @@
    1. CSS VARIABLES - LIGHT THEME
    ============================================ */
 :root {
-  /* Primary Colors - Charcoal */
-  --primary-color: #374151;
-  --primary-hover: #1f2937;
-  --primary-light: rgba(55, 65, 81, 0.08);
+  /* Primary Colors - Sogan Brown */
+  --primary-color: #6f4326;
+  --primary-hover: #4c2e1a;
+  --primary-light: rgba(111, 67, 38, 0.1);
+  --accent-color: #d59b45;
+  --accent-soft: rgba(213, 155, 69, 0.18);
+  --motif-color: rgba(111, 67, 38, 0.08);
 
   /* Background Colors */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-tertiary: #f3f4f6;
-  --bg-hover: rgba(55, 65, 81, 0.05);
+  --bg-primary: #fff8ec;
+  --bg-secondary: #f8eddc;
+  --bg-tertiary: #f1dfc5;
+  --bg-hover: rgba(111, 67, 38, 0.08);
 
   /* Text Colors */
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-muted: #9ca3af;
-  --text-inverse: #ffffff;
+  --text-primary: #2b1a10;
+  --text-secondary: #5b4637;
+  --text-muted: #8a725f;
+  --text-inverse: #fff8ec;
+  --header-text: #fff8ec;
 
   /* Border & Divider */
-  --border-color: #e5e7eb;
-  --divider-color: #f3f4f6;
+  --border-color: #e4cda9;
+  --divider-color: #ead8bc;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0 1px 3px rgba(76, 46, 26, 0.08);
+  --shadow-md: 0 2px 8px rgba(76, 46, 26, 0.12);
+  --shadow-lg: 0 4px 16px rgba(76, 46, 26, 0.18);
 
-  /* Header Gradient - Charcoal */
-  --header-bg: linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%);
+  /* Header Gradient - Batik Brown */
+  --header-bg: linear-gradient(135deg, #3a2113 0%, #6f4326 58%, #9b642f 100%);
 
   /* Success/Warning/Danger */
-  --success-color: #374151;
-  --success-hover: #1f2937;
-  --warning-color: #f59e0b;
-  --danger-color: #dc3545;
-  --danger-hover: #c82333;
+  --success-color: #2f7d4f;
+  --success-hover: #25663f;
+  --warning-color: #d59b45;
+  --danger-color: #c24135;
+  --danger-hover: #9f3028;
 
   /* Transition */
   --transition-fast: 0.15s ease;
@@ -54,34 +58,44 @@
    2. CSS VARIABLES - DARK THEME
    ============================================ */
 [data-theme="dark"] {
-  /* Primary Colors - Charcoal */
-  --primary-color: #9ca3af;
-  --primary-hover: #d1d5db;
-  --primary-light: rgba(156, 163, 175, 0.15);
+  /* Primary Colors - Dark Sogan */
+  --primary-color: #d59b45;
+  --primary-hover: #f0c36c;
+  --primary-light: rgba(213, 155, 69, 0.16);
+  --accent-color: #f0c36c;
+  --accent-soft: rgba(240, 195, 108, 0.16);
+  --motif-color: rgba(240, 195, 108, 0.08);
 
   /* Background Colors */
-  --bg-primary: #111827;
-  --bg-secondary: #1f2937;
-  --bg-tertiary: #374151;
-  --bg-hover: rgba(156, 163, 175, 0.1);
+  --bg-primary: #1d120b;
+  --bg-secondary: #26170e;
+  --bg-tertiary: #342215;
+  --bg-hover: rgba(213, 155, 69, 0.12);
 
   /* Text Colors */
-  --text-primary: #f9fafb;
-  --text-secondary: #d1d5db;
-  --text-muted: #6b7280;
-  --text-inverse: #111827;
+  --text-primary: #fff4df;
+  --text-secondary: #e4ceb1;
+  --text-muted: #aa8d6c;
+  --text-inverse: #2b1a10;
+  --header-text: #fff8ec;
 
   /* Border & Divider */
-  --border-color: #4b5563;
-  --divider-color: #374151;
+  --border-color: #5d3e25;
+  --divider-color: #3d2919;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.32);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.42);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.52);
 
-  /* Header Gradient - Charcoal */
-  --header-bg: linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%);
+  /* Header Gradient - Dark Coffee */
+  --header-bg: linear-gradient(135deg, #1a0f08 0%, #3a2113 54%, #6f4326 100%);
+
+  --success-color: #72d695;
+  --success-hover: #95e4ad;
+  --warning-color: #f0c36c;
+  --danger-color: #f07167;
+  --danger-hover: #ff9a91;
 }
 
 /* ============================================
@@ -133,7 +147,7 @@ a:hover {
 /* Header */
 .header {
   background: var(--header-bg);
-  color: var(--text-inverse);
+  color: var(--header-text);
   padding: 16px 20px;
   display: flex;
   align-items: center;
@@ -141,6 +155,23 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 100;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(135deg, transparent 0 11px, rgba(255, 248, 236, 0.12) 11px 12px, transparent 12px 24px),
+    repeating-linear-gradient(45deg, transparent 0 18px, rgba(255, 248, 236, 0.08) 18px 19px, transparent 19px 36px);
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+.header > * {
+  position: relative;
+  z-index: 1;
 }
 
 .header-left {
@@ -159,6 +190,28 @@ a:hover {
   font-size: 16px;
   font-weight: 600;
   margin: 0;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.header-version {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 7px;
+  border: 1px solid rgba(255, 248, 236, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 248, 236, 0.14);
+  color: var(--header-text);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .header-right {
@@ -202,7 +255,7 @@ a:hover {
   justify-content: center;
   cursor: pointer;
   transition: all var(--transition-normal);
-  color: var(--text-inverse);
+  color: var(--header-text);
   font-size: 16px;
 }
 
@@ -248,10 +301,137 @@ a:hover {
   letter-spacing: 0.5px;
 }
 
+.new-feature-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background-color: var(--accent-color);
+  color: #2b1a10;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(76, 46, 26, 0.18);
+}
+
 .section-description {
   font-size: 12px;
   color: var(--text-muted);
   margin-bottom: 12px;
+}
+
+.update-card {
+  position: relative;
+  overflow: hidden;
+  padding: 14px;
+  border: 1px solid rgba(111, 67, 38, 0.24);
+  border-radius: 8px;
+  background:
+    linear-gradient(120deg, transparent 0 72%, var(--accent-soft) 72% 100%),
+    linear-gradient(135deg, rgba(213, 155, 69, 0.2), rgba(255, 248, 236, 0.94) 42%, rgba(248, 237, 220, 0.98));
+  box-shadow: var(--shadow-md);
+}
+
+.update-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(135deg, transparent 0 12px, rgba(111, 67, 38, 0.08) 12px 13px, transparent 13px 26px),
+    repeating-linear-gradient(45deg, transparent 0 20px, rgba(111, 67, 38, 0.06) 20px 21px, transparent 21px 40px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.update-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.update-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.update-card-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(111, 67, 38, 0.12);
+  color: var(--primary-hover);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.3px;
+}
+
+.update-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.update-card-copy {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.update-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.update-feature-list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 11px;
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+.update-feature-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  transform: translateY(-50%);
+}
+
+[data-theme="dark"] .update-card {
+  border-color: rgba(240, 195, 108, 0.26);
+  background:
+    linear-gradient(120deg, transparent 0 72%, rgba(240, 195, 108, 0.12) 72% 100%),
+    linear-gradient(135deg, rgba(111, 67, 38, 0.28), rgba(38, 23, 14, 0.96) 44%, rgba(29, 18, 11, 0.98));
+}
+
+[data-theme="dark"] .update-card::before {
+  background-image:
+    repeating-linear-gradient(135deg, transparent 0 12px, rgba(240, 195, 108, 0.08) 12px 13px, transparent 13px 26px),
+    repeating-linear-gradient(45deg, transparent 0 20px, rgba(240, 195, 108, 0.06) 20px 21px, transparent 21px 40px);
+}
+
+[data-theme="dark"] .update-card-badge {
+  background: rgba(240, 195, 108, 0.14);
+  color: var(--primary-hover);
 }
 
 /* ============================================
@@ -305,6 +485,20 @@ a:hover {
   transition: transform var(--transition-fast);
 }
 
+.menu-icon-image {
+  background: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.menu-icon-img {
+  display: block;
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
 .menu-item:hover .menu-icon {
   transform: scale(1.08);
 }
@@ -321,6 +515,11 @@ a:hover {
   color: var(--text-primary);
   margin: 0;
   line-height: 1.3;
+}
+
+.menu-title .new-feature-badge {
+  margin-left: 6px;
+  vertical-align: 1px;
 }
 
 .menu-subtitle {
@@ -380,8 +579,8 @@ a:hover {
 }
 
 .tool-icon {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -389,6 +588,20 @@ a:hover {
   font-size: 14px;
   flex-shrink: 0;
   transition: transform var(--transition-fast);
+}
+
+.tool-icon-image {
+  background: transparent;
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.tool-icon-img {
+  display: block;
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 7px;
 }
 
 /* Unique colors for each tool icon */
@@ -711,6 +924,12 @@ a:hover {
   color: var(--text-secondary);
 }
 
+.status-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .status-log {
   background-color: var(--bg-tertiary);
   border: 1px solid var(--border-color);
@@ -833,6 +1052,13 @@ a:hover {
   text-align: center;
   border-top: 1px solid var(--divider-color);
   background-color: var(--bg-secondary);
+}
+
+.footer-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
 .footer-text {
@@ -1176,14 +1402,17 @@ a:hover {
   display: block;
   margin: 12px 16px;
   padding: 14px 16px;
-  background: linear-gradient(135deg, #1f2937 0%, #374151 50%, #4b5563 100%);
-  border-radius: 12px;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 13px, rgba(255, 248, 236, 0.1) 13px 14px, transparent 14px 28px),
+    repeating-linear-gradient(45deg, transparent 0 22px, rgba(255, 248, 236, 0.07) 22px 23px, transparent 23px 44px),
+    linear-gradient(135deg, #3a2113 0%, #6f4326 58%, #9b642f 100%);
+  border-radius: 8px;
   text-decoration: none;
   position: relative;
   overflow: hidden;
   cursor: pointer;
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-  box-shadow: 0 4px 15px rgba(55, 65, 81, 0.3);
+  box-shadow: 0 4px 15px rgba(76, 46, 26, 0.28);
 }
 
 .ad-banner::before {
@@ -1199,7 +1428,7 @@ a:hover {
 
 .ad-banner:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(55, 65, 81, 0.4);
+  box-shadow: 0 6px 20px rgba(76, 46, 26, 0.36);
 }
 
 @keyframes shimmer {
@@ -1211,8 +1440,8 @@ a:hover {
   position: absolute;
   top: -2px;
   right: 12px;
-  background: linear-gradient(135deg, #f59e0b, #fbbf24);
-  color: #134e4a;
+  background: linear-gradient(135deg, #d59b45, #f0c36c);
+  color: #2b1a10;
   font-size: 9px;
   font-weight: 700;
   padding: 3px 8px;
@@ -1283,15 +1512,15 @@ a:hover {
 
 /* Dark theme adjustments for ad-banner */
 [data-theme="dark"] .ad-banner {
-  box-shadow: 0 4px 15px rgba(156, 163, 175, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.38);
 }
 
 [data-theme="dark"] .ad-banner:hover {
-  box-shadow: 0 6px 20px rgba(156, 163, 175, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="dark"] .progress-bar-fill {
-  background: linear-gradient(90deg, #2dd4bf, #f59e0b);
+  background: linear-gradient(90deg, #d59b45, #f0c36c);
 }
 
 /* ============================================
@@ -1391,15 +1620,15 @@ a:hover {
    ============================================ */
 
 [data-theme="dark"] .radio-option.selected {
-  border-color: #2dd4bf;
-  background-color: rgba(45, 212, 191, 0.15);
+  border-color: var(--primary-color);
+  background-color: var(--primary-light);
 }
 
 [data-theme="dark"] .btn-primary {
-  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
-  box-shadow: 0 2px 8px rgba(45, 212, 191, 0.3);
+  background: linear-gradient(135deg, #d59b45 0%, #f0c36c 100%);
+  box-shadow: 0 2px 8px rgba(213, 155, 69, 0.28);
 }
 
 [data-theme="dark"] .btn-primary:hover:not(:disabled) {
-  box-shadow: 0 4px 12px rgba(45, 212, 191, 0.4);
+  box-shadow: 0 4px 12px rgba(213, 155, 69, 0.36);
 }

@@ -14,6 +14,138 @@
         window.__BPE_DOWNLOADER_LOADED__ = true;
     }
 
+const BPPU_DOWNLOAD_LOG_KEY = 'bppuDownloadLog';
+let downloadAuditLog = createEmptyDownloadAuditLog();
+let auditLogStarted = false;
+
+function createEmptyDownloadAuditLog() {
+  return {
+    startedAt: new Date().toISOString(),
+    completedAt: null,
+    mode: 'single-page',
+    totalDetected: 0,
+    successCount: 0,
+    failedCount: 0,
+    totalPages: 1,
+    entries: []
+  };
+}
+
+function saveDownloadAuditLog() {
+  try {
+    chrome.storage?.local?.set({ [BPPU_DOWNLOAD_LOG_KEY]: downloadAuditLog });
+  } catch (e) {
+    console.log('Downloader: Could not save download audit log:', e);
+  }
+}
+
+function startDownloadAuditLog(totalCount = 0) {
+  if (auditLogStarted) return;
+  auditLogStarted = true;
+  downloadAuditLog = createEmptyDownloadAuditLog();
+  downloadAuditLog.totalDetected = totalCount;
+  saveDownloadAuditLog();
+}
+
+function finishDownloadAuditLog() {
+  downloadAuditLog.completedAt = new Date().toISOString();
+  saveDownloadAuditLog();
+}
+
+function cleanCellText(text) {
+  return (text || '').replace(/\s+/g, ' ').trim();
+}
+
+function getRowCellMap(row) {
+  const cellMap = {};
+  if (!row) return cellMap;
+
+  const headers = Array.from(document.querySelectorAll('thead th')).map(header => cleanCellText(header.innerText));
+  row.querySelectorAll('td').forEach((cell, index) => {
+    const titleElement = cell.querySelector('.p-column-title');
+    const title = cleanCellText(titleElement ? titleElement.textContent : headers[index] || `Kolom ${index + 1}`);
+    const rawText = cleanCellText(cell.textContent || cell.innerText);
+    const value = titleElement ? cleanCellText(rawText.replace(title, '')) : rawText;
+    cellMap[title] = value;
+  });
+
+  return cellMap;
+}
+
+function buildRowMetadata(row, documentNumber, pageIndex) {
+  const cellMap = getRowCellMap(row);
+  return {
+    page: 1,
+    pageIndex,
+    documentNumber: documentNumber || cellMap['Nomor Dokumen'] || cellMap['Nomor Bukti Potong'] || cellMap['Nomor Pemotongan'] || '',
+    documentDate: cellMap['Tanggal Dokumen'] || '',
+    documentTitle: cellMap['Judul Dokumen'] || '',
+    documentType: cellMap['Jenis Dokumen'] || '',
+    caseNumber: cellMap['Nomor Kasus'] || '',
+    createdAt: cellMap['Tanggal Pembuatan'] || '',
+    createdBy: cellMap['Pengguna Pembuatan'] || ''
+  };
+}
+
+function recordDownloadAuditEntry(meta, status, attempts, reason = '') {
+  const entry = {
+    no: downloadAuditLog.entries.length + 1,
+    page: meta.page || 1,
+    pageIndex: meta.pageIndex || '',
+    documentNumber: meta.documentNumber || '',
+    documentDate: meta.documentDate || '',
+    documentTitle: meta.documentTitle || '',
+    documentType: meta.documentType || '',
+    caseNumber: meta.caseNumber || '',
+    createdAt: meta.createdAt || '',
+    createdBy: meta.createdBy || '',
+    status,
+    attempts,
+    reason,
+    loggedAt: new Date().toISOString()
+  };
+
+  downloadAuditLog.entries.push(entry);
+  downloadAuditLog.totalDetected = Math.max(downloadAuditLog.totalDetected, downloadAuditLog.entries.length);
+  downloadAuditLog.successCount = downloadAuditLog.entries.filter(item => item.status === 'BERHASIL').length;
+  downloadAuditLog.failedCount = downloadAuditLog.entries.filter(item => item.status === 'GAGAL').length;
+  saveDownloadAuditLog();
+}
+
+async function verifyDownloadStarted(itemLabel, sinceMs) {
+  try {
+    const deadline = Date.now() + 5000;
+
+    while (Date.now() < deadline) {
+      const verified = await new Promise((resolve) => {
+        chrome.runtime.sendMessage({
+          type: 'VERIFY_DOWNLOAD_STARTED',
+          sinceMs,
+          windowMs: 10000,
+          itemLabel
+        }, (response) => {
+          if (chrome.runtime.lastError) {
+            console.log('Downloader: download verification message error:', chrome.runtime.lastError.message);
+            resolve(false);
+            return;
+          }
+
+          resolve(!!response?.verified);
+        });
+      });
+
+      if (verified) return true;
+      await new Promise(r => setTimeout(r, 250));
+    }
+
+    console.log(`Downloader: download not verified for ${itemLabel}`);
+    return false;
+  } catch (e) {
+    console.log('Downloader: verifyDownload error:', e);
+    return false;
+  }
+}
+
 async function processSingleDownload() {
   // Check if download was stopped
   if (isDownloadStopped) {
@@ -26,6 +158,7 @@ async function processSingleDownload() {
   let successCount = parseInt(sessionStorage.getItem('coretaxSuccessCount') || 0);
   let skippedCount = parseInt(sessionStorage.getItem('coretaxSkippedCount') || 0);
   const idColumnIndex = parseInt(sessionStorage.getItem('coretaxIdColumnIndex'));
+  startDownloadAuditLog(totalCount);
 
   if (queue.length === 0) {
     console.log("Downloader: Queue is empty. Finishing.");
@@ -51,7 +184,14 @@ async function processSingleDownload() {
         }
     });
 
-    chrome.runtime.sendMessage({ type: "DOWNLOAD_COMPLETE" });
+    finishDownloadAuditLog();
+    chrome.runtime.sendMessage({
+      type: "DOWNLOAD_COMPLETE",
+      totalDetected: downloadAuditLog.totalDetected,
+      successFiles: downloadAuditLog.successCount,
+      failedFiles: downloadAuditLog.failedCount,
+      totalPages: 1
+    });
     return;
   }
 
@@ -70,13 +210,39 @@ async function processSingleDownload() {
   });
 
   let wasSuccessful = false;
+  const pageIndex = totalCount > 0 ? totalCount - queue.length : successCount + skippedCount + 1;
   if (targetRow && targetRow.querySelector('#DownloadButton')) {
-    targetRow.querySelector('#DownloadButton').click();
-    successCount++;
-    wasSuccessful = true;
-    console.log(`Downloader: Clicked download for ${itemToDownload}. Success count: ${successCount}`);
+    const meta = buildRowMetadata(targetRow, itemToDownload, pageIndex);
+    const downloadButton = targetRow.querySelector('#DownloadButton');
+    const clickStartedAt = Date.now();
+    downloadButton.click();
+    await new Promise(r => setTimeout(r, 500));
+
+    let verified = await verifyDownloadStarted(itemToDownload, clickStartedAt);
+    let attempts = 1;
+
+    if (!verified) {
+      console.log(`Downloader: Download not detected for ${itemToDownload}, retrying click...`);
+      attempts = 2;
+      const retryStartedAt = Date.now();
+      downloadButton.click();
+      await new Promise(r => setTimeout(r, 1000));
+      verified = await verifyDownloadStarted(itemToDownload, retryStartedAt);
+    }
+
+    if (verified) {
+      successCount++;
+      wasSuccessful = true;
+      recordDownloadAuditEntry(meta, 'BERHASIL', attempts);
+      console.log(`Downloader: Verified download for ${itemToDownload}. Success count: ${successCount}`);
+    } else {
+      skippedCount++;
+      recordDownloadAuditEntry(meta, 'GAGAL', attempts, 'Download tidak terdeteksi setelah retry');
+      console.log(`Downloader: Download failed verification for ${itemToDownload}.`);
+    }
   } else {
     skippedCount++; 
+    recordDownloadAuditEntry(buildRowMetadata(targetRow, itemToDownload, pageIndex), 'GAGAL', 0, 'Baris atau tombol download tidak ditemukan');
     console.log(`Downloader: Row or button for ${itemToDownload} not found. Skipping.`);
   }
 
@@ -143,7 +309,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }, 3000);
 
         // Send completion message to background
-        chrome.runtime.sendMessage({ type: "DOWNLOAD_COMPLETE" });
+        finishDownloadAuditLog();
+        chrome.runtime.sendMessage({
+            type: "DOWNLOAD_COMPLETE",
+            totalDetected: downloadAuditLog.totalDetected,
+            successFiles: downloadAuditLog.successCount,
+            failedFiles: downloadAuditLog.failedCount,
+            totalPages: 1
+        });
 
         sendResponse({ success: true, message: "Download stopped successfully" });
         return true;

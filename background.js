@@ -196,6 +196,43 @@ function executeScriptOnTab(tabId, fileToExecute) {
     });
 }
 
+function verifyRecentPdfDownload(request, sendResponse) {
+    const sinceMs = Number(request.sinceMs) || (Date.now() - 5000);
+    const windowMs = Number(request.windowMs) || 10000;
+    const minStartTime = sinceMs - 250;
+    const maxStartTime = Date.now() + windowMs;
+
+    if (!chrome.downloads || !chrome.downloads.search) {
+        console.log("BG: chrome.downloads API is not available for verification");
+        sendResponse({ verified: false, reason: "downloads_api_unavailable" });
+        return;
+    }
+
+    chrome.downloads.search({ limit: 20, orderBy: ['-startTime'] }, (downloads) => {
+        if (chrome.runtime.lastError) {
+            console.log("BG: download verification search error:", chrome.runtime.lastError.message);
+            sendResponse({ verified: false, reason: chrome.runtime.lastError.message });
+            return;
+        }
+
+        const recentPdf = downloads.find((download) => {
+            const startTime = download.startTime ? new Date(download.startTime).getTime() : 0;
+            const isInWindow = startTime >= minStartTime && startTime <= maxStartTime;
+            const filename = (download.filename || '').toLowerCase();
+            const mime = (download.mime || '').toLowerCase();
+            const isPdf = mime === 'application/pdf' || filename.endsWith('.pdf');
+            const isActiveDownload = download.state === 'in_progress' || download.state === 'complete';
+            return isInWindow && isPdf && isActiveDownload;
+        });
+
+        sendResponse({
+            verified: !!recentPdf,
+            downloadId: recentPdf ? recentPdf.id : null,
+            state: recentPdf ? recentPdf.state : null
+        });
+    });
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let tabId = request.tabId || (sender.tab ? sender.tab.id : null);
     if (!tabId) return;
@@ -222,7 +259,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             console.log("BG: All tasks complete. Resetting state.");
             isDownloading = false;
             downloadTabId = null;
+            chrome.storage.local.set({ isDownloading: false, stopRequested: false });
+            if (typeof request.totalDetected === 'number') {
+                sendStatusUpdate(`Download selesai! Total bukti potong: ${request.totalDetected}. Berhasil: ${request.successFiles || 0}. Gagal: ${request.failedFiles || 0}.`, true);
+            }
             break;
+
+        case "VERIFY_DOWNLOAD_STARTED":
+            verifyRecentPdfDownload(request, sendResponse);
+            return true;
 
         case "APPLY_FILTER_AND_DOWNLOAD":
             if (!isDownloading) {
@@ -650,6 +695,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch (message.type) {
         // ... existing cases ...
 
+        case "VERIFY_DOWNLOAD_STARTED":
+            return false;
+
         case "AUTOMATIC_DOWNLOAD_COMPLETE":
             console.log("BG: Automatic download completed");
             // Clear any pending timeouts to ensure clean state
@@ -667,7 +715,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             isDownloading = false;
             downloadTabId = null;
             chrome.storage.local.set({ isDownloading: false, stopRequested: false });
-            sendStatusUpdate(`Download multi-halaman selesai! Total: ${message.totalFiles} file dari ${message.totalPages} halaman`, true);
+            if (typeof message.totalDetected === 'number') {
+                sendStatusUpdate(`Download selesai! Total bukpot: ${message.totalDetected}. Berhasil: ${message.successFiles || 0}. Gagal: ${message.failedFiles || 0}. Halaman: ${message.totalPages}.`, true);
+            } else {
+                sendStatusUpdate(`Download multi-halaman selesai! Total: ${message.totalFiles} file dari ${message.totalPages} halaman`, true);
+            }
             break;
 
         case "MULTI_PAGE_NAVIGATION_UPDATE":

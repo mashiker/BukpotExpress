@@ -22,6 +22,11 @@
     let stopAfterCurrentPage = false; // Finish current page, then stop
     let maxPagesToDownload = 10; // Safety limit: max 10 pages
     let downloadedFileIds = new Set(); // Track downloaded files to avoid duplicates
+    let downloadAuditLog = createEmptyDownloadAuditLog();
+
+    const BPPU_DOWNLOAD_LOG_KEY = 'bppuDownloadLog';
+    const PREPAID_DOWNLOAD_LOG_KEY = 'prepaidDownloadLog';
+    let activeDownloadLogKey = BPPU_DOWNLOAD_LOG_KEY;
 
     const displayModalSafe = (title, message, details = '', showButton = true) => {
         if (typeof displayModal === 'function') {
@@ -49,6 +54,102 @@
         isDownloadStopped = false;
         stopAfterCurrentPage = false;
         downloadedFileIds.clear();
+    }
+
+    function createEmptyDownloadAuditLog() {
+        return {
+            startedAt: new Date().toISOString(),
+            completedAt: null,
+            mode: '',
+            totalDetected: 0,
+            successCount: 0,
+            failedCount: 0,
+            totalPages: 0,
+            entries: []
+        };
+    }
+
+    function saveDownloadAuditLog() {
+        try {
+            chrome.storage?.local?.set({ [activeDownloadLogKey]: downloadAuditLog });
+        } catch (e) {
+            console.log('BPPU: Could not save download audit log:', e);
+        }
+    }
+
+    function startDownloadAuditLog(logKey = BPPU_DOWNLOAD_LOG_KEY, mode = 'multi-page') {
+        activeDownloadLogKey = logKey;
+        downloadAuditLog = createEmptyDownloadAuditLog();
+        downloadAuditLog.mode = mode;
+        saveDownloadAuditLog();
+    }
+
+    function finishDownloadAuditLog(totalPages) {
+        downloadAuditLog.completedAt = new Date().toISOString();
+        downloadAuditLog.totalPages = totalPages;
+        saveDownloadAuditLog();
+    }
+
+    function cleanCellText(text) {
+        return (text || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function getRowCellMap(row) {
+        const cellMap = {};
+        if (!row) return cellMap;
+
+        row.querySelectorAll('td').forEach((cell, index) => {
+            const titleElement = cell.querySelector('.p-column-title');
+            const title = cleanCellText(titleElement ? titleElement.textContent : `Kolom ${index + 1}`);
+            const rawText = cleanCellText(cell.textContent);
+            const value = titleElement ? cleanCellText(rawText.replace(title, '')) : rawText;
+            cellMap[title] = value;
+        });
+
+        return cellMap;
+    }
+
+    function buildButtonMetadata(button, pageNumber, pageIndex) {
+        const row = button.closest('tr');
+        const cellMap = getRowCellMap(row);
+        const documentNumber = cellMap['Nomor Dokumen'] || cellMap['Nomor Bukti Potong'] || cellMap['Nomor Bukpot'] || '';
+
+        return {
+            page: pageNumber,
+            pageIndex: pageIndex + 1,
+            documentNumber,
+            documentDate: cellMap['Tanggal Dokumen'] || '',
+            documentTitle: cellMap['Judul Dokumen'] || '',
+            documentType: cellMap['Jenis Dokumen'] || '',
+            caseNumber: cellMap['Nomor Kasus'] || '',
+            createdAt: cellMap['Tanggal Pembuatan'] || '',
+            createdBy: cellMap['Pengguna Pembuatan'] || ''
+        };
+    }
+
+    function recordDownloadAuditEntry(meta, status, attempts, reason = '') {
+        const entry = {
+            no: downloadAuditLog.entries.length + 1,
+            page: meta.page || totalPagesDownloaded,
+            pageIndex: meta.pageIndex || '',
+            documentNumber: meta.documentNumber || '',
+            documentDate: meta.documentDate || '',
+            documentTitle: meta.documentTitle || '',
+            documentType: meta.documentType || '',
+            caseNumber: meta.caseNumber || '',
+            createdAt: meta.createdAt || '',
+            createdBy: meta.createdBy || '',
+            status,
+            attempts,
+            reason,
+            loggedAt: new Date().toISOString()
+        };
+
+        downloadAuditLog.entries.push(entry);
+        downloadAuditLog.totalDetected = downloadAuditLog.entries.length;
+        downloadAuditLog.successCount = downloadAuditLog.entries.filter(item => item.status === 'BERHASIL').length;
+        downloadAuditLog.failedCount = downloadAuditLog.entries.filter(item => item.status === 'GAGAL').length;
+        saveDownloadAuditLog();
     }
 
     /**
@@ -147,7 +248,7 @@
         return allButtons;
     }
 
-    async function startMultiPageDownload() {
+    async function startMultiPageDownload(logKey = BPPU_DOWNLOAD_LOG_KEY, mode = 'multi-page') {
         console.log('Multi-page downloader: === STARTING MULTI-PAGE DOWNLOAD ===');
         console.log(`Multi-page downloader: Portal: ${detectPortalVersion() ? 'NEW' : 'OLD'}`);
 
@@ -159,6 +260,7 @@
         isDownloadStopped = false;
 
         resetModuleState();
+        startDownloadAuditLog(logKey, mode);
 
         // Send status update
         try {
@@ -295,7 +397,7 @@
 
             // Start Multi-page Download (works for both old and new portal)
             console.log('BPPU Automation: Starting download loop...');
-            return await startMultiPageDownload();
+            return await startMultiPageDownload(PREPAID_DOWNLOAD_LOG_KEY, 'prepaid-multi-page');
 
         } catch (error) {
             console.error('BPPU Automation: Error:', error);
@@ -681,41 +783,45 @@
     }
 
     /**
-     * Verify that a download actually started by checking chrome.downloads API.
+     * Verify that a download actually started by asking the background service worker
+     * to check the chrome.downloads API.
      * Looks for recent PDF downloads within the last 5 seconds.
      * Returns true if a new download was found.
      */
-    async function verifyDownloadStarted(itemLabel) {
+    async function verifyDownloadStarted(itemLabel, sinceMs) {
         try {
-            if (!chrome.downloads || !chrome.downloads.search) {
-                // Fallback: if downloads API not available, assume success
-                console.log('BPPU: chrome.downloads API not available, assuming success');
-                return true;
+            const deadline = Date.now() + 5000;
+
+            while (Date.now() < deadline) {
+                const verified = await new Promise((resolve) => {
+                    chrome.runtime.sendMessage({
+                        type: 'VERIFY_DOWNLOAD_STARTED',
+                        sinceMs,
+                        windowMs: 10000,
+                        itemLabel
+                    }, (response) => {
+                        if (chrome.runtime.lastError) {
+                            console.log('BPPU: download verification message error:', chrome.runtime.lastError.message);
+                            resolve(false);
+                            return;
+                        }
+
+                        resolve(!!response?.verified);
+                    });
+                });
+
+                if (verified) {
+                    return true;
+                }
+
+                await new Promise(r => setTimeout(r, 250));
             }
 
-            const fiveSecondsAgo = Date.now() - 5000;
-
-            return new Promise((resolve) => {
-                chrome.downloads.search({ limit: 10, orderBy: ['-startTime'] }, (downloads) => {
-                    if (chrome.runtime.lastError) {
-                        console.log('BPPU: download search error:', chrome.runtime.lastError);
-                        resolve(true); // assume success on error
-                        return;
-                    }
-
-                    const recentPdf = downloads.find(d => {
-                        const startTime = d.startTime ? new Date(d.startTime).getTime() : 0;
-                        return startTime > fiveSecondsAgo &&
-                               d.mime === 'application/pdf' || 
-                               (d.filename && d.filename.toLowerCase().endsWith('.pdf'));
-                    });
-
-                    resolve(!!recentPdf);
-                });
-            });
+            console.log(`BPPU: download not verified for ${itemLabel}`);
+            return false;
         } catch (e) {
             console.log('BPPU: verifyDownload error:', e);
-            return true; // assume success on error
+            return false;
         }
     }
 
@@ -755,16 +861,7 @@
 
             // Map metadata for logging
             const buttonsMetadata = initialButtons.map((button, index) => {
-                const row = button.closest('tr');
-                let firstCellText = '';
-
-                if (row) {
-                    const cells = row.querySelectorAll('td');
-                    if (cells.length > 0) {
-                        firstCellText = (cells[0].textContent || '').trim();
-                    }
-                }
-                return { firstCellText };
+                return buildButtonMetadata(button, totalPagesDownloaded, index);
             });
 
             // Send debug log to popup
@@ -795,11 +892,13 @@
 
                 if (!button) {
                     console.warn(`⚠️ Button at index ${i} not found matching original count. List changed? Skipped.`);
+                    recordDownloadAuditEntry(buttonsMetadata[i] || { page: totalPagesDownloaded, pageIndex: i + 1 }, 'GAGAL', 0, 'Tombol download tidak ditemukan saat proses berjalan');
                     continue;
                 }
 
                 const meta = buttonsMetadata[i] || {};
-                const itemLabel = meta.firstCellText ? `Nomor Dokumen ${meta.firstCellText}` : `File #${i + 1}`;
+                const itemLabel = meta.documentNumber ? `Nomor Dokumen ${meta.documentNumber}` : `File #${i + 1}`;
+                let auditRecorded = false;
 
                 try {
                     console.log(`🖱️ Clicking button ${i + 1}/${maxButtons}: ${itemLabel}`);
@@ -811,6 +910,7 @@
                     button.focus();
 
                     // 3. Click (Angular-friendly)
+                    const clickStartedAt = Date.now();
                     button.click();
                     button.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
                     button.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
@@ -819,11 +919,13 @@
                     const delayTime = 500 + Math.random() * 500;
                     await new Promise(r => setTimeout(r, delayTime));
 
-                    // VERIFY: Check if download actually happened via chrome.downloads API
-                    const verified = await verifyDownloadStarted(itemLabel);
+                    // VERIFY: Check if download actually happened via background/downloads API
+                    const verified = await verifyDownloadStarted(itemLabel, clickStartedAt);
 
                     if (verified) {
                         downloadCount++;
+                        recordDownloadAuditEntry(meta, 'BERHASIL', 1);
+                        auditRecorded = true;
                         console.log(`✅ Verified download: ${itemLabel}`);
                         try {
                             chrome.runtime.sendMessage({
@@ -846,9 +948,11 @@
                         // Re-query button (stale reference possible)
                         const retryButtons = getFreshButtons();
                         const retryBtn = retryButtons[i];
+                        let retryStartedAt = null;
                         if (retryBtn) {
                             retryBtn.scrollIntoView({ block: 'center', inline: 'center' });
                             retryBtn.focus();
+                            retryStartedAt = Date.now();
                             retryBtn.click();
                             retryBtn.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
                             retryBtn.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
@@ -856,9 +960,11 @@
 
                         await new Promise(r => setTimeout(r, 1500));
 
-                        const retryVerified = await verifyDownloadStarted(itemLabel);
+                        const retryVerified = retryStartedAt ? await verifyDownloadStarted(itemLabel, retryStartedAt) : false;
                         if (retryVerified) {
                             downloadCount++;
+                            recordDownloadAuditEntry(meta, 'BERHASIL', 2);
+                            auditRecorded = true;
                             console.log(`✅ Retry download succeeded: ${itemLabel}`);
                             try {
                                 chrome.runtime.sendMessage({
@@ -877,7 +983,15 @@
                         }
                     }
 
+                    if (!auditRecorded) {
+                        recordDownloadAuditEntry(meta, 'GAGAL', 2, 'Download tidak terdeteksi setelah retry');
+                        auditRecorded = true;
+                    }
+
                 } catch (err) {
+                    if (!auditRecorded) {
+                        recordDownloadAuditEntry(meta, 'GAGAL', 1, err?.message || 'Error saat klik tombol download');
+                    }
                     console.error(`❌ Error clicking button ${i}:`, err);
                 }
             }
@@ -892,6 +1006,7 @@
 
         console.log('Multi-page downloader: === MULTI-PAGE DOWNLOAD COMPLETE ===');
         console.log(`Multi-page downloader: Total pages: ${pagesCompleted}, Total files: ${filesDownloaded}`);
+        finishDownloadAuditLog(pagesCompleted);
 
         // Show completion modal
         const title = 'Multi-Page Download Complete!';
@@ -904,7 +1019,10 @@
         chrome.runtime.sendMessage({
             type: 'MULTI_PAGE_DOWNLOAD_COMPLETE',
             totalFiles: filesDownloaded,
-            totalPages: pagesCompleted
+            totalPages: pagesCompleted,
+            totalDetected: downloadAuditLog.totalDetected,
+            successFiles: downloadAuditLog.successCount,
+            failedFiles: downloadAuditLog.failedCount
         }).catch(error => {
             console.log('Multi-page downloader: Could not send completion message:', error.message);
         });

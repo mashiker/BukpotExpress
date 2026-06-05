@@ -2,10 +2,12 @@
 // Handles BPPU download with tax period filtering
 
 // DOM Elements
-let loadingOverlay, statusLog, clearLogBtn;
+let loadingOverlay, statusLog, clearLogBtn, downloadLogBtn;
 let bulanSelect, tahunSelect, filterBtn, stopBtn, hardForceStopBtn;
 let modeRadioGroup, modeInfo, filterHelper;
 let progressSection, progressBarFill, progressCounter, progressStatus;
+
+const BPPU_DOWNLOAD_LOG_KEY = 'bppuDownloadLog';
 
 document.addEventListener('DOMContentLoaded', () => {
     initializeElements();
@@ -29,6 +31,7 @@ function initializeElements() {
     loadingOverlay = document.getElementById('loading-overlay');
     statusLog = document.getElementById('statusLog');
     clearLogBtn = document.getElementById('clearLogBtn');
+    downloadLogBtn = document.getElementById('downloadLogBtn');
     bulanSelect = document.getElementById('bulanSelect');
     tahunSelect = document.getElementById('tahunSelect');
     filterBtn = document.getElementById('filterBtn');
@@ -227,6 +230,107 @@ function loadExistingLogs() {
     });
 }
 
+function escapeCsvValue(value) {
+    const text = value === null || value === undefined ? '' : String(value);
+    return `"${text.replace(/"/g, '""')}"`;
+}
+
+function formatDateForFilename(date = new Date()) {
+    const pad = (value) => String(value).padStart(2, '0');
+    return [
+        date.getFullYear(),
+        pad(date.getMonth() + 1),
+        pad(date.getDate())
+    ].join('') + '-' + [pad(date.getHours()), pad(date.getMinutes()), pad(date.getSeconds())].join('');
+}
+
+function buildDownloadLogCsv(log) {
+    const entries = Array.isArray(log?.entries) ? log.entries : [];
+    const totalDetected = Number(log?.totalDetected ?? entries.length);
+    const successCount = Number(log?.successCount ?? entries.filter(item => item.status === 'BERHASIL').length);
+    const failedCount = Number(log?.failedCount ?? entries.filter(item => item.status === 'GAGAL').length);
+    const summaryRows = [
+        ['Ringkasan Download Bukti Potong PPh Unifikasi & Lainnya'],
+        ['Mulai', log?.startedAt || ''],
+        ['Selesai', log?.completedAt || ''],
+        ['Mode', log?.mode || ''],
+        ['Total Bukti Potong', totalDetected],
+        ['Berhasil', successCount],
+        ['Gagal', failedCount],
+        ['Total Halaman', log?.totalPages || ''],
+        []
+    ];
+
+    const detailHeader = [
+        'No',
+        'Halaman',
+        'Urutan di Halaman',
+        'Nomor Dokumen',
+        'Tanggal Dokumen',
+        'Judul Dokumen',
+        'Jenis Dokumen',
+        'Nomor Kasus',
+        'Tanggal Pembuatan',
+        'Pengguna Pembuatan',
+        'Status',
+        'Percobaan',
+        'Alasan',
+        'Waktu Log'
+    ];
+
+    const detailRows = entries.map((entry, index) => [
+        entry.no || index + 1,
+        entry.page || '',
+        entry.pageIndex || '',
+        entry.documentNumber || '',
+        entry.documentDate || '',
+        entry.documentTitle || '',
+        entry.documentType || '',
+        entry.caseNumber || '',
+        entry.createdAt || '',
+        entry.createdBy || '',
+        entry.status || '',
+        entry.attempts || '',
+        entry.reason || '',
+        entry.loggedAt || ''
+    ]);
+
+    return [...summaryRows, detailHeader, ...detailRows]
+        .map(row => row.map(escapeCsvValue).join(','))
+        .join('\r\n');
+}
+
+function downloadTextFile(filename, content, mimeType = 'text/csv;charset=utf-8') {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function downloadBppuLog() {
+    chrome.storage.local.get({ [BPPU_DOWNLOAD_LOG_KEY]: null }, (result) => {
+        const log = result[BPPU_DOWNLOAD_LOG_KEY];
+        const entries = Array.isArray(log?.entries) ? log.entries : [];
+
+        if (!log || entries.length === 0) {
+            updateAndSaveStatus('Belum ada log hasil download bukti potong.');
+            return;
+        }
+
+        const csv = buildDownloadLogCsv(log);
+        const filename = `bukti-potong-log-${formatDateForFilename()}.csv`;
+        downloadTextFile(filename, `\uFEFF${csv}`);
+        updateAndSaveStatus(`Log download dibuat: ${entries.length} bukti potong, ${log.successCount || 0} berhasil, ${log.failedCount || 0} gagal.`);
+    });
+}
+
 // ============================================
 // PROGRESS INDICATOR
 // ============================================
@@ -346,7 +450,7 @@ function setupEventListeners() {
                 }
 
                 setDownloadButtonState(true);
-                chrome.storage.local.set({ isDownloading: true, stopRequested: false });
+                chrome.storage.local.set({ isDownloading: true, stopRequested: false, [BPPU_DOWNLOAD_LOG_KEY]: null });
 
                 const payload = {
                     type: 'APPLY_FILTER_AND_DOWNLOAD',
@@ -413,11 +517,16 @@ function setupEventListeners() {
     // Clear Log Button
     if (clearLogBtn) {
         clearLogBtn.addEventListener('click', () => {
-            chrome.storage.local.set({ efakturLogs: [] }, () => {
+            chrome.storage.local.set({ efakturLogs: [], [BPPU_DOWNLOAD_LOG_KEY]: null }, () => {
                 renderLogs([]);
                 updateAndSaveStatus("Log telah dibersihkan");
             });
         });
+    }
+
+    // Download Log Button
+    if (downloadLogBtn) {
+        downloadLogBtn.addEventListener('click', downloadBppuLog);
     }
 }
 
