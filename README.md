@@ -5,7 +5,8 @@
 </p>
 
 <p align="center">
-  <strong>Automated Tax Document Downloader for CoreTax DJP Portal</strong>
+  <strong>Bulk downloader for Indonesian withholding tax slips (bukti potong)</strong><br>
+  <sub>Independent third-party tool. Not affiliated with, endorsed by, or connected to any government body.</sub>
 </p>
 
 <p align="center">
@@ -41,7 +42,7 @@
 </p>
 
 <p align="center">
-  <strong>In Action on CoreTax Portal</strong><br>
+  <strong>In Action</strong><br>
   <img src="images/Screenshot_2026-02-27_05-51-37.png" alt="Extension in Action" width="600">
 </p>
 
@@ -49,7 +50,7 @@
 
 ## Supported Documents
 
-The extension supports downloading the following document types from the CoreTax DJP portal:
+The extension supports downloading the following document types from your tax portal:
 
 | Document Type | Description |
 |---------------|-------------|
@@ -76,7 +77,7 @@ The extension supports downloading the following document types from the CoreTax
 ## Requirements
 
 - Any Chromium-based browser v114+ (Chrome, Edge, Brave, Opera, Vivaldi, Arc, etc.)
-- Access to CoreTax DJP portal (Indonesia)
+- Access to the tax portal where your bukti potong are listed
 
 ---
 
@@ -105,14 +106,14 @@ Install directly from the [Chrome Web Store](https://chromewebstore.google.com/d
 ### Quick Start
 
 1. Install the extension from [Chrome Web Store](https://chromewebstore.google.com/detail/bukpot-express/kgombpioeclaoecannbilgcjcbpdplnb)
-2. Log in to CoreTax DJP portal
+2. Log in to your tax portal
 3. Navigate to any Bukti Potong page (BPPU, BP NR, BP 21, or Prepaid Bukpot)
 4. Click the Bukpot Express icon in your toolbar
 5. Select tax period (month/year) and click **Filter & Download**
 
 ### Detailed Steps
 
-1. **Open CoreTax Portal** - Log in to the CoreTax DJP portal and navigate to the Bukti Potong page (e.g., Daftar BPPU, Daftar BP NR, Daftar BP 21, or Prepaid Bukpot)
+1. **Open the Portal** - Log in to your tax portal and navigate to the Bukti Potong page (e.g., Daftar BPPU, Daftar BP NR, Daftar BP 21, or Prepaid Bukpot)
 
 2. **Open the Extension** - Click the Bukpot Express icon in your Chrome toolbar
 
@@ -170,11 +171,7 @@ BukpotExpress/
 
 ### Host Permissions
 
-The extension only operates on CoreTax DJP domains:
-- `https://coretax.pajak.go.id/*`
-- `https://*.coretax.pajak.go.id/*`
-- `https://coretaxdjp.pajak.go.id/*`
-- `https://*.coretaxdjp.pajak.go.id/*`
+The extension only runs on the portal pages it is built for. The exact host list is declared in `manifest.json`.
 
 ---
 
@@ -182,7 +179,7 @@ The extension only operates on CoreTax DJP domains:
 
 - **Local Processing** - All operations happen locally in your browser
 - **No Data Collection** - No user data is collected or transmitted to third parties
-- **Limited Scope** - The extension only functions on CoreTax DJP portals
+- **Limited Scope** - The extension only functions on the portal pages it is built for
 - **Open Source** - Full source code is available for review
 
 ---
@@ -209,7 +206,7 @@ This extension works on any Chromium-based browser (v114+) since it uses standar
 ### Extension Not Responding
 1. Go to `chrome://extensions/`
 2. Find "Bukpot Express" and click the refresh icon
-3. Refresh the CoreTax page and try again
+3. Refresh the portal page and try again
 
 ### Filter Not Applied
 - Ensure you're on the correct Bukti Potong page
@@ -218,7 +215,7 @@ This extension works on any Chromium-based browser (v114+) since it uses standar
 
 ### Download Stuck or Errors
 - Click **STOP** to halt the process
-- Refresh the CoreTax page
+- Refresh the portal page
 - Restart the download process
 
 ### Debug Logging
@@ -248,7 +245,7 @@ No. All processing happens locally in your browser. No data is sent to any exter
 <details>
 <summary><strong>Which tax documents can I download?</strong></summary>
 <br>
-The extension supports BPPU, BP NR, BP 21, and Prepaid Bukpot documents from the CoreTax DJP portal.
+The extension supports BPPU, BP NR, BP 21, and Prepaid Bukpot documents from your tax portal.
 </details>
 
 <details>
